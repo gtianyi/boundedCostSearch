@@ -1,0 +1,13 @@
+exclude: '^$'
+fail_fast: true
+repos:
+  - repo: git@github.com:daniele-nutonomy/pre-commit-clang-format.git
+    rev: master
+    hooks:
+      - id: clang-format
+        stages: [commit, push]
+  - repo: git@github.com:daniele-nutonomy/pre-commit-cmake-format.git
+    rev: master
+    hooks:
+      - id: cmake-format
+        stages: [commit, push]
