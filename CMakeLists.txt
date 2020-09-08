@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(DCMAKE_BUILD_TYPE Debug)
 
-option(BUILD_TESTS "Build Tests" ON) 
+option(BUILD_TESTS "Build Tests" ON)
 
 message(STATUS "Build type: " ${CMAKE_BUILD_TYPE})
 
@@ -75,4 +75,4 @@ if(ENABLE_DOXYGEN)
     enable_doxygen()
 endif()
 
-add_subdirectory(src) 
+add_subdirectory(src)
