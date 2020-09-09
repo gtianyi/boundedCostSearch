@@ -7,7 +7,26 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(DCMAKE_BUILD_TYPE Debug)
 
+# Let CMake easily find our custom CMake modules
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+
 option(BUILD_TESTS "Build Tests" ON)
+
+include(conan_auto_install)
+
+# Setup conan targets
+if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    conan_basic_setup(TARGETS)
+    conan_check_overridden_packages()
+else()
+    message(
+        FATAL_ERROR
+            "
+        Missing conanbuildinfo.cmake file in your build folder \"${CMAKE_BINARY_DIR}\".
+        Make sure that CONAN_AUTO_INSTALL is ON to let CMake handle the Conan dependencies automatically
+        or, alternatively, manually run \"conan install ${CMAKE_SOURCE_DIR}\".")
+endif()
 
 message(STATUS "Build type: " ${CMAKE_BUILD_TYPE})
 
