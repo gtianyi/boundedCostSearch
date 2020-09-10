@@ -2,6 +2,7 @@
 #include "../utility/SlidingWindow.h"
 #include <algorithm>
 #include <cassert>
+#include <cmath>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -45,8 +46,8 @@ public:
         friend std::ostream& operator<<(std::ostream&                   stream,
                                         const SlidingTilePuzzle::State& state)
         {
-            for (int r = 0; r < state.getBoard().size(); r++) {
-                for (int c = 0; c < state.getBoard()[r].size(); c++) {
+            for (unsigned int r = 0; r < state.getBoard().size(); r++) {
+                for (unsigned int c = 0; c < state.getBoard()[r].size(); c++) {
                     stream << std::setw(3) << state.getBoard()[r][c] << " ";
                 }
                 stream << endl;
@@ -69,10 +70,10 @@ public:
             // This will provide a unique hash for every state in the 15 puzzle,
             // Other puzzle variants may/will see collisions...
             unsigned long long val = 0;
-            for (int r = 0; r < board.size(); r++) {
-                for (int c = 0; c < board[r].size(); c++) {
+            for (unsigned int r = 0; r < board.size(); r++) {
+                for (unsigned int c = 0; c < board[r].size(); c++) {
                     val = val << 4;
-                    val = val | board[r][c];
+                    val = val | static_cast<unsigned long long>(board[r][c]);
                 }
             }
             theKey = val;
@@ -83,8 +84,8 @@ public:
         std::string toString() const
         {
             std::string s = "";
-            for (int r = 0; r < board.size(); r++) {
-                for (int c = 0; c < board[r].size(); c++) {
+            for (unsigned int r = 0; r < board.size(); r++) {
+                for (unsigned int c = 0; c < board[r].size(); c++) {
                     s += std::to_string(board[r][c]) + " ";
                 }
                 s += "\n";
@@ -97,8 +98,8 @@ public:
             f << "4 4\n";
             f << "starting positions for each tile:\n";
 
-            for (int r = 0; r < board.size(); r++) {
-                for (int c = 0; c < board[r].size(); c++) {
+            for (unsigned int r = 0; r < board.size(); r++) {
+                for (unsigned int c = 0; c < board[r].size(); c++) {
                     // assert(board[r][c] >= 0);
                     // assert(board[r][c] < 16);
                     f << board[r][c] << "\n";
@@ -124,7 +125,8 @@ public:
         std::vector<std::vector<int>> board;
         char                          label;
         int                           movedFace;
-        unsigned long long            theKey = -1;
+        unsigned long long            theKey =
+          std::numeric_limits<unsigned long long>::max();
     };
 
     struct HashState
@@ -176,16 +178,16 @@ public:
         getline(input, line);
 
         // Initialize the nxn puzzle board
-        std::vector<int>              rows(size, 0);
-        std::vector<std::vector<int>> board(size, rows);
+        std::vector<int>              rows(static_cast<size_t>(size), 0);
+        std::vector<std::vector<int>> board(static_cast<size_t>(size), rows);
         startBoard = board;
         endBoard   = board;
 
         // Following lines are the input puzzle...
-        int r = 0;
-        int c = 0;
+        size_t r = 0;
+        size_t c = 0;
 
-        for (int i = 0; i < size * size; i++) {
+        for (size_t i = 0; i < size * size; i++) {
             c = i % size;
 
             getline(input, line);
@@ -207,7 +209,7 @@ public:
         r = 0;
         c = 0;
 
-        for (int i = 0; i < size * size; i++) {
+        for (size_t i = 0; i < size * size; i++) {
             c = i % size;
 
             getline(input, line);
@@ -226,7 +228,7 @@ public:
         // filled
         // then it should be filled now...
         if (SlidingTilePuzzle::table.empty()) {
-            srand(time(NULL));
+            srand(static_cast<unsigned int>(time(NULL)));
             for (int i = 0; i < 256; i++) {
                 table.push_back(rand());
             }
@@ -234,6 +236,8 @@ public:
 
         startState = State(startBoard, 's');
     }
+
+    virtual ~SlidingTilePuzzle() {}
 
     bool isGoal(const State& s) const
     {
@@ -350,14 +354,14 @@ public:
     {
         Cost manhattanSum = 0;
 
-        for (int r = 0; r < size; r++) {
-            for (int c = 0; c < size; c++) {
-                auto value = state.getBoard()[r][c];
+        for (size_t r = 0; r < size; r++) {
+            for (size_t c = 0; c < size; c++) {
+                size_t value = static_cast<size_t>(state.getBoard()[r][c]);
                 if (value == 0) {
                     continue;
                 }
 
-                manhattanSum += abs(value / size - r) + abs(value % size - c);
+                manhattanSum += fabs(value / size - r) + fabs(value % size - c);
                 // cout << value << " sum " << manhattanSum << endl;
             }
         }
@@ -370,8 +374,8 @@ public:
     void moveUp(std::vector<State>&           succs,
                 std::vector<std::vector<int>> board) const
     {
-        int r = 0;
-        int c = 0;
+        size_t r = 0;
+        size_t c = 0;
         // Find the location of the blank space
         bool found = false;
         for (r = 0; r < size; r++) {
@@ -387,7 +391,7 @@ public:
         }
 
         // Now try to move the blank tile up one row...
-        if (r - 1 > -1) {
+        if (r > 0) {
             std::swap(board[r][c], board[r - 1][c]);
             succs.push_back(State(board, 'U', board[r][c]));
         }
@@ -396,8 +400,8 @@ public:
     void moveDown(std::vector<State>&           succs,
                   std::vector<std::vector<int>> board) const
     {
-        int r = 0;
-        int c = 0;
+        size_t r = 0;
+        size_t c = 0;
         // Find the location of the blank space
         bool found = false;
         for (r = 0; r < size; r++) {
@@ -422,8 +426,8 @@ public:
     void moveLeft(std::vector<State>&           succs,
                   std::vector<std::vector<int>> board) const
     {
-        int r = 0;
-        int c = 0;
+        size_t r = 0;
+        size_t c = 0;
         // Find the location of the blank space
         bool found = false;
         for (r = 0; r < size; r++) {
@@ -439,7 +443,7 @@ public:
         }
 
         // Now try to move the blank tile left one column...
-        if (c - 1 > -1) {
+        if (c > 0) {
             std::swap(board[r][c], board[r][c - 1]);
             succs.push_back(State(board, 'L', board[r][c]));
         }
@@ -448,8 +452,8 @@ public:
     void moveRight(std::vector<State>&           succs,
                    std::vector<std::vector<int>> board) const
     {
-        int r = 0;
-        int c = 0;
+        size_t r = 0;
+        size_t c = 0;
         // Find the location of the blank space
         bool found = false;
         for (r = 0; r < size; r++) {
@@ -501,12 +505,10 @@ public:
         return predecessors;
     }
 
-    bool safetyPredicate(const State& state) const { return true; }
-
     const State getStartState() const { return startState; }
 
     // heavy, inverse, make a extansion class, and overwrite this method
-    virtual Cost getEdgeCost(State state) { return 1; }
+    virtual Cost getEdgeCost(State) { return 1; }
 
     string getDomainInformation()
     {
@@ -547,14 +549,14 @@ public:
             avg += i;
         }
 
-        avg /= expansionDelayWindow.size();
+        avg /= static_cast<double>(expansionDelayWindow.size());
 
         return avg;
     }
 
     std::vector<std::vector<int>>         startBoard;
     std::vector<std::vector<int>>         endBoard;
-    int                                   size;
+    size_t                                size;
     State                                 startState;
     SlidingWindow<int>                    expansionDelayWindow;
     unordered_map<State, Cost, HashState> correctedH;

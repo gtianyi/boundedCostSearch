@@ -70,7 +70,7 @@ public:
 
     void update(T item)
     {
-        for (int i = 0; i < c.size(); i++) {
+        for (size_t i = 0; i < c.size(); i++) {
             if (c[i] == item) {
                 if (comp(c[i], c[parent(i)]))
                     pullUp(i);
@@ -91,8 +91,8 @@ public:
     {
         // If the size is at maximum capacity, find the worst item in the queue
         if (c.size() == capacity) {
-            int worstIndex = 0;
-            for (int i = 1; i < c.size(); i++) {
+            size_t worstIndex = 0;
+            for (size_t i = 1; i < c.size(); i++) {
                 if (comp(c[worstIndex], c[i])) {
                     worstIndex = i;
                 }
@@ -102,7 +102,7 @@ public:
             if (comp(item, c[worstIndex])) {
                 // Erase the worst
                 swap(c[worstIndex], c[last()]);
-                c.erase(c.begin() + last());
+                c.erase(c.begin() + static_cast<long int>(last()));
                 if (comp(c[worstIndex], c[parent(worstIndex)]))
                     pullUp(worstIndex);
                 else
@@ -123,13 +123,13 @@ public:
             return;
         }
         swap(c[0], c[last()]);
-        c.erase(c.begin() + last());
+        c.erase(c.begin() + static_cast<long int>(last()));
         pushDown(0);
     }
 
     void remove(T item)
     {
-        for (int i = 0; i < c.size(); i++) {
+        for (size_t i = 0; i < c.size(); i++) {
             if (c[i] == item) {
                 swap(c[i], c[last()]);
                 c.erase(c.begin() + last());
@@ -155,7 +155,7 @@ public:
 
     typename vector<T>::iterator find(T item)
     {
-        for (int i = 0; i < c.size(); i++) {
+        for (size_t i = 0; i < c.size(); i++) {
             if (c[i] == item)
                 return c.begin() + i;
         }
@@ -164,15 +164,15 @@ public:
     }
 
 private:
-    int last() { return c.size() - 1; }
+    size_t last() { return c.size() - 1; }
 
-    int parent(int i) { return (i - 1) / 2; }
+    size_t parent(size_t i) { return (i - 1) / 2; }
 
-    int rightChild(int i) { return 2 * i + 2; }
+    size_t rightChild(size_t i) { return 2 * i + 2; }
 
-    int leftChild(int i) { return 2 * i + 1; }
+    size_t leftChild(size_t i) { return 2 * i + 1; }
 
-    void pullUp(int i)
+    void pullUp(size_t i)
     {
         if (comp(c[i], c[parent(i)])) {
             swap(c[i], c[parent(i)]);
@@ -180,9 +180,9 @@ private:
         }
     }
 
-    void pushDown(int i)
+    void pushDown(size_t i)
     {
-        int smallesti = i;
+        size_t smallesti = i;
 
         if (rightChild(i) < c.size() && comp(c[rightChild(i)], c[smallesti])) {
             smallesti = rightChild(i);
@@ -200,7 +200,7 @@ private:
 
     void makeHeap()
     {
-        for (int i = (c.size() / 2) - 1; i >= 0; i--) {
+        for (size_t i = (c.size() / 2) - 1; i >= 0; i--) {
             pushDown(i);
         }
     }

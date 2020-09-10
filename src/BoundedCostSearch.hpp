@@ -23,8 +23,8 @@ public:
         Cost  g;
         Cost  h;
         Cost  d;
-        Node* parent;
         State stateRep;
+        Node* parent;
         bool  open;
 
     public:
@@ -41,11 +41,11 @@ public:
         void setState(State s) { stateRep = s; }
         void setParent(Node* p) { parent = p; }
 
-        Node(Cost g, Cost h, State state, Node* parent)
-            : g(g)
-            , h(h)
-            , stateRep(state)
-            , parent(parent)
+        Node(Cost g_, Cost h_, State state_, Node* parent_)
+            : g(g_)
+            , h(h_)
+            , stateRep(state_)
+            , parent(parent_)
             , open(true)
         {}
 
@@ -76,8 +76,8 @@ public:
         }
     };
 
-    BoundedCostSearch(Domain& domain)
-        : domain(domain)
+    BoundedCostSearch(Domain& domain_)
+        : domain(domain_)
     {
         algorithm = new PotentialSearch<Domain, Node>(domain, "f");
     }
@@ -91,7 +91,7 @@ public:
         auto inith = domain.heuristic(domain.getStartState());
 
         // Get the start node
-        Node* cur = new Node(0, inith, inith, domain.getStartState(), NULL);
+        Node* cur = new Node(0, inith, domain.getStartState(), NULL);
 
         open.push(cur);
         res.initialH = inith;

@@ -6,7 +6,10 @@ class InverseTilePuzzle : public SlidingTilePuzzle
 public:
     using SlidingTilePuzzle::SlidingTilePuzzle;
 
-    Cost getEdgeCost(State state) { return 1.0 / (double)state.getFace(); }
+    Cost getEdgeCost(State state)
+    {
+        return 1.0 / static_cast<double>(state.getFace());
+    }
 
     Cost heuristic(const State& state)
     {
@@ -31,15 +34,16 @@ public:
     {
         Cost manhattanSum = 0;
 
-        for (int r = 0; r < size; r++) {
-            for (int c = 0; c < size; c++) {
-                auto value = state.getBoard()[r][c];
+        for (size_t r = 0; r < size; r++) {
+            for (size_t c = 0; c < size; c++) {
+                auto value = static_cast<size_t>(state.getBoard()[r][c]);
                 if (value == 0) {
                     continue;
                 }
 
-                manhattanSum += (1.0 / (double)value) *
-                                (abs(value / size - r) + abs(value % size - c));
+                manhattanSum +=
+                  (1.0 / static_cast<double>(value)) *
+                  (fabs(value / size - r) + fabs(value % size - c));
                 // cout << "value " << value << " sum " << manhattanSum << endl;
             }
         }

@@ -14,15 +14,14 @@ class PotentialSearch
     typedef typename Domain::HashState Hash;
 
 public:
-    PotentialSearch(Domain& domain, string sorting)
-        : domain(domain)
-        , sortingFunction(sorting)
+    PotentialSearch(Domain& domain_, string sorting_)
+        : domain(domain_)
+        , sortingFunction(sorting_)
     {}
 
     double run(PriorityQueue<Node*>&              open,
                unordered_map<State, Node*, Hash>& closed,
-               std::function<bool(Node*, unordered_map<State, Node*, Hash>&,
-                                  PriorityQueue<Node*>&)>
+               std::function<bool(Node*, unordered_map<State, Node*, Hash>&)>
                                       duplicateDetection,
                SearchResultContainer& res)
     {
@@ -62,6 +61,8 @@ public:
                     delete childNode;
             }
         }
+
+        return -1.0;
     }
 
 private:

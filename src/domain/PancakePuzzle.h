@@ -19,15 +19,15 @@ using namespace std;
 class PancakePuzzle
 {
 public:
-    typedef double        Cost;
-    static constexpr Cost COST_MAX = std::numeric_limits<Cost>::max();
+    typedef double          Cost;
+    static constexpr double COST_MAX = std::numeric_limits<double>::max();
 
     class State
     {
     public:
         State() {}
 
-        State(std::vector<unsigned int> b, int l)
+        State(std::vector<unsigned int> b, size_t l)
             : ordering(b)
             , label(l)
         {
@@ -39,8 +39,9 @@ public:
         friend std::ostream& operator<<(std::ostream&               stream,
                                         const PancakePuzzle::State& state)
         {
-            for (int r = 0; r < state.getOrdering().size(); r++) {
-                stream << std::setw(3) << (int)state.getOrdering()[r] << " ";
+            for (size_t r = 0; r < state.getOrdering().size(); r++) {
+                stream << std::setw(3)
+                       << static_cast<int>(state.getOrdering()[r]) << " ";
             }
             return stream;
         }
@@ -62,7 +63,7 @@ public:
             */
             unsigned long long offset_basis = 0xCBF29CE484222325;
             unsigned long long fnv_prime    = 0x100000001B3;
-            int                i;
+            size_t             i;
             for (i = 0; i < ordering.size(); ++i) {
                 unsigned int value = ordering[i];
                 offset_basis       = offset_basis ^ value;
@@ -76,13 +77,13 @@ public:
         std::string toString() const
         {
             std::string s = "";
-            for (int r = 0; r < ordering.size(); r++) {
-                s += std::to_string((int)ordering[r]) + " ";
+            for (size_t r = 0; r < ordering.size(); r++) {
+                s += std::to_string(static_cast<int>(ordering[r])) + " ";
             }
             return s + "\n";
         }
 
-        int getLabel() const { return label; }
+        size_t getLabel() const { return label; }
 
         void markStart() { label = 0; }
 
@@ -92,21 +93,22 @@ public:
 
             f << "starting positions for pancake :\n";
 
-            for (int r = 0; r < ordering.size(); r++) {
+            for (size_t r = 0; r < ordering.size(); r++) {
                 f << ordering[r] << "\n";
             }
 
             f << "end positions pancake:\n";
 
-            for (int i = 1; i <= ordering.size(); i++) {
+            for (size_t i = 1; i <= ordering.size(); i++) {
                 f << i << "\n";
             }
         }
 
     private:
         std::vector<unsigned int> ordering;
-        int                       label;
-        unsigned long long        theKey = -1;
+        size_t                    label;
+        unsigned long long        theKey =
+          std::numeric_limits<unsigned long long>::max();
     };
 
     struct HashState
@@ -129,16 +131,16 @@ public:
         startOrdering = rows;
         endOrdering   = rows;
 
-        for (int i = 0; i < size; ++i) {
+        for (size_t i = 0; i < size; ++i) {
             getline(input, line);
-            startOrdering[i] = stoi(line);
+            startOrdering[i] = static_cast<unsigned int>(stoi(line));
         }
         // Skip the next line
         getline(input, line);
 
-        for (int i = 0; i < size; ++i) {
+        for (size_t i = 0; i < size; ++i) {
             getline(input, line);
-            endOrdering[i] = stoi(line);
+            endOrdering[i] = static_cast<unsigned int>(stoi(line));
         }
 
         puzzleVariant = 0; // Default
@@ -200,14 +202,14 @@ public:
         // Problem Where add 1 to heuristic if the adjacent sizes of the
         // pancakes differs more than 1 For heavy pancake problems. For each gap
         // b/w x and y, add min(x,y) to heuristic instead of just 1
-        int size  = state.getOrdering().size();
-        int plate = size + 1;
-        int sum   = 0;
+        size_t size_ = state.getOrdering().size();
+        size_t plate = size_ + 1;
+        size_t sum   = 0;
 
-        for (int i = 1; i < size; ++i) {
-            int x   = state.getOrdering()[i - 1];
-            int y   = state.getOrdering()[i];
-            int dif = x - y;
+        for (size_t i = 1; i < size; ++i) {
+            size_t x   = state.getOrdering()[i - 1];
+            size_t y   = state.getOrdering()[i];
+            int    dif = static_cast<int>(x) - static_cast<int>(y);
             if (dif > 1 || dif < -1) {
                 if (puzzleVariant == 0) {
                     ++sum;
@@ -217,8 +219,8 @@ public:
             }
         }
 
-        int x   = state.getOrdering()[size - 1];
-        int dif = x - plate;
+        size_t x   = state.getOrdering()[size - 1];
+        int    dif = static_cast<int>(x) - static_cast<int>(plate);
         if (dif > 1 || dif < -1) {
             if (puzzleVariant == 0) {
                 ++sum;
@@ -226,7 +228,7 @@ public:
                 sum += x;
             }
         }
-        return sum;
+        return static_cast<double>(sum);
     }
 
     Cost distance(const State& state)
@@ -340,14 +342,14 @@ public:
     double getBranchingFactor() const
     {
         // TODO
-        return size - 1; //  I think this is right
+        return static_cast<double>(size) - 1; //  I think this is right
     }
 
     void flipOrdering(std::vector<State>&       succs,
-                      std::vector<unsigned int> ordering, int loc) const
+                      std::vector<unsigned int> ordering, size_t loc) const
     {
-        int start = 0;
-        int end   = loc;
+        size_t start = 0;
+        size_t end   = loc;
         while (start < end) {
             std::swap(ordering[start++], ordering[end--]);
         }
@@ -358,7 +360,7 @@ public:
     std::vector<State> successors(const State& state) const
     {
         std::vector<State> successors;
-        for (int i = size - 1; i > 0; --i) {
+        for (size_t i = size - 1; i > 0; --i) {
             // Don't allow inverse actions, to cut down on branching factor
             if (state.getLabel() == i)
                 continue;
@@ -371,13 +373,11 @@ public:
     std::vector<State> predecessors(const State& state) const
     {
         std::vector<State> predecessors;
-        for (int i = size - 1; i > 0; --i) {
+        for (size_t i = size - 1; i > 0; --i) {
             flipOrdering(predecessors, state.getOrdering(), i);
         }
         return predecessors;
     }
-
-    bool safetyPredicate(const State& state) const { return true; }
 
     const State getStartState() const { return startState; }
 
@@ -393,22 +393,22 @@ public:
         // 2: Each pancake has a weight, equal to its index.
         //    The cost is the sum of the indexes of pancakes being flipped.
 
-        int l = state.getLabel();
+        size_t l = state.getLabel();
 
         if (puzzleVariant == 1) {
-            int i = state.getOrdering()[0];
-            int j = state.getOrdering()[l];
+            size_t i = state.getOrdering()[0];
+            size_t j = state.getOrdering()[l];
             if (i > j)
-                return i;
-            return j;
+                return static_cast<double>(i);
+            return static_cast<double>(j);
         }
 
         if (puzzleVariant == 2) {
-            int sum = 0;
-            for (int i = 1; i <= l; ++i) {
+            size_t sum = 0;
+            for (size_t i = 1; i <= l; ++i) {
                 sum += i;
             }
-            return sum;
+            return static_cast<double>(sum);
         }
 
         // Variant 1
@@ -475,7 +475,7 @@ public:
             avg += i;
         }
 
-        avg /= expansionDelayWindow.size();
+        avg /= static_cast<double>(expansionDelayWindow.size());
 
         return avg;
     }
@@ -487,9 +487,8 @@ public:
         std::vector<State> successors;
 
         while (!path.empty()) {
-            int action = path.front();
-            int start  = 0;
-            int end    = path.front();
+            size_t start = 0;
+            size_t end   = static_cast<size_t>(path.front());
             while (start < end) {
                 std::swap(board[start++], board[end--]);
             }
@@ -510,7 +509,7 @@ public:
     unordered_map<State, Cost, HashState> correctedD;
     unordered_map<State, Cost, HashState> correctedDerr;
     int                                   puzzleVariant;
-    int                                   size;
+    size_t                                size;
 
     double epsilonHSum;
     double epsilonDSum;

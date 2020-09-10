@@ -24,9 +24,9 @@ public:
             , seedOffset(0)
         {}
 
-        State(int depth, uint64_t seedOffset, int l)
-            : depth(depth)
-            , seedOffset(seedOffset)
+        State(int depth_, uint64_t seedOffset_, int l)
+            : depth(depth_)
+            , seedOffset(seedOffset_)
             , label(l)
         {}
 
@@ -51,7 +51,6 @@ public:
 
         std::string toString() const
         {
-        std:
             string s = "";
             s += std::to_string(seedOffset) + " " + std::to_string(depth);
             return s;
@@ -140,9 +139,7 @@ public:
         }
 
         return 0;
-    }
-
-    Cost heuristic_no_recording(const State& state) { return 0; }
+    } 
 
     Cost epsilonHGlobal() { return curEpsilonH; }
 

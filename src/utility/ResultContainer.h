@@ -7,8 +7,8 @@ struct ResultContainer
 {
     bool   solutionFound;
     double solutionCost;
-    int    nodesGenerated;
-    int    nodesExpanded;
+    size_t nodesGenerated;
+    size_t nodesExpanded;
     double totalCpuTime;
 
     ResultContainer()

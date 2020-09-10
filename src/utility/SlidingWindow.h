@@ -7,8 +7,8 @@ template<typename T>
 class SlidingWindow
 {
 public:
-    SlidingWindow(double capacity = 100)
-        : capacity(capacity)
+    SlidingWindow(double capacity_ = 100)
+        : capacity(capacity_)
     {}
 
     void push(T item)
@@ -28,7 +28,7 @@ public:
             window.pop_back();
     }
 
-    int size() { return window.size(); }
+    size_t size() { return window.size(); }
 
     typename vector<T>::iterator begin() { return window.begin(); }
 

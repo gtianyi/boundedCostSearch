@@ -34,7 +34,7 @@ struct pair_hash
 
 class RaceTrack
 {
-    using Location = pair<int, int>;
+    using Location = pair<size_t, size_t>;
 
 public:
     typedef double        Cost;
@@ -45,11 +45,11 @@ public:
     public:
         State() {}
 
-        State(int x, int y, int dx, int dy)
-            : x(x)
-            , y(y)
-            , dx(dx)
-            , dy(dy)
+        State(size_t x_, size_t y_, size_t dx_, size_t dy_)
+            : x(x_)
+            , y(y_)
+            , dx(dx_)
+            , dy(dy_)
         {
             generateKey();
         }
@@ -85,13 +85,13 @@ public:
 
         unsigned long long key() const { return theKey; }
 
-        int getX() const { return x; }
+        size_t getX() const { return x; }
 
-        int getY() const { return y; }
+        size_t getY() const { return y; }
 
-        int getDX() const { return dx; }
+        size_t getDX() const { return dx; }
 
-        int getDY() const { return dy; }
+        size_t getDY() const { return dy; }
 
         std::string toString() const
         {
@@ -110,9 +110,10 @@ public:
         void markStart() { label = 's'; }
 
     private:
-        int                x, y, dx, dy;
+        size_t             x, y, dx, dy;
         char               label;
-        unsigned long long theKey = -1;
+        unsigned long long theKey =
+          std::numeric_limits<unsigned long long>::max();
     };
 
     struct HashState
@@ -264,22 +265,26 @@ public:
     Cost dijkstraMaxH(const State& state) const
     {
         // cout << state;
-        return dijkstraMap[state.getX()][state.getY()] / maxSpeed;
+        return static_cast<double>(dijkstraMap[state.getX()][state.getY()]) /
+               maxSpeed;
     }
 
     double getBranchingFactor() const { return 9; }
 
     bool isLegalLocation(int x, int y) const
     {
-        return x >= 0 && y >= 0 && x < mapWidth && y < mapHeight &&
-               blockedCells.find(Location(x, y)) == blockedCells.end();
+        return x >= 0 && y >= 0 && static_cast<size_t>(x) < mapWidth &&
+               static_cast<size_t>(y) < mapHeight &&
+               blockedCells.find(
+                 Location(static_cast<size_t>(x), static_cast<size_t>(y))) ==
+                 blockedCells.end();
     }
 
-    bool isCollisionFree(int x, int y, int dx, int dy,
+    bool isCollisionFree(size_t x, size_t y, size_t dx, size_t dy,
                          Location& lastLegalLocation) const
     {
-        double distance =
-          round(sqrt(pow((double)dx, 2.0) + pow((double)dy, 2.0)));
+        double distance = round(sqrt(pow(static_cast<double>(dx), 2.0) +
+                                     pow(static_cast<double>(dy), 2.0)));
 
         double xRunning = double(x);
         double yRunning = double(y);
@@ -287,20 +292,21 @@ public:
         double dt    = 1.0 / distance;
         bool   valid = true;
 
-        double stepX = dx * dt;
-        double stepY = dy * dt;
+        double stepX = static_cast<double>(dx) * dt;
+        double stepY = static_cast<double>(dy) * dt;
 
-        for (int i = 1; i <= (int)distance; i++) {
+        for (int i = 1; i <= static_cast<int>(distance); i++) {
             xRunning += stepX;
             yRunning += stepY;
 
-            if (!isLegalLocation((int)round(xRunning), (int)round(yRunning))) {
+            if (!isLegalLocation(static_cast<int>(round(xRunning)),
+                                 static_cast<int>(round(yRunning)))) {
                 valid = false;
                 break;
             }
 
-            lastLegalLocation =
-              Location((int)round(xRunning), (int)round(yRunning));
+            lastLegalLocation = Location(static_cast<size_t>(round(xRunning)),
+                                         static_cast<size_t>(round(yRunning)));
         }
 
         return valid;
@@ -311,8 +317,8 @@ public:
         std::vector<State> successors;
 
         for (auto action : actions) {
-            int newDX = state.getDX() + action.first;
-            int newDY = state.getDY() + action.second;
+            size_t newDX = state.getDX() + action.first;
+            size_t newDY = state.getDY() + action.second;
 
             // check if dx, dy already 0?
             // otherwise will alway stay?
@@ -364,11 +370,9 @@ public:
         return vector<State>();
     }
 
-    bool safetyPredicate(const State& state) const { return true; }
-
     const State getStartState() const { return startState; }
 
-    virtual Cost getEdgeCost(State state) { return 1; }
+    Cost getEdgeCost(State) { return 1; }
 
     string getDomainInformation()
     {
@@ -409,7 +413,7 @@ public:
             avg += i;
         }
 
-        avg /= expansionDelayWindow.size();
+        avg /= static_cast<double>(expansionDelayWindow.size());
 
         return avg;
     }
@@ -429,12 +433,12 @@ private:
         stringstream ss2(line);
         ss2 >> mapHeight;
 
-        for (int y = 0; y < mapHeight; y++) {
+        for (size_t y = 0; y < mapHeight; y++) {
 
             getline(raceMap, line);
             stringstream ss3(line);
 
-            for (int x = 0; x < mapWidth; x++) {
+            for (size_t x = 0; x < mapWidth; x++) {
                 char cell;
                 ss3 >> cell;
 
@@ -452,8 +456,8 @@ private:
             }
         }
 
-        maxXSpeed = mapWidth / 2;
-        maxYSpeed = mapHeight / 2;
+        maxXSpeed = static_cast<double>(mapWidth) / 2;
+        maxYSpeed = static_cast<double>(mapHeight) / 2;
         maxSpeed  = max(maxXSpeed, maxYSpeed);
 
         startState = State(startLocation.first, startLocation.second, 0, 0);
@@ -476,7 +480,7 @@ private:
         getline(input, line);
         getline(input, line);
         stringstream ss(line);
-        int          x, y, dx, dy;
+        size_t       x, y, dx, dy;
         ss >> x;
         ss >> y;
         ss >> dx;
@@ -488,8 +492,8 @@ private:
 
     void computeDijkstraMap()
     {
-        vector<int> col(mapHeight, std::numeric_limits<int>::max());
-        dijkstraMap = vector<vector<int>>(mapWidth, col);
+        vector<size_t> col(mapHeight, std::numeric_limits<size_t>::max());
+        dijkstraMap = vector<vector<size_t>>(mapWidth, col);
 
         for (const auto& g : finishline) {
             dijkstraOneGoal(g, dijkstraMap);
@@ -515,7 +519,8 @@ private:
         /*}*/
     }
 
-    void dijkstraOneGoal(const Location goal, vector<vector<int>>& dijkstraMap)
+    void dijkstraOneGoal(const Location          goal,
+                         vector<vector<size_t>>& dijkstraMap_)
     {
         DijkstraNode start(goal, 0);
 
@@ -530,8 +535,8 @@ private:
             auto n = open.top();
             open.pop();
 
-            if (dijkstraMap[n.loc.first][n.loc.second] > n.cost) {
-                dijkstraMap[n.loc.first][n.loc.second] = n.cost;
+            if (dijkstraMap_[n.loc.first][n.loc.second] > n.cost) {
+                dijkstraMap_[n.loc.first][n.loc.second] = n.cost;
             }
 
             auto kids = getLegalKids(n);
@@ -548,9 +553,9 @@ private:
     struct DijkstraNode
     {
         Location loc;
-        int      cost;
+        size_t   cost;
 
-        DijkstraNode(Location l, int c)
+        DijkstraNode(Location l, size_t c)
             : loc(l)
             , cost(c)
         {}
@@ -572,23 +577,26 @@ private:
     {
 
         vector<DijkstraNode> ret;
-        if (isLegalLocation(n.loc.first + 1, n.loc.second)) {
-            Location loc(n.loc.first + 1, n.loc.second);
+        auto                 x_ = static_cast<int>(n.loc.first);
+        auto                 y_ = static_cast<int>(n.loc.second);
+
+        if (isLegalLocation(x_ + 1, y_)) {
+            Location loc(n.loc.first + 1, y_);
             ret.push_back(DijkstraNode(loc, n.cost + 1));
         }
 
-        if (isLegalLocation(n.loc.first, n.loc.second + 1)) {
-            Location loc(n.loc.first, n.loc.second + 1);
+        if (isLegalLocation(x_, y_ + 1)) {
+            Location loc(x_, y_ + 1);
             ret.push_back(DijkstraNode(loc, n.cost + 1));
         }
 
-        if (isLegalLocation(n.loc.first - 1, n.loc.second)) {
-            Location loc(n.loc.first - 1, n.loc.second);
+        if (isLegalLocation(x_ - 1, y_)) {
+            Location loc(x_ - 1, y_);
             ret.push_back(DijkstraNode(loc, n.cost + 1));
         }
 
-        if (isLegalLocation(n.loc.first, n.loc.second - 1)) {
-            Location loc(n.loc.first, n.loc.second - 1);
+        if (isLegalLocation(x_, y_ - 1)) {
+            Location loc(x_, y_ - 1);
             ret.push_back(DijkstraNode(loc, n.cost + 1));
         }
 
@@ -597,10 +605,10 @@ private:
 
     std::unordered_set<Location, pair_hash> blockedCells;
     std::unordered_set<Location, pair_hash> finishline;
-    vector<pair<int, int>>                  actions;
-    vector<vector<int>>                     dijkstraMap;
-    int                                     mapWidth;
-    int                                     mapHeight;
+    vector<pair<size_t, size_t>>            actions;
+    vector<vector<size_t>>                  dijkstraMap;
+    size_t                                  mapWidth;
+    size_t                                  mapHeight;
     double                                  maxXSpeed;
     double                                  maxYSpeed;
     double                                  maxSpeed;
