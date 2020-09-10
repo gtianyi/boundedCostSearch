@@ -346,23 +346,24 @@ public:
     }
 
     void flipOrdering(std::vector<State>&       succs,
-                      std::vector<unsigned int> ordering, size_t loc) const
+                      std::vector<unsigned int> ordering, int loc) const
     {
-        size_t start = 0;
-        size_t end   = loc;
+        int start = 0;
+        int end   = loc;
         while (start < end) {
-            std::swap(ordering[start++], ordering[end--]);
+            std::swap(ordering[static_cast<size_t>(start++)],
+                      ordering[static_cast<size_t>(end--)]);
         }
 
-        succs.push_back(State(ordering, loc));
+        succs.push_back(State(ordering, static_cast<size_t>(loc)));
     }
 
     std::vector<State> successors(const State& state) const
     {
         std::vector<State> successors;
-        for (size_t i = size - 1; i > 0; --i) {
+        for (int i = static_cast<int>(size) - 1; i > 0; --i) {
             // Don't allow inverse actions, to cut down on branching factor
-            if (state.getLabel() == i)
+            if (state.getLabel() == static_cast<size_t>(i))
                 continue;
 
             flipOrdering(successors, state.getOrdering(), i);
@@ -373,7 +374,7 @@ public:
     std::vector<State> predecessors(const State& state) const
     {
         std::vector<State> predecessors;
-        for (size_t i = size - 1; i > 0; --i) {
+        for (int i = static_cast<int>(size) - 1; i > 0; --i) {
             flipOrdering(predecessors, state.getOrdering(), i);
         }
         return predecessors;

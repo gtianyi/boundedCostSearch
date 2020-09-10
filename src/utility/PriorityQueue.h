@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <iostream>
 #include <limits>
 #include <vector>
 
@@ -200,8 +201,8 @@ private:
 
     void makeHeap()
     {
-        for (size_t i = (c.size() / 2) - 1; i >= 0; i--) {
-            pushDown(i);
+        for (int i = (static_cast<int>(c.size()) / 2) - 1; i >= 0; i--) {
+            pushDown(static_cast<size_t>(i));
         }
     }
 };
