@@ -7,25 +7,24 @@
 using namespace std;
 
 template<class Domain, class Node>
-class WAStar
+class PotentialSearch
 {
     typedef typename Domain::State     State;
     typedef typename Domain::Cost      Cost;
     typedef typename Domain::HashState Hash;
 
 public:
-    WAStar(Domain& domain, float weight, string sorting)
+    PotentialSearch(Domain& domain, string sorting)
         : domain(domain)
-        , weight(weight)
         , sortingFunction(sorting)
     {}
 
-    double expand(PriorityQueue<Node*>&              open,
-                  unordered_map<State, Node*, Hash>& closed,
-                  std::function<bool(Node*, unordered_map<State, Node*, Hash>&,
-                                     PriorityQueue<Node*>&)>
-                                         duplicateDetection,
-                  SearchResultContainer& res)
+    double run(PriorityQueue<Node*>&              open,
+               unordered_map<State, Node*, Hash>& closed,
+               std::function<bool(Node*, unordered_map<State, Node*, Hash>&,
+                                  PriorityQueue<Node*>&)>
+                                      duplicateDetection,
+               SearchResultContainer& res)
     {
         sortOpen(open);
 
@@ -51,10 +50,9 @@ public:
             for (State child : children) {
                 Node* childNode =
                   new Node(cur->getGValue() + domain.getEdgeCost(child),
-                           weight * domain.heuristic_no_recording(child),
                            domain.heuristic_no_recording(child), child, cur);
 
-                bool dup = duplicateDetection(childNode, closed, open);
+                bool dup = duplicateDetection(childNode, closed);
 
                 // Duplicate detection
                 if (!dup) {
@@ -87,6 +85,5 @@ private:
 
 protected:
     Domain& domain;
-    float   weight;
     string  sortingFunction;
 };
