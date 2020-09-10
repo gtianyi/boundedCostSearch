@@ -12,5 +12,5 @@ class Search
 {
 public:
     virtual SearchResultContainer doSearch() = 0;
-    virtual ~Search()                        = 0;
+    virtual ~Search(){};
 };
