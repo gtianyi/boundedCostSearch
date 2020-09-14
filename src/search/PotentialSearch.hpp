@@ -46,7 +46,7 @@ public:
             vector<State> children = domain.successors(cur->getState());
             res.nodesGenerated += children.size();
 
-            std::cout << "generated: " << res.nodesGenerated << std::endl;
+            // std::cout << "generated: " << res.nodesGenerated << std::endl;
 
             for (State child : children) {
                 Node* childNode =

@@ -167,7 +167,7 @@ public:
 private:
     size_t last() { return c.size() - 1; }
 
-    size_t parent(size_t i) { return (i - 1) / 2; }
+    size_t parent(size_t i) { return i > 1 ? (i - 1) / 2 : 0; }
 
     size_t rightChild(size_t i) { return 2 * i + 2; }
 
