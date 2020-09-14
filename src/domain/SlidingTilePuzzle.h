@@ -352,12 +352,14 @@ public:
 
         for (size_t r = 0; r < size; r++) {
             for (size_t c = 0; c < size; c++) {
-                size_t value = static_cast<size_t>(state.getBoard()[r][c]);
+                int value = state.getBoard()[r][c];
                 if (value == 0) {
                     continue;
                 }
 
-                manhattanSum += fabs(value / size - r) + fabs(value % size - c);
+                manhattanSum +=
+                  fabs(value / static_cast<int>(size) - static_cast<int>(r)) +
+                  fabs(value % static_cast<int>(size) - static_cast<int>(c));
                 // cout << value << " sum " << manhattanSum << endl;
             }
         }

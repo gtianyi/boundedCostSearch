@@ -90,6 +90,8 @@ public:
 
         auto inith = domain.heuristic(domain.getStartState());
 
+        cout << "inith " << inith << "\n";
+
         // Get the start node
         Node* cur = new Node(0, inith, domain.getStartState(), NULL);
 
