@@ -1,6 +1,8 @@
 #include "BoundedCostSearch.hpp"
 
 #include <cxxopts.hpp>
+#include <nlohmann/json.hpp>
+
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -30,8 +32,11 @@ int main(int argc, char** argv)
     optionAdder("a,alg", "suboptimal algorithm: pts, ptshat",
                 cxxopts::value<std::string>()->default_value("pts"));
 
-    optionAdder("p,par", "algorithm parameter, todo",
-                cxxopts::value<double>()->default_value("1"));
+    optionAdder("b,bound", "cost bound",
+                cxxopts::value<double>()->default_value("10"));
+
+    optionAdder("i,instance", "instance file name",
+                cxxopts::value<std::string>()->default_value("2-4x4.st"));
 
     optionAdder("o,performenceOut", "performence Out file",
                 cxxopts::value<std::string>());
@@ -47,10 +52,10 @@ int main(int argc, char** argv)
         exit(0);
     }
 
-    auto d   = args["domain"].as<std::string>();
-    auto sd  = args["subdomain"].as<std::string>();
-    auto alg = args["alg"].as<std::string>();
-    // auto para = args["par"].as<double>();
+    auto d     = args["domain"].as<std::string>();
+    auto sd    = args["subdomain"].as<std::string>();
+    auto alg   = args["alg"].as<std::string>();
+    auto bound = args["bound"].as<double>();
 
     Search* searchPtr;
 
@@ -70,7 +75,7 @@ int main(int argc, char** argv)
         }
 
         if (alg == "pts") {
-            searchPtr = new BoundedCostSearch<SlidingTilePuzzle>(*world);
+            searchPtr = new BoundedCostSearch<SlidingTilePuzzle>(*world, bound);
         } else {
             cout << "Unknown algorithm type!\n";
             exit(1);
@@ -87,7 +92,7 @@ int main(int argc, char** argv)
         }
 
         if (alg == "pts") {
-            searchPtr = new BoundedCostSearch<PancakePuzzle>(*world);
+            searchPtr = new BoundedCostSearch<PancakePuzzle>(*world, bound);
         } else {
             cout << "Unknown algorithm type!\n";
             exit(1);
@@ -109,7 +114,7 @@ int main(int argc, char** argv)
         world = new RaceTrack(map, cin);
 
         if (alg == "wastar") {
-            searchPtr = new BoundedCostSearch<RaceTrack>(*world);
+            searchPtr = new BoundedCostSearch<RaceTrack>(*world, bound);
         } else {
             cout << "Unknown algorithm type!\n";
             exit(1);
@@ -127,8 +132,17 @@ int main(int argc, char** argv)
     if (args.count("performenceOut")) {
         ofstream out(args["performenceOut"].as<std::string>());
 
-        out << res.nodesExpanded << " " << res.solutionFound << " "
-            << res.solutionCost << endl;
+        nlohmann::json record;
+
+        record["node expanded"]  = res.nodesExpanded;
+        record["solution found"] = res.solutionFound;
+        record["solution cost"]  = res.solutionCost;
+        record["bound"]          = bound;
+        record["cpu time"]       = res.totalCpuTime;
+        record["instance"]       = args["instance"].as<std::string>();
+        record["algorithm"]      = args["alg"].as<std::string>();
+
+        out << record;
 
         out.close();
 

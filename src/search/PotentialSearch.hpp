@@ -23,7 +23,7 @@ public:
                unordered_map<State, Node*, Hash>& closed,
                std::function<bool(Node*, unordered_map<State, Node*, Hash>&)>
                                       duplicateDetection,
-               SearchResultContainer& res)
+               SearchResultContainer& res, Cost bound)
     {
         sortOpen(open);
 
@@ -49,9 +49,16 @@ public:
             // std::cout << "generated: " << res.nodesGenerated << std::endl;
 
             for (State child : children) {
-                Node* childNode =
-                  new Node(cur->getGValue() + domain.getEdgeCost(child),
-                           domain.heuristic_no_recording(child), child, cur);
+
+                auto newG = cur->getGValue() + domain.getEdgeCost(child);
+                auto newH = domain.heuristic_no_recording(child);
+
+                // prune by bound
+                if (newG + newH > bound) {
+                    continue;
+                }
+
+                Node* childNode = new Node(newG, newH, child, cur, bound);
 
                 bool dup = duplicateDetection(childNode, closed);
 
@@ -70,7 +77,7 @@ public:
 private:
     void sortOpen(PriorityQueue<Node*>& open)
     {
-        open.swapComparator(Node::compareNodesF);
+        open.swapComparator(Node::compareNodesPTS);
     }
 
     void getSolutionPath(SearchResultContainer& res, Node* goal)
