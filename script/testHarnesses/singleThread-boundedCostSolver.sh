@@ -133,6 +133,7 @@ for solverId in "${!boundedCostSolvers[@]}"; do
 
     outfile_path_alg="${outfile_path/solverDir/$solverName}"
     mkdir -p ${outfile_path_alg}
+    outfile_alg="${outfile/solverDir/$solverName}"
 
     executable="../../../tianyicodebase_build_release/bin/bcs"
 
@@ -143,7 +144,7 @@ for solverId in "${!boundedCostSolvers[@]}"; do
         while ((instance < last)); do
             infile_instance="${infile/instance/$instance}"
             infile_instance="${infile_instance/tile/slidingTile}"
-            outfile_instance="${outfile_path_alg/instance/$instance}"
+            outfile_instance="${outfile_alg/instance/$instance}"
             outfile_instance="${outfile_instance/BoundNumber/$bound}"
             tempfile="${outfile_instance}.temp"
 

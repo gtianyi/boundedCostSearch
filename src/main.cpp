@@ -135,6 +135,7 @@ int main(int argc, char** argv)
         nlohmann::json record;
 
         record["node expanded"]  = res.nodesExpanded;
+        record["node generated"] = res.nodesGenerated;
         record["solution found"] = res.solutionFound;
         record["solution cost"]  = res.solutionCost;
         record["bound"]          = bound;
