@@ -27,7 +27,11 @@ def configure():
 
     algorithm_order = ['PTS']
 
-    return algorithms, algorithm_order
+    showname = {"nodeGen": "log10 total nodes generated",
+                "nodeExp": "log10 total nodes expanded",
+                "cpu": "log10 raw cpu time"}
+
+    return algorithms, algorithm_order, showname
 
 
 def makeLinePlot(width, height, xAxis, yAxis, dataframe, hue,
@@ -46,6 +50,7 @@ def makeLinePlot(width, height, xAxis, yAxis, dataframe, hue,
                       err_style="bars")
 
     ax.tick_params(colors='black', labelsize=12)
+    ax.set_yscale("log")
     plt.ylabel(yLabel, color='black', fontsize=18)
     plt.xlabel(xLabel, color='black', fontsize=18)
 
@@ -143,7 +148,7 @@ def readData(args, algorithms):
     return df
 
 
-def plotting(args, df):
+def plotting(args, df, showname):
     print("building plots...")
 
     domainSize = args.size
@@ -164,18 +169,19 @@ def plotting(args, df):
         subdomainType + "-" + domainSize + '-' + nowstr
 
     makeLinePlot(width, height, "Cost Bound", args.plotType, df, "Algorithm",
-                 "Cost Bound", args.plotType, out_file + args.plotType+".jpg")
+                 "Cost Bound", showname[args.plotType], out_file + args.plotType+".jpg")
+
 
 def main():
     parser = parseArugments()
     args = parser.parse_args()
     print(args)
 
-    algorithms, _ = configure()
+    algorithms, _, showname = configure()
 
     df = readData(args, algorithms)
 
-    plotting(args, df)
+    plotting(args, df, showname)
 
 
 if __name__ == '__main__':
