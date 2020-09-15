@@ -78,6 +78,7 @@ private:
     void sortOpen(PriorityQueue<Node*>& open)
     {
         open.swapComparator(Node::compareNodesPTS);
+        // open.swapComparator(Node::compareNodesF);
     }
 
     void getSolutionPath(SearchResultContainer& res, Node* goal)

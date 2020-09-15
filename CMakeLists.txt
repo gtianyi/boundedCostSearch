@@ -5,7 +5,7 @@ project(BoundedCostSearch LANGUAGES C CXX)
 # Project wide C++ standard
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(DCMAKE_BUILD_TYPE Debug)
+#set(DCMAKE_BUILD_TYPE RELEASE)
 
 # Let CMake easily find our custom CMake modules
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
@@ -20,12 +20,7 @@ if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     conan_basic_setup(TARGETS)
     conan_check_overridden_packages()
 else()
-    message(
-        FATAL_ERROR
-            "
-        Missing conanbuildinfo.cmake file in your build folder \"${CMAKE_BINARY_DIR}\".
-        Make sure that CONAN_AUTO_INSTALL is ON to let CMake handle the Conan dependencies automatically
-        or, alternatively, manually run \"conan install ${CMAKE_SOURCE_DIR}\".")
+    message(FATAL_ERROR "not found conan dir. run conan install first ")
 endif()
 
 message(STATUS "Build type: " ${CMAKE_BUILD_TYPE})
@@ -92,6 +87,13 @@ option(ENABLE_DOXYGEN "Use Doxygen to generate documentation by providing 'make 
 if(ENABLE_DOXYGEN)
     include(doxygen)
     enable_doxygen()
+endif()
+
+if(CMAKE_BUILD_TYPE MATCHES Release)
+    message("release mode")
+else()
+    message("debug mode")
+    add_compile_options(-D DEBUG)
 endif()
 
 add_subdirectory(src)
