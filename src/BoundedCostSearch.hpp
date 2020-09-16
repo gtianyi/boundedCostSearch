@@ -52,18 +52,26 @@ public:
         Cost getPTSValue() const { return 1 / (1 - h / (bound + 1 - g)); }
         Cost getPTSHHatValue() const
         {
-            return 1 / (1 - getHHatValue() / (this->bound + 1 - this->g));
+            return 1 / (1 - getHHatValue() / (bound + 1 - g));
         }
         Cost getPTSNancyValue() const
         {
             auto mean               = getFHatValue();
             auto standard_deviation = std::abs(mean - getFValue()) / 2;
             auto cdf_xi =
-              cumulative_distribution((bound - mean) / standard_deviation);
+              cumulative_distribution(bound - mean / standard_deviation);
             auto cdf_alpha =
-              cumulative_distribution((g - mean) / standard_deviation);
+              cumulative_distribution(g - mean / standard_deviation);
 
-            return (cdf_xi - cdf_alpha) / (1 - cdf_alpha);
+            assert(cdf_xi >= 0 && cdf_xi <= 1);
+            assert(cdf_alpha >= 0 && cdf_alpha <= 1);
+            /*  cout << "g " << g << "h " << h << "h hat" << getHHatValue()*/
+            //<< "f hat" << getFHatValue() << "std " << standard_deviation
+            //<< "\n";
+            // cout << "cdf_xi " << cdf_xi << "cdf_alpha " << cdf_alpha << "\n";
+            /*cout << "epsH " << epsH << "epsD " << epsD << "\n";*/
+
+            return 1 / (1 - ((1 - cdf_alpha) / (cdf_xi - cdf_alpha)));
         }
 
         void setHValue(Cost val) { h = val; }
@@ -136,8 +144,17 @@ public:
             return n1->getPTSHHatValue() < n2->getPTSHHatValue();
         }
 
+        static bool compareNodesPTSNancy(const Node* n1, const Node* n2)
+        {
+            // Tie break on g-value
+            if (n1->getPTSNancyValue() == n2->getPTSNancyValue()) {
+                return n1->getGValue() > n2->getGValue();
+            }
+            return n1->getPTSNancyValue() < n2->getPTSNancyValue();
+        }
+
     private:
-        double cumulative_distribution(double x)
+        double cumulative_distribution(double x) const
         {
             return (1 + std::erf(x / std::sqrt(2.))) / 2.;
         }

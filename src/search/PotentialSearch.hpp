@@ -88,6 +88,8 @@ public:
 
                 domain.pushEpsilonHGlobal(epsH);
                 domain.pushEpsilonDGlobal(epsD);
+
+                domain.updateEpsilons();
             }
         }
 
@@ -102,7 +104,7 @@ private:
         } else if (sortingFunction == "ptshhat") {
             open.swapComparator(Node::compareNodesPTSHHat);
         } else if (sortingFunction == "ptsnancy") {
-            open.swapComparator(Node::compareNodesPTSHHat);
+            open.swapComparator(Node::compareNodesPTSNancy);
         } else {
             cout << "Unknown algorithm!\n";
             exit(1);
