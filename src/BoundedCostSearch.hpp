@@ -2,6 +2,7 @@
 
 #include "SearchBase.hpp"
 
+#include <cmath>
 #include <ctime>
 #include <functional>
 #include <iostream>
@@ -52,6 +53,17 @@ public:
         Cost getPTSHHatValue() const
         {
             return 1 / (1 - getHHatValue() / (this->bound + 1 - this->g));
+        }
+        Cost getPTSNancyValue() const
+        {
+            auto mean               = getFHatValue();
+            auto standard_deviation = std::abs(mean - getFValue()) / 2;
+            auto cdf_xi =
+              cumulative_distribution((bound - mean) / standard_deviation);
+            auto cdf_alpha =
+              cumulative_distribution((g - mean) / standard_deviation);
+
+            return (cdf_xi - cdf_alpha) / (1 - cdf_alpha);
         }
 
         void setHValue(Cost val) { h = val; }
@@ -122,6 +134,12 @@ public:
                 return n1->getGValue() > n2->getGValue();
             }
             return n1->getPTSHHatValue() < n2->getPTSHHatValue();
+        }
+
+    private:
+        double cumulative_distribution(double x)
+        {
+            return (1 + std::erf(x / std::sqrt(2.))) / 2.;
         }
     };
 

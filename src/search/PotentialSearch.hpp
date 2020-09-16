@@ -101,6 +101,11 @@ private:
             open.swapComparator(Node::compareNodesPTS);
         } else if (sortingFunction == "ptshhat") {
             open.swapComparator(Node::compareNodesPTSHHat);
+        } else if (sortingFunction == "ptsnancy") {
+            open.swapComparator(Node::compareNodesPTSHHat);
+        } else {
+            cout << "Unknown algorithm!\n";
+            exit(1);
         }
     }
 
