@@ -23,13 +23,13 @@ import seaborn as sns
 
 def configure():
 
-    algorithms = OrderedDict({"pts": "PTS"})
+    algorithms = OrderedDict({"pts": "PTS", "ptshhat": "PTS-h^"})
 
-    algorithm_order = ['PTS']
+    algorithm_order = ['PTS', 'PTS-h^']
 
-    showname = {"nodeGen": "log10 total nodes generated",
-                "nodeExp": "log10 total nodes expanded",
-                "cpu": "log10 raw cpu time"}
+    showname = {"nodeGen": "Total Nodes Generated",
+                "nodeExp": "Total Nodes expanded",
+                "cpu": "Raw CPU Time"}
 
     return algorithms, algorithm_order, showname
 
@@ -45,6 +45,7 @@ def makeLinePlot(width, height, xAxis, yAxis, dataframe, hue,
     ax = sns.lineplot(x=xAxis,
                       y=yAxis,
                       hue=hue,
+                      style=hue,
                       palette="muted",
                       data=dataframe,
                       err_style="bars")
@@ -118,6 +119,7 @@ def readData(args, algorithms):
     inPath = "../../../tianyi_results/" + domainDir + "/" + subdomainType + '/alg'
 
     for alg in algorithms:
+        print("reading ", alg)
         inPath_alg = inPath.replace('alg', alg)
         for jsonFile in os.listdir(inPath_alg):
             if jsonFile[-5:] != ".json":
@@ -125,6 +127,7 @@ def readData(args, algorithms):
 
             with open(inPath_alg + "/" + jsonFile) as json_data:
 
+                # print("reading ", jsonFile)
                 resultData = json.load(json_data)
 
                 algorithm.append(algorithms[resultData["algorithm"]])
