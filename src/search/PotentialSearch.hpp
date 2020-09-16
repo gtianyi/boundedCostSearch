@@ -14,7 +14,7 @@ class PotentialSearch
     typedef typename Domain::HashState Hash;
 
 public:
-    PotentialSearch(Domain& domain_, string sorting_)
+    PotentialSearch(Domain& domain_, const string& sorting_)
         : domain(domain_)
         , sortingFunction(sorting_)
     {}
@@ -46,21 +46,30 @@ public:
             vector<State> children = domain.successors(cur->getState());
             res.nodesGenerated += children.size();
 
-            // std::cout << "generated: " << res.nodesGenerated << std::endl;
+            State bestChild;
+            Cost  bestF = numeric_limits<double>::infinity();
 
             for (State child : children) {
 
                 auto newG = cur->getGValue() + domain.getEdgeCost(child);
-                auto newH = domain.heuristic_no_recording(child);
+                auto newH = domain.heuristic(child);
+                auto newD = domain.distance(child);
 
                 // prune by bound
                 if (newG + newH > bound) {
                     continue;
                 }
 
-                Node* childNode = new Node(newG, newH, child, cur, bound);
+                Node* childNode =
+                  new Node(newG, newH, newD, domain.epsilonHGlobal(),
+                           domain.epsilonDGlobal(), child, cur, bound);
 
                 bool dup = duplicateDetection(childNode, closed);
+
+                if (!dup && childNode->getFValue() < bestF) {
+                    bestF     = childNode->getFValue();
+                    bestChild = child;
+                }
 
                 // Duplicate detection
                 if (!dup) {
@@ -68,6 +77,17 @@ public:
                     closed[child] = childNode;
                 } else
                     delete childNode;
+            }
+
+            // Learn one-step error
+            if (bestF != numeric_limits<double>::infinity()) {
+                Cost epsD = (1 + domain.distance(bestChild)) - cur->getDValue();
+                Cost epsH = (domain.getEdgeCost(bestChild) +
+                             domain.heuristic(bestChild)) -
+                            cur->getHValue();
+
+                domain.pushEpsilonHGlobal(epsH);
+                domain.pushEpsilonDGlobal(epsD);
             }
         }
 
@@ -77,8 +97,11 @@ public:
 private:
     void sortOpen(PriorityQueue<Node*>& open)
     {
-        open.swapComparator(Node::compareNodesPTS);
-        // open.swapComparator(Node::compareNodesF);
+        if (sortingFunction == "pts") {
+            open.swapComparator(Node::compareNodesPTS);
+        } else if (sortingFunction == "ptshhat") {
+            open.swapComparator(Node::compareNodesPTSHHat);
+        }
     }
 
     void getSolutionPath(SearchResultContainer& res, Node* goal)
@@ -95,6 +118,6 @@ private:
     }
 
 protected:
-    Domain& domain;
-    string  sortingFunction;
+    Domain&      domain;
+    const string sortingFunction;
 };

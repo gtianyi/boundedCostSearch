@@ -24,6 +24,9 @@ public:
         Cost  g;
         Cost  h;
         Cost  d;
+        Cost  epsH;
+        Cost  epsD;
+        int   delayCntr;
         State stateRep;
         Node* parent;
         bool  open;
@@ -31,30 +34,49 @@ public:
         Cost bound;
 
     public:
-        Cost  getGValue() const { return g; }
-        Cost  getHValue() const { return h; }
-        Cost  getFValue() const { return g + h; }
-        Cost  getDValue() const { return d; }
+        Cost getGValue() const { return g; }
+        Cost getHValue() const { return h; }
+        Cost getFValue() const { return g + h; }
+        Cost getDValue() const { return d; }
+        Cost getEpsilonH() const { return epsH; }
+        Cost getEpsilonD() const { return epsD; }
+        Cost getDHatValue() const { return (d / (1.0 - epsD)); }
+        Cost getHHatValue() const { return h + getDHatValue() * epsH; }
+        Cost getFHatValue() const { return g + getHHatValue(); }
+
         State getState() const { return stateRep; }
         Node* getParent() const { return parent; }
 
         // for bounded cost search
         Cost getPTSValue() const { return 1 / (1 - h / (bound + 1 - g)); }
+        Cost getPTSHHatValue() const
+        {
+            return 1 / (1 - getHHatValue() / (this->bound + 1 - this->g));
+        }
 
         void setHValue(Cost val) { h = val; }
         void setGValue(Cost val) { g = val; }
         void setDValue(Cost val) { d = val; }
+        void setEpsilonH(Cost val) { epsH = val; }
+        void setEpsilonD(Cost val) { epsD = val; }
         void setState(State s) { stateRep = s; }
         void setParent(Node* p) { parent = p; }
 
-        Node(Cost g_, Cost h_, State state_, Node* parent_, Cost bound_)
+        void incDelayCntr() { delayCntr++; }
+        int  getDelayCntr() { return delayCntr; }
+
+        Node(Cost g_, Cost h_, Cost d_, Cost epsH_, Cost epsD_, State state_,
+             Node* parent_, Cost bound_)
             : g(g_)
             , h(h_)
+            , d(d_)
+            , epsH(epsH_)
+            , epsD(epsD_)
+            , delayCntr(0)
             , stateRep(state_)
             , parent(parent_)
             , open(true)
             , bound(bound_)
-
         {}
 
         friend std::ostream& operator<<(std::ostream& stream, const Node& node)
@@ -92,13 +114,22 @@ public:
             }
             return n1->getPTSValue() < n2->getPTSValue();
         }
+
+        static bool compareNodesPTSHHat(const Node* n1, const Node* n2)
+        {
+            // Tie break on g-value
+            if (n1->getPTSHHatValue() == n2->getPTSHHatValue()) {
+                return n1->getGValue() > n2->getGValue();
+            }
+            return n1->getPTSHHatValue() < n2->getPTSHHatValue();
+        }
     };
 
-    BoundedCostSearch(Domain& domain_, Cost bound_)
+    BoundedCostSearch(Domain& domain_, Cost bound_, const string& algrithm)
         : domain(domain_)
         , bound(bound_)
     {
-        algorithm = new PotentialSearch<Domain, Node>(domain, "f");
+        algorithm = new PotentialSearch<Domain, Node>(domain, algrithm);
     }
 
     ~BoundedCostSearch() { clean(); }
@@ -108,9 +139,12 @@ public:
         SearchResultContainer res;
 
         auto inith = domain.heuristic(domain.getStartState());
+        auto initD = domain.distance(domain.getStartState());
 
         // Get the start node
-        Node* cur = new Node(0, inith, domain.getStartState(), NULL, bound);
+        Node* cur = new Node(0, inith, initD, domain.epsilonHGlobal(),
+                             domain.epsilonDGlobal(), domain.getStartState(),
+                             NULL, bound);
 
         open.push(cur);
         res.initialH = inith;
@@ -148,6 +182,8 @@ private:
                     it->second->setParent(node->getParent());
                     it->second->setHValue(node->getHValue());
                     it->second->setDValue(node->getDValue());
+                    it->second->setEpsilonH(node->getEpsilonH());
+                    it->second->setEpsilonD(node->getEpsilonD());
                     it->second->setState(node->getState());
                 }
             }

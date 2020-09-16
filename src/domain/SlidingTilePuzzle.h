@@ -244,49 +244,9 @@ public:
         return false;
     }
 
-    Cost distance(const State& state)
-    {
-        // Check if the distance of this state has been updated
-        if (correctedD.find(state) != correctedD.end()) {
-            return correctedD[state];
-        }
-
-        Cost d = manhattanDistance(state);
-
-        updateDistance(state, d);
-
-        return correctedD[state];
-    }
-
-    Cost distanceErr(const State& state)
-    {
-        // Check if the distance error of this state has been updated
-        if (correctedDerr.find(state) != correctedDerr.end()) {
-            return correctedDerr[state];
-        }
-
-        Cost derr = manhattanDistance(state);
-
-        updateDistanceErr(state, derr);
-
-        return correctedDerr[state];
-    }
+    Cost distance(const State& state) { return manhattanDistance(state); }
 
     virtual Cost heuristic(const State& state)
-    {
-        // Check if the heuristic of this state has been updated
-        if (correctedH.find(state) != correctedH.end()) {
-            return correctedH[state];
-        }
-
-        Cost h = manhattanDistance(state);
-
-        updateHeuristic(state, h);
-
-        return correctedH[state];
-    }
-
-    virtual Cost heuristic_no_recording(const State& state)
     {
         return manhattanDistance(state);
     }
@@ -329,21 +289,6 @@ public:
 
         epsilonDSum += eps;
         expansionCounter++;
-    }
-
-    void updateDistance(const State& state, Cost value)
-    {
-        correctedD[state] = value;
-    }
-
-    void updateDistanceErr(const State& state, Cost value)
-    {
-        correctedDerr[state] = value;
-    }
-
-    void updateHeuristic(const State& state, Cost value)
-    {
-        correctedH[state] = value;
     }
 
     Cost manhattanDistance(const State& state) const
@@ -528,9 +473,6 @@ public:
 
         expansionPolicy = policy;
         lookahead       = la;
-        correctedD.clear();
-        correctedH.clear();
-        correctedDerr.clear();
         expansionDelayWindow.clear();
     }
 
@@ -552,14 +494,11 @@ public:
         return avg;
     }
 
-    std::vector<std::vector<int>>         startBoard;
-    std::vector<std::vector<int>>         endBoard;
-    size_t                                size;
-    State                                 startState;
-    SlidingWindow<int>                    expansionDelayWindow;
-    unordered_map<State, Cost, HashState> correctedH;
-    unordered_map<State, Cost, HashState> correctedD;
-    unordered_map<State, Cost, HashState> correctedDerr;
+    std::vector<std::vector<int>> startBoard;
+    std::vector<std::vector<int>> endBoard;
+    size_t                        size;
+    State                         startState;
+    SlidingWindow<int>            expansionDelayWindow;
 
     double epsilonHSum;
     double epsilonDSum;

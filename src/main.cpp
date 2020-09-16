@@ -29,8 +29,8 @@ int main(int argc, char** argv)
                 "uniform",
                 cxxopts::value<std::string>()->default_value("uniform"));
 
-    optionAdder("a,alg", "suboptimal algorithm: pts, ptshat",
-                cxxopts::value<std::string>()->default_value("pts"));
+    optionAdder("a,alg", "suboptimal algorithm: pts, ptshhat",
+                cxxopts::value<std::string>()->default_value("ptshhat"));
 
     optionAdder("b,bound", "cost bound",
                 cxxopts::value<double>()->default_value("10"));
@@ -74,8 +74,9 @@ int main(int argc, char** argv)
             exit(1);
         }
 
-        if (alg == "pts") {
-            searchPtr = new BoundedCostSearch<SlidingTilePuzzle>(*world, bound);
+        if (alg == "pts" || alg == "ptshhat") {
+            searchPtr =
+              new BoundedCostSearch<SlidingTilePuzzle>(*world, bound, alg);
         } else {
             cout << "Unknown algorithm type!\n";
             exit(1);
@@ -91,8 +92,9 @@ int main(int argc, char** argv)
             world->setVariant(2);
         }
 
-        if (alg == "pts") {
-            searchPtr = new BoundedCostSearch<PancakePuzzle>(*world, bound);
+        if (alg == "pts" || alg == "ptshhat") {
+            searchPtr =
+              new BoundedCostSearch<PancakePuzzle>(*world, bound, alg);
         } else {
             cout << "Unknown algorithm type!\n";
             exit(1);
@@ -113,8 +115,8 @@ int main(int argc, char** argv)
 
         world = new RaceTrack(map, cin);
 
-        if (alg == "wastar") {
-            searchPtr = new BoundedCostSearch<RaceTrack>(*world, bound);
+        if (alg == "pts" || alg == "ptshhat") {
+            searchPtr = new BoundedCostSearch<RaceTrack>(*world, bound, alg);
         } else {
             cout << "Unknown algorithm type!\n";
             exit(1);
