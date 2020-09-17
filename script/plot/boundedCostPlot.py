@@ -19,20 +19,22 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-
+from pandas.plotting import table
 
 def configure():
 
     algorithms = OrderedDict(
         {
-            "pts": "PTS"
-            , "ptshhat": "PTS-h^"
-            , "ptsnancy": "PTS-Nancy"
+            "pts": "PTS",
+            "ptshhat": "PTS-h^",
+            "ptsnancy": "PTS-Nancy",
+            "bees": "BEES",
+            "beeps": "BEEPS",
+            "beepsnancy": "BEEPS-Nancy"
         }
     )
 
-    algorithm_order = ['PTS', 'PTS-h^'
-                       ,'PTS-Nancy'
+    algorithm_order = ['PTS', 'PTS-h^', 'PTS-Nancy'
                        ]
 
     showname = {"nodeGen": "Total Nodes Generated",
@@ -64,9 +66,8 @@ def makeLinePlot(width, height, xAxis, yAxis, dataframe, hue,
     plt.xlabel(xLabel, color='black', fontsize=18)
 
     plt.savefig(outputName, bbox_inches="tight", pad_inches=0)
-    # plt.savefig(outputName.replace(".eps", ".png"),
-    # bbox_inches="tight",
-    # pad_inches=0)
+    plt.savefig(outputName.replace(".jpg", ".eps"),
+                bbox_inches="tight", pad_inches=0)
     plt.close()
     plt.clf()
     plt.cla()
@@ -102,7 +103,7 @@ def parseArugments():
         '-t',
         action='store',
         dest='plotType',
-        help='plot type, nodeGen(default), cpu',
+        help='plot type, nodeGen(default), cpu, coverage',
         default='nodeGen')
 
     return parser
@@ -128,6 +129,7 @@ def readData(args, algorithms):
 
     for alg in algorithms:
         print("reading ", alg)
+
         inPath_alg = inPath.replace('alg', alg)
         for jsonFile in os.listdir(inPath_alg):
             if jsonFile[-5:] != ".json":
@@ -135,7 +137,7 @@ def readData(args, algorithms):
 
             with open(inPath_alg + "/" + jsonFile) as json_data:
 
-                # print("reading ", jsonFile)
+                # print("reading ", alg, jsonFile)
                 resultData = json.load(json_data)
 
                 algorithm.append(algorithms[resultData["algorithm"]])
@@ -159,7 +161,49 @@ def readData(args, algorithms):
     return df
 
 
-def plotting(args, df, showname):
+def makeCoverageTable(algorithms):
+
+    inPath = "../../../tianyi_results/"
+    out_file = "../../../tianyi_plots/coverageSummary-" + \
+        datetime.now().strftime("%d%m%Y-%H%M")+".jpg"
+
+    domains = []
+    subdomains = []
+    algs = []
+    timeout = []
+    total = []
+
+    for domain in os.listdir(inPath):
+        for subdomain in os.listdir(inPath+domain+"/"):
+            for alg in os.listdir(inPath+domain+"/"+subdomain+"/"):
+                domains.append(domain)
+                subdomains.append(subdomain)
+                algs.append(algorithms[alg])
+
+                allFiles = os.listdir(inPath+domain+"/"+subdomain+"/"+alg)
+
+                outOfTime = [f for f in allFiles if f[-5:] != ".json"]
+
+                total.append(len(allFiles))
+                timeout.append(len(outOfTime))
+
+    df = pd.DataFrame({
+        "Domain": domains,
+        "Subdomain": subdomains,
+        "Algorithm": algs,
+        "Out of time": timeout,
+        "Total": total
+    })
+
+    ax = plt.subplot(frame_on=False)  # no visible frame
+    ax.xaxis.set_visible(False)  # hide the x axis
+    ax.yaxis.set_visible(False)  # hide the y axis
+
+    table(ax, df,loc='upper right')  # where df is your data frame
+
+    plt.savefig(out_file)
+
+def plotting(args, algorithms, showname):
     print("building plots...")
 
     domainSize = args.size
@@ -179,8 +223,12 @@ def plotting(args, df, showname):
     out_file = out_dir + '/' + domainType + "-" + \
         subdomainType + "-" + domainSize + '-' + nowstr
 
-    makeLinePlot(width, height, "Cost Bound", args.plotType, df, "Algorithm",
-                 "Cost Bound", showname[args.plotType], out_file + args.plotType+".jpg")
+    if args.plotType == "coverage":
+        makeCoverageTable(algorithms)
+    else:
+        df = readData(args, algorithms)
+        makeLinePlot(width, height, "Cost Bound", args.plotType, df, "Algorithm",
+                     "Cost Bound", showname[args.plotType], out_file + args.plotType+".jpg")
 
 
 def main():
@@ -190,9 +238,7 @@ def main():
 
     algorithms, _, showname = configure()
 
-    df = readData(args, algorithms)
-
-    plotting(args, df, showname)
+    plotting(args, algorithms, showname)
 
 
 if __name__ == '__main__':
