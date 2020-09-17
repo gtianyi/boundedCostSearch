@@ -3,13 +3,13 @@ print_usage() {
     echo "./singleThread-boundedCostSolver.sh"
     echo "[-f instance]                    default: 1"
     echo "[-n # of instances to test]      default: 1"
-    echo "[-d domain]                      default: tile"
-    echo "[-s subdomain]                   default: uniform"
-    echo "[-z domain size]                 default: 4"
+    echo "[-d domain]                      default: pancake"
+    echo "[-s subdomain]                   default: regular"
+    echo "[-z domain size]                 default: 32"
     echo "[-u boundedCost solver]"
-    echo " support list,eg: -u a1 -u a2    default: pts"
+    echo " support list,eg: -u a1 -u a2    default: pts ptshhat ptsnancy bees beeps beepsnancy"
     echo "[-b bound]"
-    echo " support list,eg: -b 10 -b 30    default: 20 40 60 80 100 120 140 160 180 200 220 240 260 280 300"
+    echo " support list,eg: -b 10 -b 30    default: 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100"
     echo "[-h help]"
     exit 1
 }
@@ -22,11 +22,11 @@ fi
 first=1
 # The number of instances to test on
 n_of_i=1
-domain="tile"
-subdomain="uniform"
-size="4"
-boundedCostSolvers=("pts")
-bounds=(20 40 60 80 100 120 140 160 180 200 220 240 260 280 300)
+domain="pancake"
+subdomain="regular"
+size="32"
+boundedCostSolvers=("pts" "ptshhat" "ptsnancy" "bees" "beeps" "beepsnancy")
+bounds=(5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100)
 
 solverCleared=false
 boundCleared=false

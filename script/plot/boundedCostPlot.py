@@ -110,7 +110,7 @@ def parseArugments():
 
 
 def readData(args, algorithms):
-    # domainSize = args.size
+    domainSize = args.size
     domainType = args.domain
     subdomainType = args.subdomain
 
@@ -135,9 +135,17 @@ def readData(args, algorithms):
             if jsonFile[-5:] != ".json":
                 continue
 
+            index = jsonFile.find('size') + 5
+            sizeStr = jsonFile[index:]
+            indexEnd = sizeStr.find('-')
+            sizeStr = sizeStr[:indexEnd]
+
+            if sizeStr != domainSize:
+                continue
+
             with open(inPath_alg + "/" + jsonFile) as json_data:
 
-                # print("reading ", alg, jsonFile)
+                print("reading ", alg, jsonFile)
                 resultData = json.load(json_data)
 
                 algorithm.append(algorithms[resultData["algorithm"]])
@@ -170,6 +178,7 @@ def makeCoverageTable(algorithms):
     domains = []
     subdomains = []
     algs = []
+    # size=[]
     timeout = []
     total = []
 
@@ -187,10 +196,18 @@ def makeCoverageTable(algorithms):
                 total.append(len(allFiles))
                 timeout.append(len(outOfTime))
 
+                # index = jsonFile.find('size') + 5
+                # sizeStr = jsonFile[index:]
+                # indexEnd = sizeStr.find('-')
+                # sizeStr = sizeStr[:indexEnd]
+
+                # size.append(sizeStr)
+
     df = pd.DataFrame({
         "Domain": domains,
         "Subdomain": subdomains,
         "Algorithm": algs,
+        # "Size": size,
         "Out of time": timeout,
         "Total": total
     })
@@ -199,9 +216,10 @@ def makeCoverageTable(algorithms):
     ax.xaxis.set_visible(False)  # hide the x axis
     ax.yaxis.set_visible(False)  # hide the y axis
 
-    table(ax, df,loc='upper right')  # where df is your data frame
+    table(ax, df, loc='upper right')  # where df is your data frame
 
     plt.savefig(out_file)
+
 
 def plotting(args, algorithms, showname):
     print("building plots...")

@@ -87,13 +87,8 @@ int main(int argc, char** argv)
             world->setVariant(2);
         }
 
-        if (alg == "pts" || alg == "ptshhat") {
-            searchPtr =
-              new BoundedCostSearch<PancakePuzzle>(*world, bound, alg);
-        } else {
-            cout << "Unknown algorithm type!\n";
-            exit(1);
-        }
+        searchPtr = new BoundedCostSearch<PancakePuzzle>(*world, bound, alg);
+
     } else if (d == "racetrack") {
         RaceTrack* world;
 
