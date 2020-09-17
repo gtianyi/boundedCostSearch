@@ -24,9 +24,16 @@ import seaborn as sns
 def configure():
 
     algorithms = OrderedDict(
-        {"pts": "PTS", "ptshhat": "PTS-h^", "ptsnancy": "PTS-Nancy"})
+        {
+            "pts": "PTS"
+            , "ptshhat": "PTS-h^"
+            , "ptsnancy": "PTS-Nancy"
+        }
+    )
 
-    algorithm_order = ['PTS', 'PTS-h^', 'PTS-Nancy']
+    algorithm_order = ['PTS', 'PTS-h^'
+                       ,'PTS-Nancy'
+                       ]
 
     showname = {"nodeGen": "Total Nodes Generated",
                 "nodeExp": "Total Nodes expanded",

@@ -54,24 +54,10 @@ public:
         {
             return 1 / (1 - getHHatValue() / (bound + 1 - g));
         }
+
         Cost getPTSNancyValue() const
         {
-            auto mean               = getFHatValue();
-            auto standard_deviation = std::abs(mean - getFValue()) / 2;
-            auto cdf_xi =
-              cumulative_distribution(bound - mean / standard_deviation);
-            auto cdf_alpha =
-              cumulative_distribution(g - mean / standard_deviation);
-
-            assert(cdf_xi >= 0 && cdf_xi <= 1);
-            assert(cdf_alpha >= 0 && cdf_alpha <= 1);
-            /*  cout << "g " << g << "h " << h << "h hat" << getHHatValue()*/
-            //<< "f hat" << getFHatValue() << "std " << standard_deviation
-            //<< "\n";
-            // cout << "cdf_xi " << cdf_xi << "cdf_alpha " << cdf_alpha << "\n";
-            /*cout << "epsH " << epsH << "epsD " << epsD << "\n";*/
-
-            return 1 / (1 - ((1 - cdf_alpha) / (cdf_xi - cdf_alpha)));
+            return d / (1 + getPotentialNancyValue());
         }
 
         void setHValue(Cost val) { h = val; }
@@ -126,6 +112,15 @@ public:
             return n1->getFValue() < n2->getFValue();
         }
 
+        static bool compareNodesDHat(const Node* n1, const Node* n2)
+        {
+            // Tie break on g-value
+            if (n1->getDHatValue() == n2->getDHatValue()) {
+                return n1->getGValue() > n2->getGValue();
+            }
+            return n1->getDHatValue() < n2->getDHatValue();
+        }
+
         static bool compareNodesPTS(const Node* n1, const Node* n2)
         {
             // Tie break on g-value
@@ -158,13 +153,48 @@ public:
         {
             return (1 + std::erf(x / std::sqrt(2.))) / 2.;
         }
+
+        Cost getPotentialNancyValue() const
+        {
+            if (getHValue() == getHHatValue() || getHValue() == 0) {
+                return getFValue() <= bound ? 1. : 0.;
+            }
+
+            auto mean               = getFHatValue();
+            auto standard_deviation = std::abs(mean - getFValue()) / 2;
+            auto cdf_xi =
+              cumulative_distribution((bound - mean) / standard_deviation);
+            auto cdf_alpha = cumulative_distribution((getFValue() - mean) /
+                                                     standard_deviation);
+
+            assert(cdf_xi >= 0 && cdf_xi <= 1);
+            assert(cdf_alpha >= 0 && cdf_alpha <= 1);
+
+            /*    cout << "g " << g << " h " << h << " h hat" <<
+             * getHHatValue()*/
+            //<< " f hat" << getFHatValue() << "std " <<
+            // standard_deviation
+            //<< "\n";
+            // cout << "cdf_xi " << cdf_xi << " cdf_alpha " << cdf_alpha
+            // <<
+            // "\n"; cout << "epsH " << epsH << " epsD " << epsD << "\n";
+            /*cout << "p " << (cdf_xi - cdf_alpha) / (1 - cdf_alpha) <<
+             * "\n";*/
+
+            return (cdf_xi - cdf_alpha) / (1 - cdf_alpha);
+        }
     };
 
-    BoundedCostSearch(Domain& domain_, Cost bound_, const string& algrithm)
+    BoundedCostSearch(Domain& domain_, Cost bound_, const string& algStr)
         : domain(domain_)
         , bound(bound_)
     {
-        algorithm = new PotentialSearch<Domain, Node>(domain, algrithm);
+        if (algStr == "pts" || algStr == "ptshhat" || algStr == "ptsnancy") {
+            algorithm = new PotentialSearch<Domain, Node>(domain, algStr);
+        } else if (algStr == "bees" || algStr == "beeps" ||
+                   algStr == "beepsnancy") {
+            algorithm = new BEES<Domain, Node>(domain, algStr);
+        }
     }
 
     ~BoundedCostSearch() { clean(); }
@@ -187,8 +217,8 @@ public:
         clock_t startTime = clock();
 
         // Expand some nodes
-        double solutionCost =
-          algorithm->run(open, closed, duplicateDetection, res, bound);
+        double solutionCost = algorithm->run(open, openhat, closed, expanded,
+                                             duplicateDetection, res, bound);
 
         res.solutionFound = solutionCost != -1.0;
         res.solutionCost  = solutionCost;
@@ -247,8 +277,10 @@ private:
 
 protected:
     Domain&                           domain;
-    PotentialSearch<Domain, Node>*    algorithm;
+    BoundedCostBase<Domain, Node>*    algorithm;
     PriorityQueue<Node*>              open;
+    PriorityQueue<Node*>              openhat;
     unordered_map<State, Node*, Hash> closed;
+    unordered_map<State, Node*, Hash> expanded;
     Cost                              bound;
 };

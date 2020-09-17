@@ -4,30 +4,45 @@
 using namespace std;
 
 template<class Domain, class Node>
-class PotentialSearch : public BoundedCostBase<Domain, Node>
+class BEES : public BoundedCostBase<Domain, Node>
 {
     typedef typename Domain::State     State;
     typedef typename Domain::Cost      Cost;
     typedef typename Domain::HashState Hash;
 
 public:
-    PotentialSearch(Domain& domain_, const string& sorting_)
+    BEES(Domain& domain_, const string& sorting_)
         : BoundedCostBase<Domain, Node>(domain_, sorting_)
     {}
 
-    double run(PriorityQueue<Node*>&              open, PriorityQueue<Node*>&,
+    double run(PriorityQueue<Node*>& open, PriorityQueue<Node*>& openhat,
                unordered_map<State, Node*, Hash>& closed,
-               unordered_map<State, Node*, Hash>&,
+               unordered_map<State, Node*, Hash>& expanded,
                std::function<bool(Node*, unordered_map<State, Node*, Hash>&)>
                                       duplicateDetection,
                SearchResultContainer& res, Cost bound)
     {
         sortOpen(open);
+        sortOpenHat(openhat);
 
         // Expand until find the goal
-        while (!open.empty()) {
-            // Pop lowest fhat-value off open
-            Node* cur = open.top();
+        while (!open.empty() || !openhat.empty()) {
+
+            Node* cur;
+
+            if (!openhat.empty()) {
+                cur = openhat.top();
+                openhat.pop();
+            } else {
+                cur = open.top();
+                while (expanded.find(cur->getState()) != expanded.end()) {
+                    open.pop();
+                    cur = open.top();
+                }
+                open.pop();
+            }
+
+            expanded[cur->getState()] = cur;
 
             // Check if current node is goal
             if (this->domain.isGoal(cur->getState())) {
@@ -37,12 +52,7 @@ public:
 
             res.nodesExpanded++;
 
-            open.pop();
             cur->close();
-
-            /*   for (auto n : open) {*/
-            // n->incDelayCntr();
-            /*}*/
 
             vector<State> children = this->domain.successors(cur->getState());
             res.nodesGenerated += children.size();
@@ -75,6 +85,11 @@ public:
                 // Duplicate detection
                 if (!dup) {
                     open.push(childNode);
+
+                    if (childNode->getFHatValue() <= bound) {
+                        openhat.push(childNode);
+                    }
+
                     closed[child] = childNode;
                 } else
                     delete childNode;
@@ -103,15 +118,20 @@ public:
 private:
     void sortOpen(PriorityQueue<Node*>& open)
     {
-        if (this->sortingFunction == "pts") {
-            open.swapComparator(Node::compareNodesPTS);
-        } else if (this->sortingFunction == "ptshhat") {
+        if (this->sortingFunction == "bees") {
+            open.swapComparator(Node::compareNodesF);
+        } else if (this->sortingFunction == "beeps") {
             open.swapComparator(Node::compareNodesPTSHHat);
-        } else if (this->sortingFunction == "ptsnancy") {
+        } else if (this->sortingFunction == "beepsnancy") {
             open.swapComparator(Node::compareNodesPTSNancy);
         } else {
             cout << "Unknown algorithm!\n";
             exit(1);
         }
+    }
+
+    void sortOpenHat(PriorityQueue<Node*>& openhat)
+    {
+        openhat.swapComparator(Node::compareNodesDHat);
     }
 };
