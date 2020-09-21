@@ -10,6 +10,8 @@ print_usage() {
     echo " support list,eg: -u a1 -u a2    default: pts ptshhat ptsnancy bees beeps beepsnancy"
     echo "[-b bound]"
     echo " support list,eg: -b 10 -b 30    default: 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100"
+    echo "[-t time limit]                  default: 600 (seconds)"
+    echo "[-m memory limit]                default: 5   (GB)"
     echo "[-h help]"
     exit 1
 }
@@ -106,8 +108,9 @@ echo "bounds ${bounds[*]}"
 infile=""
 outfile=""
 
-infile_path="../../../../realtime-nancy/worlds/${domain}"
-outfile_path="../../../tianyi_results/${domain}/${subdomain}/solverDir"
+research_home="/home/aifs1/gu/phd/research/workingPaper"
+infile_path="${research_home}/realtime-nancy/worlds/${domain}"
+outfile_path="${research_home}/boundedCostSearch/tianyi_results_test/${domain}/${subdomain}/solverDir"
 
 if [ "$domain" == "tile" ]; then
     infile="${infile_path}/instance-${size}x${size}.st"
@@ -135,7 +138,7 @@ for solverId in "${!boundedCostSolvers[@]}"; do
     mkdir -p ${outfile_path_alg}
     outfile_alg="${outfile/solverDir/$solverName}"
 
-    executable="../../../tianyicodebase_build_release/bin/bcs"
+    executable="${research_home}/boundedCostSearch/tianyicodebase_build_release/bin/bcs"
 
     for bound in "${bounds[@]}"; do
         echo "bound $bound"

@@ -40,11 +40,11 @@ class DistLRE:
         self.remote_executor = None
 
         if local_threads != 0:
-            from localexecutor import LocalExecutor
+            from distlre.localexecutor import LocalExecutor
             self.local_executor = LocalExecutor(self.task_queue, local_threads)
 
         if remote_hosts:
-            from remoteexecutor import RemoteExecutor
+            from distlre.remoteexecutor import RemoteExecutor
             self.remote_executor = RemoteExecutor(self.task_queue, remote_hosts)
 
     def submit(self, task):
