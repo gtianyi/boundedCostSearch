@@ -2,7 +2,7 @@ from queue import Empty
 from subprocess import Popen, PIPE
 from threading import Thread
 import time
-import psutil
+# import psutil
 import re
 
 
@@ -61,8 +61,8 @@ def get_mem_use(pid):
         smaps_data = f.read().strip()
 
         uss = sum(map(int, _private_re.findall(smaps_data))) * 1024
-        pss = sum(map(int, _pss_re.findall(smaps_data))) * 1024
-        swap = sum(map(int, _swap_re.findall(smaps_data))) * 1024
+        # pss = sum(map(int, _pss_re.findall(smaps_data))) * 1024
+        # swap = sum(map(int, _swap_re.findall(smaps_data))) * 1024
 
         # return uss + pss + swap
         return uss
