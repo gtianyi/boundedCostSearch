@@ -11,7 +11,7 @@ print_usage() {
     echo "[-b bound]"
     echo " support list,eg: -b 10 -b 30    default: 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100"
     echo "[-t time limit]                  default: 600 (seconds)"
-    echo "[-m memory limit]                default: 5   (GB)"
+    echo "[-m memory limit]                default: 7.5 (GB)"
     echo "[-h help]"
     exit 1
 }
@@ -29,6 +29,8 @@ subdomain="regular"
 size="32"
 boundedCostSolvers=("pts" "ptshhat" "ptsnancy" "bees" "beeps" "beepsnancy")
 bounds=(5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100)
+timeLimit=600
+memoryLimit=7.5
 
 solverCleared=false
 boundCleared=false
@@ -91,6 +93,20 @@ for ((i = 1; i <= "$#"; i++)); do
         fi
     fi
 
+    if [ ${!i} == "-m" ]; then
+        if [ $((i + 1)) -le "$#" ]; then
+            var=$((i + 1))
+            memoryLimit=${!var}
+        fi
+    fi
+
+    if [ ${!i} == "-t" ]; then
+        if [ $((i + 1)) -le "$#" ]; then
+            var=$((i + 1))
+            timeLimit=${!var}
+        fi
+    fi
+
     if [ ${!i} == "-h" ]; then
         print_usage
     fi
@@ -104,13 +120,17 @@ echo "subdomain ${subdomain}"
 echo "size ${size}"
 echo "solvers ${boundedCostSolvers[*]}"
 echo "bounds ${bounds[*]}"
+echo "time limit ${timeLimit}"
+echo "memory limit ${memoryLimit}"
 
 infile=""
 outfile=""
 
 research_home="/home/aifs1/gu/phd/research/workingPaper"
 infile_path="${research_home}/realtime-nancy/worlds/${domain}"
-outfile_path="${research_home}/boundedCostSearch/tianyi_results_test/${domain}/${subdomain}/solverDir"
+outfile_path="${research_home}/boundedCostSearch/tianyi_results/${domain}/${subdomain}/solverDir"
+
+limitWrapper="${research_home}/boundedCostSearch/tianyicodebase/script/testHarnesses/limitWrapper.py"
 
 if [ "$domain" == "tile" ]; then
     infile="${infile_path}/instance-${size}x${size}.st"
@@ -157,11 +177,12 @@ for solverId in "${!boundedCostSolvers[@]}"; do
 
             else
 
-                echo "t" >${tempfile}
+                command="${executable} -d ${domain} -s ${subdomain} -a ${solverName} \
+                    -b ${bound} -o ${outfile_instance} -i ${instance} < ${infile_instance}"
 
-                timeout 60 ${executable} \
-                    -d ${domain} -s ${subdomain} -a ${solverName} \
-                    -b ${bound} -o ${outfile_instance} -i ${instance} <${infile_instance}
+                echo "$command" > ${tempfile}
+
+                python $limitWrapper -c "${command}" -t $timeLimit -m $memoryLimit
 
                 if [ -f ${outfile_instance} ]; then
                     rm ${tempfile}
