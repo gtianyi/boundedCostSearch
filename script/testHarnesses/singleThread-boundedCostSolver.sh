@@ -3,13 +3,13 @@ print_usage() {
     echo "./singleThread-boundedCostSolver.sh"
     echo "[-f instance]                    default: 1"
     echo "[-n # of instances to test]      default: 1"
-    echo "[-d domain]                      default: pancake"
-    echo "[-s subdomain]                   default: regular"
-    echo "[-z domain size]                 default: 32"
+    echo "[-d domain]                      default: tile"
+    echo "[-s subdomain]                   default: uniform"
+    echo "[-z domain size]                 default: 4"
     echo "[-u boundedCost solver]"
     echo " support list,eg: -u a1 -u a2    default: pts ptshhat ptsnancy bees beepsnancy"
-    echo "[-b bound]"
-    echo " support list,eg: -b 10 -b 30    default: 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100"
+    echo "[-b bound percent wrt optimal]"
+    echo " support list,eg: -b 10 -b 300   default: 50 75 100 125 150 200 250 300 350 400 450 500 550 600"
     echo "[-t time limit]                  default: 600 (seconds)"
     echo "[-m memory limit]                default: 7.5 (GB)"
     echo "[-h help]"
@@ -24,11 +24,11 @@ fi
 first=1
 # The number of instances to test on
 n_of_i=1
-domain="pancake"
-subdomain="regular"
-size="32"
+domain="tile"
+subdomain="uniform"
+size="4"
 boundedCostSolvers=("pts" "ptshhat" "ptsnancy" "bees" "beepsnancy")
-bounds=(5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100)
+boundPercents=(5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100)
 timeLimit=600
 memoryLimit=7.5
 
@@ -85,11 +85,11 @@ for ((i = 1; i <= "$#"; i++)); do
     if [ ${!i} == "-b" ]; then
         if [ $((i + 1)) -le "$#" ]; then
             if ! $boundCleared; then
-                unset bounds
+                unset boundPercents
                 boundCleared=true
             fi
             var=$((i + 1))
-            bounds+=(${!var})
+            boundPercents+=(${!var})
         fi
     fi
 
@@ -119,7 +119,7 @@ echo "domain ${domain}"
 echo "subdomain ${subdomain}"
 echo "size ${size}"
 echo "solvers ${boundedCostSolvers[*]}"
-echo "bounds ${bounds[*]}"
+echo "boundPercents ${boundPercents[*]}"
 echo "time limit ${timeLimit}"
 echo "memory limit ${memoryLimit}"
 
@@ -132,21 +132,21 @@ outfile_path="${research_home}/boundedCostSearch/tianyi_results/${domain}/${subd
 infile_name=""
 
 limitWrapper="${research_home}/boundedCostSearch/tianyicodebase/script/testHarnesses/limitWrapper.py"
-optimalSolParser="${research_home}/boundedCostSearch/tianyicodebase/script/optimalSolutionParser.py"
+optimalSolRetriever="${research_home}/boundedCostSearch/tianyicodebase/script/optimalSolutionRetriever.py"
 
 if [ "$domain" == "tile" ]; then
-    infile_name="$instance-${size}x${size}.st"
-    outfile="${outfile_path}/Bound-BoundNumber-size-${size}-instance.json"
+    infile_name="instance-${size}x${size}.st"
+    outfile="${outfile_path}/BoundPercent-BoundNumber-size-${size}-instance.json"
 fi
 
 if [ "$domain" == "pancake" ]; then
-    infile_name="$instance-${size}.pan"
-    outfile="${outfile_path}/Bound-BoundNumber-size-${size}-instance.json"
+    infile_name="instance-${size}.pan"
+    outfile="${outfile_path}/BoundPercent-BoundNumber-size-${size}-instance.json"
 fi
 
 if [ "$domain" == "racetrack" ]; then
     infile_name="${subdomain}-instance.init"
-    outfile="${outfile_path}/Bound-BoundNumber-instance.json"
+    outfile="${outfile_path}/BoundPercent-BoundNumber-instance.json"
 fi
 
 infile="${infile_path}/${infile_name}"
@@ -164,18 +164,24 @@ for solverId in "${!boundedCostSolvers[@]}"; do
 
     executable="${research_home}/boundedCostSearch/tianyicodebase_build_release/bin/bcs"
 
-    for bound in "${bounds[@]}"; do
-        echo "bound $bound"
+    for boundPercent in "${boundPercents[@]}"; do
+        echo "bound percent $boundPercent"
 
         instance=$first
         while ((instance < last)); do
             infile_instance="${infile/instance/$instance}"
             infile_instance="${infile_instance/tile/slidingTile}"
             outfile_instance="${outfile_alg/instance/$instance}"
-            outfile_instance="${outfile_instance/BoundNumber/$bound}"
+            outfile_instance="${outfile_instance/BoundNumber/$boundPercent}"
             tempfile="${outfile_instance}.temp"
 
-            optimalSolution=${python optimalSolutionParser.py -i ${infile_name/instance/$instance}}
+            curFileName=${infile_name/instance/$instance}
+            retrieverCommand="python ${optimalSolRetriever} -d ${domain} -s ${subdomain} -i ${curFileName}"
+            optimalSolution=$(${retrieverCommand})
+
+            percent=$((${boundPercent} * ${optimalSolution}))
+            bound=$(echo "$percent / 100" | bc)
+            echo "bound $bound"
 
             if [ -f ${outfile_instance} ] || [ -f ${tempfile} ]; then
 
