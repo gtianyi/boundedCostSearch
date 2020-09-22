@@ -7,7 +7,7 @@ print_usage() {
     echo "[-s subdomain]                   default: regular"
     echo "[-z domain size]                 default: 32"
     echo "[-u boundedCost solver]"
-    echo " support list,eg: -u a1 -u a2    default: pts ptshhat ptsnancy bees beeps beepsnancy"
+    echo " support list,eg: -u a1 -u a2    default: pts ptshhat ptsnancy bees beepsnancy"
     echo "[-b bound]"
     echo " support list,eg: -b 10 -b 30    default: 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100"
     echo "[-t time limit]                  default: 600 (seconds)"
@@ -27,7 +27,7 @@ n_of_i=1
 domain="pancake"
 subdomain="regular"
 size="32"
-boundedCostSolvers=("pts" "ptshhat" "ptsnancy" "bees" "beeps" "beepsnancy")
+boundedCostSolvers=("pts" "ptshhat" "ptsnancy" "bees" "beepsnancy")
 bounds=(5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100)
 timeLimit=600
 memoryLimit=7.5
