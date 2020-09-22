@@ -129,23 +129,27 @@ outfile=""
 research_home="/home/aifs1/gu/phd/research/workingPaper"
 infile_path="${research_home}/realtime-nancy/worlds/${domain}"
 outfile_path="${research_home}/boundedCostSearch/tianyi_results/${domain}/${subdomain}/solverDir"
+infile_name=""
 
 limitWrapper="${research_home}/boundedCostSearch/tianyicodebase/script/testHarnesses/limitWrapper.py"
+optimalSolParser="${research_home}/boundedCostSearch/tianyicodebase/script/optimalSolutionParser.py"
 
 if [ "$domain" == "tile" ]; then
-    infile="${infile_path}/instance-${size}x${size}.st"
+    infile_name="$instance-${size}x${size}.st"
     outfile="${outfile_path}/Bound-BoundNumber-size-${size}-instance.json"
 fi
 
 if [ "$domain" == "pancake" ]; then
-    infile="${infile_path}/instance-${size}.pan"
+    infile_name="$instance-${size}.pan"
     outfile="${outfile_path}/Bound-BoundNumber-size-${size}-instance.json"
 fi
 
 if [ "$domain" == "racetrack" ]; then
-    infile="${infile_path}/${subdomain}-instance.init"
+    infile_name="${subdomain}-instance.init"
     outfile="${outfile_path}/Bound-BoundNumber-instance.json"
 fi
+
+infile="${infile_path}/${infile_name}"
 
 last=$(($first + $n_of_i))
 
@@ -170,6 +174,8 @@ for solverId in "${!boundedCostSolvers[@]}"; do
             outfile_instance="${outfile_alg/instance/$instance}"
             outfile_instance="${outfile_instance/BoundNumber/$bound}"
             tempfile="${outfile_instance}.temp"
+
+            optimalSolution=${python optimalSolutionParser.py -i ${infile_name/instance/$instance}}
 
             if [ -f ${outfile_instance} ] || [ -f ${tempfile} ]; then
 

@@ -17,7 +17,6 @@ import re
 
 researchHome = "/home/aifs1/gu/phd/research/workingPaper"
 
-
 def parseArugments():
 
     parser = argparse.ArgumentParser(description='boundedCostPlot')
