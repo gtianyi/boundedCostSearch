@@ -9,8 +9,8 @@ print_usage() {
     echo "[-u boundedCost solver]"
     echo " support list,eg: -u a1 -u a2    default: pts ptshhat ptsnancy bees beepsnancy"
     echo "[-b bound percent wrt optimal]"
-    echo " support list,eg: -b 10 -b 300   default: 50 75 100 125 150 200 250 300 350 400 450 500 550 600"
-    echo "[-t time limit]                  default: 600 (seconds)"
+    echo " support list,eg: -b 10 -b 300   default: 60 80 100 120 140 160 180 200 220 240 260 280 300"
+    echo "[-t time limit]                  default: 6000 (seconds)"
     echo "[-m memory limit]                default: 7.5 (GB)"
     echo "[-h help]"
     exit 1
@@ -28,8 +28,8 @@ domain="tile"
 subdomain="uniform"
 size="4"
 boundedCostSolvers=("pts" "ptshhat" "ptsnancy" "bees" "beepsnancy")
-boundPercents=(5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100)
-timeLimit=600
+boundPercents=(60 80 100 120 140 160 180 200 220 240 260 280 300)
+timeLimit=6000
 memoryLimit=7.5
 
 solverCleared=false
@@ -192,9 +192,11 @@ for solverId in "${!boundedCostSolvers[@]}"; do
                 command="${executable} -d ${domain} -s ${subdomain} -a ${solverName} \
                     -b ${bound} -o ${outfile_instance} -i ${instance} < ${infile_instance}"
 
-                echo "$command" > ${tempfile}
+                echo "${command}" > ${tempfile}
 
-                python $limitWrapper -c "${command}" -t $timeLimit -m $memoryLimit
+                executableOut=$(python $limitWrapper -c "${command}" -t $timeLimit -m $memoryLimit)
+
+                echo "${executableOut}" >> ${tempfile}
 
                 if [ -f ${outfile_instance} ]; then
                     rm ${tempfile}

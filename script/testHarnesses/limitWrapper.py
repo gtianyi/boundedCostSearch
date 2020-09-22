@@ -25,10 +25,10 @@ def parseArugments():
     parser.add_argument(
         '-m',
         action='store',
-        type=int,
+        type=float,
         dest='memory',
-        help='memory limit:(default) 5 (GB)',
-        default='5')
+        help='memory limit:(default) 7.5 (GB)',
+        default='7.5')
 
     parser.add_argument(
         '-t',
