@@ -181,22 +181,24 @@ def makeCoverageTable(algorithms):
     subdomains = []
     algs = []
     # size=[]
-    timeout = []
+    memOut = []
     total = []
 
     for domain in os.listdir(inPath):
         for subdomain in os.listdir(inPath+domain+"/"):
             for alg in os.listdir(inPath+domain+"/"+subdomain+"/"):
+                if alg not in algorithms:
+                    continue
                 domains.append(domain)
                 subdomains.append(subdomain)
                 algs.append(algorithms[alg])
 
                 allFiles = os.listdir(inPath+domain+"/"+subdomain+"/"+alg)
 
-                outOfTime = [f for f in allFiles if f[-5:] != ".json"]
+                outOfMem = [f for f in allFiles if f[-5:] != ".json"]
 
                 total.append(len(allFiles))
-                timeout.append(len(outOfTime))
+                memOut.append(len(outOfMem))
 
                 # index = jsonFile.find('size') + 5
                 # sizeStr = jsonFile[index:]
@@ -210,7 +212,7 @@ def makeCoverageTable(algorithms):
         "Subdomain": subdomains,
         "Algorithm": algs,
         # "Size": size,
-        "Out of time": timeout,
+        "Out of Memory": memOut,
         "Total": total
     })
 
