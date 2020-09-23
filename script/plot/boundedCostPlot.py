@@ -16,10 +16,12 @@ from collections import OrderedDict
 # import sys
 from datetime import datetime
 
+import re
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 from pandas.plotting import table
+
 
 def configure():
 
@@ -28,9 +30,8 @@ def configure():
             "pts": "PTS",
             "ptshhat": "PTS-h^",
             "ptsnancy": "PTS-Nancy",
-            "bees": "BEES",
-            "beeps": "BEEPS",
-            "beepsnancy": "BEEPS-Nancy"
+            # "bees": "BEES",
+            # "beepsnancy": "BEEPS-Nancy"
         }
     )
 
@@ -115,7 +116,7 @@ def readData(args, algorithms):
     subdomainType = args.subdomain
 
     algorithm = []
-    bound = []
+    boundPercent = []
     cpu = []
     instance = []
     nodeExpanded = []
@@ -135,13 +136,14 @@ def readData(args, algorithms):
             if jsonFile[-5:] != ".json":
                 continue
 
-            index = jsonFile.find('size') + 5
-            sizeStr = jsonFile[index:]
-            indexEnd = sizeStr.find('-')
-            sizeStr = sizeStr[:indexEnd]
+            numbersInFileName = re.findall(r'\d+', jsonFile)
+            sizeStr = numbersInFileName[1]
 
             if sizeStr != domainSize:
                 continue
+
+            boundPercentStr = numbersInFileName[0]
+            boundP = int(boundPercentStr)
 
             with open(inPath_alg + "/" + jsonFile) as json_data:
 
@@ -149,7 +151,7 @@ def readData(args, algorithms):
                 resultData = json.load(json_data)
 
                 algorithm.append(algorithms[resultData["algorithm"]])
-                bound.append(resultData["bound"])
+                boundPercent.append(boundP)
                 cpu.append(resultData["cpu time"])
                 instance.append(resultData["instance"])
                 nodeExpanded.append(resultData["node expanded"])
@@ -158,7 +160,7 @@ def readData(args, algorithms):
     df = pd.DataFrame({
         "Algorithm": algorithm,
         "instance": instance,
-        "Cost Bound": bound,
+        "Cost Bound w.r.t. Optimal": boundPercent,
 
         "nodeGen": nodeGenerated,
         "nodeExp": nodeExpanded,
@@ -245,8 +247,9 @@ def plotting(args, algorithms, showname):
         makeCoverageTable(algorithms)
     else:
         df = readData(args, algorithms)
-        makeLinePlot(width, height, "Cost Bound", args.plotType, df, "Algorithm",
-                     "Cost Bound", showname[args.plotType], out_file + args.plotType+".jpg")
+        makeLinePlot(width, height, "Cost Bound w.r.t. Optimal", args.plotType, df, "Algorithm",
+                     "Cost Bound w.r.t. Optimal", showname[args.plotType],
+                     out_file + args.plotType+".jpg")
 
 
 def main():
