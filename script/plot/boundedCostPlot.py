@@ -21,6 +21,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 from pandas.plotting import table
+import numpy as np
 
 
 def configure():
@@ -29,49 +30,22 @@ def configure():
         {
             "pts": "PTS",
             "ptshhat": "PTS-h^",
-            "ptsnancy": "PTS-Nancy",
+            "ptsnancy": "expected work",
             # "bees": "BEES",
-            # "beepsnancy": "BEEPS-Nancy"
+            # "beepsnancy": "BEEPS-expected work"
         }
     )
 
-    algorithm_order = ['PTS', 'PTS-h^', 'PTS-Nancy'
-                       ]
+    baseline = "PTS-h^"
+
+    algorithm_order = ['PTS', 'PTS-h^', 'expected work']
 
     showname = {"nodeGen": "Total Nodes Generated",
                 "nodeExp": "Total Nodes expanded",
+                "nodeGenDiff": "Algorithm Node Generated -  baseline Node Generated",
                 "cpu": "Raw CPU Time"}
 
-    return algorithms, algorithm_order, showname
-
-
-def makeLinePlot(width, height, xAxis, yAxis, dataframe, hue,
-                 xLabel, yLabel, outputName):
-    sns.set(rc={
-        'figure.figsize': (width, height),
-        'font.size': 27,
-        'text.color': 'black'
-    })
-
-    ax = sns.lineplot(x=xAxis,
-                      y=yAxis,
-                      hue=hue,
-                      style=hue,
-                      palette="muted",
-                      data=dataframe,
-                      err_style="bars")
-
-    ax.tick_params(colors='black', labelsize=12)
-    ax.set_yscale("log")
-    plt.ylabel(yLabel, color='black', fontsize=18)
-    plt.xlabel(xLabel, color='black', fontsize=18)
-
-    plt.savefig(outputName, bbox_inches="tight", pad_inches=0)
-    plt.savefig(outputName.replace(".jpg", ".eps"),
-                bbox_inches="tight", pad_inches=0)
-    plt.close()
-    plt.clf()
-    plt.cla()
+    return algorithms, algorithm_order, showname, baseline
 
 
 def parseArugments():
@@ -104,10 +78,83 @@ def parseArugments():
         '-t',
         action='store',
         dest='plotType',
-        help='plot type, nodeGen(default), cpu, coverage',
+        help='plot type, nodeGen(default), cpu, coverage, nodeGenDiff',
         default='nodeGen')
 
     return parser
+
+
+def makeLinePlot(width, height, xAxis, yAxis, dataframe, hue,
+                 xLabel, yLabel, outputName):
+    sns.set(rc={
+        'figure.figsize': (width, height),
+        'font.size': 27,
+        'text.color': 'black'
+    })
+
+    ax = sns.lineplot(x=xAxis,
+                      y=yAxis,
+                      hue=hue,
+                      style=hue,
+                      palette="muted",
+                      data=dataframe
+                      # data=dataframe,
+                      # err_style="bars"
+                      )
+
+    ax.tick_params(colors='black', labelsize=12)
+    # ax.set_yscale("log")
+    plt.ylabel(yLabel, color='black', fontsize=18)
+    plt.xlabel(xLabel, color='black', fontsize=18)
+
+    plt.savefig(outputName, bbox_inches="tight", pad_inches=0)
+    plt.savefig(outputName.replace(".jpg", ".eps"),
+                bbox_inches="tight", pad_inches=0)
+    plt.close()
+    plt.clf()
+    plt.cla()
+
+
+def makePairWiseDf(rawdf, baseline, algorithms):
+    df = pd.DataFrame()
+    df["Algorithm"] = np.nan
+    df["instance"] = np.nan
+    df["Cost Bound w.r.t. Optimal"] = np.nan
+    df["nodeGen"] = np.nan
+    df["nodeExp"] = np.nan
+    df["cpu"] = np.nan
+
+    BaselineDf = rawdf[rawdf["Algorithm"] == baseline]
+
+    # print("baseline data count, ", len(BaselineDf))
+    for instance in BaselineDf["instance"].unique():
+        for boundP in BaselineDf["Cost Bound w.r.t. Optimal"].unique():
+            # print(instance, boundP)
+            dfins = rawdf[(rawdf["instance"] == instance) &
+                          (rawdf["Cost Bound w.r.t. Optimal"] == boundP)]
+            if len(dfins) == len(algorithms):  # keep instances solved by all algorithms
+                df = df.append(dfins)
+
+    differenceNodeGen = []
+
+    for rowdata in df.iterrows():
+        row = rowdata[1]
+        relateastar = df[(df["instance"] == row['instance']) &
+                         (df["Algorithm"] == baseline) &
+                         (df["Cost Bound w.r.t. Optimal"] == row['Cost Bound w.r.t. Optimal'])]
+        if relateastar.empty:
+            print("error! baseline not found")
+            differenceNodeGen.append(np.nan)
+        else:
+            diffNodeGen = row['nodeGen'] - relateastar['nodeGen']
+            # print("row",row)
+            # print("relateastar",relateastar)
+            diffNodeGen = diffNodeGen.values[0]
+            differenceNodeGen.append(diffNodeGen)
+
+    df["nodeGenDiff"] = differenceNodeGen
+
+    return df
 
 
 def readData(args, algorithms):
@@ -157,7 +204,7 @@ def readData(args, algorithms):
                 nodeExpanded.append(resultData["node expanded"])
                 nodeGenerated.append(resultData["node generated"])
 
-    df = pd.DataFrame({
+    rawdf = pd.DataFrame({
         "Algorithm": algorithm,
         "instance": instance,
         "Cost Bound w.r.t. Optimal": boundPercent,
@@ -167,8 +214,8 @@ def readData(args, algorithms):
         "cpu": cpu,
     })
 
-    # print df
-    return df
+    # print rawdf
+    return rawdf
 
 
 def makeCoverageTable(algorithms):
@@ -225,7 +272,7 @@ def makeCoverageTable(algorithms):
     plt.savefig(out_file)
 
 
-def plotting(args, algorithms, showname):
+def plotting(args, algorithms, showname, baseline):
     print("building plots...")
 
     domainSize = args.size
@@ -247,6 +294,13 @@ def plotting(args, algorithms, showname):
 
     if args.plotType == "coverage":
         makeCoverageTable(algorithms)
+    if args.plotType == "nodeGenDiff":
+        rawdf = readData(args, algorithms)
+        df = makePairWiseDf(rawdf, baseline, algorithms)
+        makeLinePlot(width, height, "Cost Bound w.r.t. Optimal", args.plotType, df, "Algorithm",
+                     "Cost Bound w.r.t. Optimal",
+                     showname[args.plotType].replace("baseline", baseline),
+                     out_file + args.plotType+".jpg")
     else:
         df = readData(args, algorithms)
         makeLinePlot(width, height, "Cost Bound w.r.t. Optimal", args.plotType, df, "Algorithm",
@@ -259,9 +313,9 @@ def main():
     args = parser.parse_args()
     print(args)
 
-    algorithms, _, showname = configure()
+    algorithms, _, showname, baseline = configure()
 
-    plotting(args, algorithms, showname)
+    plotting(args, algorithms, showname, baseline)
 
 
 if __name__ == '__main__':
