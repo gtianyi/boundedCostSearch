@@ -65,7 +65,12 @@ public:
                   new Node(newG, newH, newD, this->domain.epsilonHGlobal(),
                            this->domain.epsilonDGlobal(), child, cur, bound);
 
-                bool dup = duplicateDetection(childNode, closed);
+                bool dup = false;
+                if (this->sortingFunction == "astar") {
+                    dup = closed.find(childNode->getState()) != closed.end();
+                } else {
+                    dup = duplicateDetection(childNode, closed);
+                }
 
                 if (!dup && childNode->getFValue() < bestF) {
                     bestF     = childNode->getFValue();
@@ -80,7 +85,8 @@ public:
                     delete childNode;
             }
 
-            if (this->sortingFunction != "pts") {
+            if (this->sortingFunction != "pts" &&
+                this->sortingFunction != "astar") {
                 // Learn one-step error
                 if (bestF != numeric_limits<double>::infinity()) {
                     Cost epsD =
@@ -105,6 +111,8 @@ private:
     {
         if (this->sortingFunction == "pts") {
             open.swapComparator(Node::compareNodesPTS);
+        } else if (this->sortingFunction == "astar") {
+            open.swapComparator(Node::compareNodesF);
         } else if (this->sortingFunction == "ptshhat") {
             open.swapComparator(Node::compareNodesPTSHHat);
         } else if (this->sortingFunction == "ptsnancy") {

@@ -189,7 +189,8 @@ public:
         : domain(domain_)
         , bound(bound_)
     {
-        if (algStr == "pts" || algStr == "ptshhat" || algStr == "ptsnancy") {
+        if (algStr == "astar" || algStr == "pts" || algStr == "ptshhat" ||
+            algStr == "ptsnancy") {
             algorithm = new PotentialSearch<Domain, Node>(domain, algStr);
         } else if (algStr == "bees" || algStr == "beeps" ||
                    algStr == "beepsnancy") {
