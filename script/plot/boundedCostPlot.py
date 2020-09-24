@@ -31,8 +31,8 @@ def configure():
             "pts": "PTS",
             "ptshhat": "PTS-h^",
             "ptsnancy": "expected work",
-            # "bees": "BEES",
-            # "beepsnancy": "BEEPS-expected work"
+            "bees": "BEES",
+            "beepsnancy": "BEEPS-expected work"
         }
     )
 
@@ -294,7 +294,7 @@ def plotting(args, algorithms, showname, baseline):
 
     if args.plotType == "coverage":
         makeCoverageTable(algorithms)
-    if args.plotType == "nodeGenDiff":
+    elif args.plotType == "nodeGenDiff":
         rawdf = readData(args, algorithms)
         df = makePairWiseDf(rawdf, baseline, algorithms)
         makeLinePlot(width, height, "Cost Bound w.r.t. Optimal", args.plotType, df, "Algorithm",
