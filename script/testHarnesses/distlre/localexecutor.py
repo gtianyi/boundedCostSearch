@@ -2,7 +2,7 @@ from queue import Empty
 from subprocess import Popen, PIPE
 from threading import Thread
 import time
-# import psutil
+import psutil
 import re
 
 
@@ -81,8 +81,8 @@ def run_task(internal_task, task, task_memory_limit):
             process.stdin.write(task.input)
 
         while process.poll() is None:
-            # mem_used = psutil.virtual_memory().used
-            mem_used = get_mem_use(pid)
+            mem_used = psutil.virtual_memory().used # kill based on total server mem use
+            # mem_used = get_mem_use(pid) # kill based on process mem use. Slow caused by repetive smaps reads.
             if mem_used >= task_memory_limit:
                 internal_task.task.output = "OutOfMemory exceeded max_bytes: " + \
                     str(mem_used)
