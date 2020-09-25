@@ -49,7 +49,9 @@ def parseArugments():
 def solverConfig():
 
     optimalSolver = {"tile": {"uniform": researchHome +
-                              "/realtime-nancy/build_release/tile-uniform idastar uniform"}}
+                              "/realtime-nancy/build_release/tile-uniform idastar uniform",
+                              "heavy": researchHome +
+                              "/realtime-nancy/build_release/tile-pdb-heavy-inverse idastar heavy"}}
 
     problemFolder = {
         "tile": "slidingTile"
@@ -57,6 +59,24 @@ def solverConfig():
 
     return optimalSolver, problemFolder
 
+
+def solverOutPutParser(args, outStr):
+    if args.domain == "tile":
+        if args.subdomain == "uniform":
+            for line in outStr:
+                lineContent = line.split()
+                if lineContent[1] == b'"solution':
+                    sol = re.findall(r'\d+', lineContent[3].decode("utf-8"))[0]
+                    return sol
+
+        elif args.subdomain == "heavy":
+            for line in outStr:
+                lineContent = line.split()
+                if lineContent[0] == b'solution':
+                    sol = lineContent[2].decode("utf-8")
+                    return sol
+
+    return "error: parsing solver output"
 
 def main():
     parser = parseArugments()
@@ -83,13 +103,9 @@ def main():
 
         outlines = process.communicate()[0].splitlines()
 
-        for line in outlines:
-            lineContent = line.split()
-            if lineContent[1] == b'"solution':
-                sol = re.findall(r'\d+', lineContent[3].decode("utf-8"))[0]
-                solutionJson[problemFile] = sol
-                print(problemFile, sol, str(counter/total*100)+"%")
-                break
+        sol = solverOutPutParser(args, outlines)
+        solutionJson[problemFile] = sol
+        print(problemFile, sol, str(counter/total*100)+"%")
 
     outFile = researchHome+"/boundedCostSearch/optimalSolution/" +\
         args.domain+"."+args.subdomain+".json"
