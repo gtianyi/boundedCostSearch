@@ -32,11 +32,12 @@ def configure():
             "ptshhat": "PTS-h^",
             "ptsnancy": "expected work",
             "bees": "BEES",
-            "beepsnancy": "BEEPS-expected work"
+            "beepsnancy": "BEEPS-expected work",
+            "astar": "A*"
         }
     )
 
-    baseline = "PTS-h^"
+    baseline = "A*"
 
     algorithm_order = ['PTS', 'PTS-h^', 'expected work']
 
