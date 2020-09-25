@@ -270,7 +270,7 @@ def makeCoverageTable(algorithms):
 
     table(ax, df, loc='upper right')  # where df is your data frame
 
-    plt.savefig(out_file)
+    plt.savefig(out_file, dpi=200)
 
 
 def plotting(args, algorithms, showname, baseline):
