@@ -63,5 +63,22 @@ ninja bcs
 
 ## Run
 ```
-bin/bcs
+bin/bcs -h
+This is a bounded cost search benchmark
+Usage:
+  ./bcs [OPTION...]
+
+  -d, --domain arg          domain type: randomtree, tile, pancake, racetrack
+                            (default: tile)
+  -s, --subdomain arg       puzzle type: uniform, inverse, heavy, sqrt;
+                            pancake type: regular, heavy, sumheavy;racetrack map :
+                            barto-big, barto-bigger, hanse-bigger-double,
+                            uniform (default: uniform)
+  -a, --alg arg             suboptimal algorithm: pts, ptshhat, ptsnancy
+                            (default: ptsnancy)
+  -b, --bound arg           cost bound (default: 10)
+  -i, --instance arg        instance file name (default: 2-4x4.st)
+  -o, --performenceOut arg  performence Out file
+  -v, --pathOut arg         path Out file
+  -h, --help                Print usage
 ```
