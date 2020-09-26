@@ -54,14 +54,14 @@ For more details see the Conan [Getting Started](https://docs.conan.io/en/latest
 
 ## Compilation
 ```
-git clone <repo>
+git clone git@github.com:gtianyi/boundedCostSearch.git
 mkdir build && cd build
-conan install ../<repo>
-cmake -GNinja ../<repo>
-ninja <executable> 
+conan install ../boundedCostSearch
+cmake -GNinja ../boundedCostSearch
+ninja bcs 
 ```
 
 ## Run
 ```
-bin/<executable>
+bin/bcs
 ```
