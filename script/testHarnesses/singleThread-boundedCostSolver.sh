@@ -7,11 +7,11 @@ print_usage() {
     echo "[-s subdomain]                   default: uniform"
     echo "[-z domain size]                 default: 4"
     echo "[-u boundedCost solver]"
-    echo " support list,eg: -u a1 -u a2    default: pts ptshhat ptsnancy bees beepsnancy"
+    echo " support list,eg: -u a1 -u a2    default: pts ptshhat ptsnancy bees beepsnancy astar"
     echo "[-b bound percent wrt optimal]"
     echo " support list,eg: -b 10 -b 300   default: 60 80 100 120 140 160 180 200 220 240 260 280 300"
     echo "[-t time limit]                  default: 1800 (seconds)"
-    echo "[-m memory limit]                default: 7 (GB)"
+    echo "[-m memory limit]                default: 7.5 (GB)"
     echo "[-h help]"
     exit 1
 }
@@ -27,10 +27,10 @@ n_of_i=1
 domain="tile"
 subdomain="uniform"
 size="4"
-boundedCostSolvers=("pts" "ptshhat" "ptsnancy" "bees" "beepsnancy")
+boundedCostSolvers=("pts" "ptshhat" "ptsnancy" "bees" "beepsnancy" "astar")
 boundPercents=(60 80 100 120 140 160 180 200 220 240 260 280 300)
 timeLimit=1800
-memoryLimit=7
+memoryLimit=7.5
 
 solverCleared=false
 boundCleared=false
