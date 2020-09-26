@@ -66,7 +66,7 @@ ninja bcs
 bin/bcs -h
 This is a bounded cost search benchmark
 Usage:
-  ./bcs [OPTION...]
+  ./bcs [OPTION...] < [input instance file]
 
   -d, --domain arg          domain type: randomtree, tile, pancake, racetrack
                             (default: tile)
