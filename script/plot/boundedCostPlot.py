@@ -44,7 +44,7 @@ def configure():
 
     showname = {"nodeGen": "Total Nodes Generated",
                 "nodeExp": "Total Nodes expanded",
-                "nodeGenDiff": "Algorithm Node Generated -  baseline Node Generated",
+                "nodeGenDiff": "Algorithm Node Generated /  baseline Node Generated",
                 "cpu": "Raw CPU Time"}
 
     return algorithms, algorithm_order, showname, baseline
@@ -148,7 +148,7 @@ def makePairWiseDf(rawdf, baseline, algorithms):
             print("error! baseline not found")
             differenceNodeGen.append(np.nan)
         else:
-            diffNodeGen = row['nodeGen'] - relateastar['nodeGen']
+            diffNodeGen = row['nodeGen'] / relateastar['nodeGen']
             # print("row",row)
             # print("relateastar",relateastar)
             diffNodeGen = diffNodeGen.values[0]
@@ -200,7 +200,7 @@ def readData(args, algorithms):
                 resultData = json.load(json_data)
 
                 algorithm.append(algorithms[resultData["algorithm"]])
-                boundPercent.append(boundP)
+                boundPercent.append(boundP/100)
                 cpu.append(resultData["cpu time"])
                 instance.append(resultData["instance"])
                 nodeExpanded.append(resultData["node expanded"])
