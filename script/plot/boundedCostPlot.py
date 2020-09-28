@@ -33,12 +33,19 @@ def configure():
             "ptsnancy": "expected work",
             "bees": "BEES",
             "beepsnancy": "BEEPS-expected work",
-            # "astar": "A*"
         }
     )
 
-    baseline = "PTS"
-    # baseline = "A*"
+    baseline = {"tile":
+                {
+                    "uniform": {"astar": "A*"},
+                    "heavy": {"ptshhat": "PTS-h^"}
+                },
+                "pancake":
+                {
+                    "16": {"astar": "A*"}
+                }
+                }
 
     algorithm_order = ['PTS', 'PTS-h^', 'expected work']
 
@@ -105,7 +112,7 @@ def makeLinePlot(width, height, xAxis, yAxis, dataframe, hue,
                       )
 
     ax.tick_params(colors='black', labelsize=12)
-    # ax.set_yscale("log")
+    ax.set_yscale("log")
     plt.ylabel(yLabel, color='black', fontsize=18)
     plt.xlabel(xLabel, color='black', fontsize=18)
 
@@ -317,7 +324,11 @@ def main():
 
     algorithms, _, showname, baseline = configure()
 
-    plotting(args, algorithms, showname, baseline)
+    curBaseline = baseline[args.domain][args.subdomain]
+
+    algorithms.update(curBaseline)
+
+    plotting(args, algorithms, showname, next(iter(curBaseline.values())))
 
 
 if __name__ == '__main__':
