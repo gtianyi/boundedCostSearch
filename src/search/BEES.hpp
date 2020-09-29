@@ -20,7 +20,7 @@ public:
                unordered_map<State, Node*, Hash>& expanded,
                std::function<bool(Node*, unordered_map<State, Node*, Hash>&)>
                                       duplicateDetection,
-               SearchResultContainer& res, Cost bound)
+               SearchResultContainer& res)
     {
         sortOpen(open);
         sortOpenHat(openhat);
@@ -67,13 +67,13 @@ public:
                 auto newD = this->domain.distance(child);
 
                 // prune by bound
-                if (newG + newH > bound) {
+                if (newG + newH > Node::bound) {
                     continue;
                 }
 
                 Node* childNode =
                   new Node(newG, newH, newD, this->domain.epsilonHGlobal(),
-                           this->domain.epsilonDGlobal(), child, cur, bound);
+                           this->domain.epsilonDGlobal(), child, cur);
 
                 bool dup = duplicateDetection(childNode, closed);
 
@@ -86,7 +86,7 @@ public:
                 if (!dup) {
                     open.push(childNode);
 
-                    if (childNode->getFHatValue() <= bound) {
+                    if (childNode->getFHatValue() <= Node::bound) {
                         openhat.push(childNode);
                     }
 

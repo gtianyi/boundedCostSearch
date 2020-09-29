@@ -20,7 +20,7 @@ public:
                unordered_map<State, Node*, Hash>&,
                std::function<bool(Node*, unordered_map<State, Node*, Hash>&)>
                                       duplicateDetection,
-               SearchResultContainer& res, Cost bound)
+               SearchResultContainer& res)
     {
         sortOpen(open);
 
@@ -57,13 +57,13 @@ public:
                 auto newD = this->domain.distance(child);
 
                 // prune by bound
-                if (newG + newH > bound) {
+                if (newG + newH > Node::bound) {
                     continue;
                 }
 
                 Node* childNode =
                   new Node(newG, newH, newD, this->domain.epsilonHGlobal(),
-                           this->domain.epsilonDGlobal(), child, cur, bound);
+                           this->domain.epsilonDGlobal(), child, cur);
 
                 bool dup = false;
                 if (this->sortingFunction == "astar") {
@@ -86,7 +86,8 @@ public:
             }
 
             if (this->sortingFunction != "pts" &&
-                this->sortingFunction != "astar") {
+                this->sortingFunction != "astar" &&
+                this->sortingFunction != "wastar") {
                 // Learn one-step error
                 if (bestF != numeric_limits<double>::infinity()) {
                     Cost epsD =
@@ -113,6 +114,8 @@ private:
             open.swapComparator(Node::compareNodesPTS);
         } else if (this->sortingFunction == "astar") {
             open.swapComparator(Node::compareNodesF);
+        } else if (this->sortingFunction == "wastar") {
+            open.swapComparator(Node::compareNodesWeightedF);
         } else if (this->sortingFunction == "ptshhat") {
             open.swapComparator(Node::compareNodesPTSHHat);
         } else if (this->sortingFunction == "ptsnancy") {

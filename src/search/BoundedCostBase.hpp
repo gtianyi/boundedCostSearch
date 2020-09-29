@@ -27,7 +27,7 @@ public:
       unordered_map<State, Node*, Hash>& expanded,
       std::function<bool(Node*, unordered_map<State, Node*, Hash>&)>
                              duplicateDetection,
-      SearchResultContainer& res, Cost bound) = 0;
+      SearchResultContainer& res) = 0;
 
 protected:
     virtual void sortOpen(PriorityQueue<Node*>& open) = 0;

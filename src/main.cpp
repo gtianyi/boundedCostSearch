@@ -38,6 +38,9 @@ int main(int argc, char** argv)
     optionAdder("i,instance", "instance file name",
                 cxxopts::value<std::string>()->default_value("2-4x4.st"));
 
+    optionAdder("w,weight", "weight for wA* baseline",
+                cxxopts::value<double>()->default_value("2"));
+
     optionAdder("o,performenceOut", "performence Out file",
                 cxxopts::value<std::string>());
 
@@ -52,10 +55,11 @@ int main(int argc, char** argv)
         exit(0);
     }
 
-    auto d     = args["domain"].as<std::string>();
-    auto sd    = args["subdomain"].as<std::string>();
-    auto alg   = args["alg"].as<std::string>();
-    auto bound = args["bound"].as<double>();
+    auto d      = args["domain"].as<std::string>();
+    auto sd     = args["subdomain"].as<std::string>();
+    auto alg    = args["alg"].as<std::string>();
+    auto bound  = args["bound"].as<double>();
+    auto weight = args["weight"].as<double>();
 
     Search* searchPtr;
 
@@ -75,7 +79,7 @@ int main(int argc, char** argv)
         }
 
         searchPtr =
-          new BoundedCostSearch<SlidingTilePuzzle>(*world, bound, alg);
+          new BoundedCostSearch<SlidingTilePuzzle>(*world, bound, alg, weight);
     } else if (d == "pancake") {
         PancakePuzzle* world;
 
@@ -87,7 +91,8 @@ int main(int argc, char** argv)
             world->setVariant(2);
         }
 
-        searchPtr = new BoundedCostSearch<PancakePuzzle>(*world, bound, alg);
+        searchPtr =
+          new BoundedCostSearch<PancakePuzzle>(*world, bound, alg, weight);
 
     } else if (d == "racetrack") {
         RaceTrack* world;
@@ -105,7 +110,8 @@ int main(int argc, char** argv)
 
         world = new RaceTrack(map, cin);
 
-        searchPtr = new BoundedCostSearch<RaceTrack>(*world, bound, alg);
+        searchPtr =
+          new BoundedCostSearch<RaceTrack>(*world, bound, alg, weight);
     } else {
         cout << "unknow domain!\n";
         std::cout << options.help() << std::endl;

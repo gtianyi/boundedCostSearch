@@ -32,7 +32,8 @@ public:
         Node* parent;
         bool  open;
 
-        Cost bound;
+        static Cost   bound;
+        static double weight;
 
     public:
         Cost getGValue() const { return g; }
@@ -78,7 +79,7 @@ public:
         int  getDelayCntr() { return delayCntr; }
 
         Node(Cost g_, Cost h_, Cost d_, Cost epsH_, Cost epsD_, State state_,
-             Node* parent_, Cost bound_)
+             Node* parent_)
             : g(g_)
             , h(h_)
             , d(d_)
@@ -88,7 +89,6 @@ public:
             , stateRep(state_)
             , parent(parent_)
             , open(true)
-            , bound(bound_)
         {}
 
         friend std::ostream& operator<<(std::ostream& stream, const Node& node)
@@ -116,6 +116,17 @@ public:
                 return n1->getGValue() > n2->getGValue();
             }
             return n1->getFValue() < n2->getFValue();
+        }
+
+        static bool compareNodesWeightedF(const Node* n1, const Node* n2)
+        {
+            // Tie break on g-value
+            auto n1WeightedF = n1->getGValue() + weight * n1->getHValue();
+            auto n2WeightedF = n2->getGValue() + weight * n2->getHValue();
+            if (n1WeightedF == n2WeightedF) {
+                return n1->getGValue() > n2->getGValue();
+            }
+            return n1WeightedF < n2WeightedF;
         }
 
         static bool compareNodesDHat(const Node* n1, const Node* n2)
@@ -191,12 +202,15 @@ public:
         }
     };
 
-    BoundedCostSearch(Domain& domain_, Cost bound_, const string& algStr)
+    BoundedCostSearch(Domain& domain_, Cost bound_, const string& algStr,
+                      double weight_)
         : domain(domain_)
-        , bound(bound_)
     {
-        if (algStr == "astar" || algStr == "pts" || algStr == "ptshhat" ||
-            algStr == "ptsnancy") {
+        Node::bound  = bound_;
+        Node::weight = weight_;
+
+        if (algStr == "wastar" || algStr == "astar" || algStr == "pts" ||
+            algStr == "ptshhat" || algStr == "ptsnancy") {
             algorithm = new PotentialSearch<Domain, Node>(domain, algStr);
         } else if (algStr == "bees" || algStr == "beeps" ||
                    algStr == "beepsnancy") {
@@ -214,9 +228,9 @@ public:
         auto initD = domain.distance(domain.getStartState());
 
         // Get the start node
-        Node* cur = new Node(0, inith, initD, domain.epsilonHGlobal(),
-                             domain.epsilonDGlobal(), domain.getStartState(),
-                             NULL, bound);
+        Node* cur =
+          new Node(0, inith, initD, domain.epsilonHGlobal(),
+                   domain.epsilonDGlobal(), domain.getStartState(), NULL);
 
         open.push(cur);
         res.initialH = inith;
@@ -225,7 +239,7 @@ public:
 
         // Expand some nodes
         double solutionCost = algorithm->run(open, openhat, closed, expanded,
-                                             duplicateDetection, res, bound);
+                                             duplicateDetection, res);
 
         res.solutionFound = solutionCost != -1.0;
         res.solutionCost  = solutionCost;
@@ -289,5 +303,10 @@ protected:
     PriorityQueue<Node*>              openhat;
     unordered_map<State, Node*, Hash> closed;
     unordered_map<State, Node*, Hash> expanded;
-    Cost                              bound;
 };
+
+template<class Domain>
+double BoundedCostSearch<Domain>::Node::weight;
+
+template<class Domain>
+typename Domain::Cost BoundedCostSearch<Domain>::Node::bound;
