@@ -180,7 +180,7 @@ def readData(args, algorithms):
 
     domainDir = domainType
 
-    inPath = "../../../tianyi_results_korf100/" + domainDir + "/" + subdomainType + '/alg'
+    inPath = "../../../tianyi_results/" + domainDir + "/" + subdomainType + '/alg'
 
     for alg in algorithms:
         print("reading ", alg)
