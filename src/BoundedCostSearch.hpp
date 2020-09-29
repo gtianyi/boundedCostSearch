@@ -57,7 +57,13 @@ public:
 
         Cost getPTSNancyValue() const
         {
-            return d / (1 + getPotentialNancyValue());
+            auto nancypts = getPotentialNancyValue();
+            if (nancypts == 0) {
+                // cout << "nancypts is 0: " << nancypts << "\n";
+                nancypts = 0.000001;
+            }
+            return d / nancypts;
+            // return d / (1 + getPotentialNancyValue());
         }
 
         void setHValue(Cost val) { h = val; }
