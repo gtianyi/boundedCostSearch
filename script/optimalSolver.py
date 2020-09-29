@@ -17,6 +17,7 @@ import re
 
 researchHome = "/home/aifs1/gu/phd/research/workingPaper"
 
+
 def parseArugments():
 
     parser = argparse.ArgumentParser(description='optimalSolver')
@@ -51,10 +52,14 @@ def solverConfig():
     optimalSolver = {"tile": {"uniform": researchHome +
                               "/realtime-nancy/build_release/tile-uniform idastar uniform",
                               "heavy": researchHome +
-                              "/realtime-nancy/build_release/tile-pdb-heavy-inverse idastar heavy"}}
+                              "/realtime-nancy/build_release/tile-pdb-heavy-inverse idastar heavy"},
+                     "pancake": {"regular": researchHome +
+                                 "/realtime-nancy/build_release/distributionPractice"
+                                 " -d pancake -s regular -a wastar -p 1"}}
 
     problemFolder = {
-        "tile": "slidingTile"
+        "tile": "slidingTile",
+        "pancake": "pancake"
     }
 
     return optimalSolver, problemFolder
@@ -62,6 +67,7 @@ def solverConfig():
 
 def solverOutPutParser(args, outStr):
     if args.domain == "tile":
+
         if args.subdomain == "uniform":
             for line in outStr:
                 lineContent = line.split()
@@ -76,7 +82,11 @@ def solverOutPutParser(args, outStr):
                     sol = lineContent[2].decode("utf-8")
                     return sol
 
+    elif args.domain == "pancake":
+        return outStr[0].split()[2].decode("utf-8")
+
     return "error: parsing solver output"
+
 
 def main():
     parser = parseArugments()
@@ -97,6 +107,8 @@ def main():
     for problemFile in os.listdir(problemDir):
         counter += 1
         command = solver + " < " + problemDir+problemFile
+
+        # print("command ",command)
 
         process = Popen("exec " + command, stdin=PIPE,
                         stdout=PIPE, stderr=PIPE, shell=True)
