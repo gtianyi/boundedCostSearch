@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/ python
 '''
 python3 script
 python script code for gather optmial solution and dump as json
@@ -19,7 +19,7 @@ researchHome = "/home/aifs1/gu/phd/research/workingPaper"
 
 def parseArugments():
 
-    parser = argparse.ArgumentParser(description='boundedCostPlot')
+    parser = argparse.ArgumentParser(description='optimalSolver')
 
     parser.add_argument(
         '-d',
