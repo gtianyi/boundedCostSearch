@@ -15,7 +15,6 @@ import in_place
 
 researchHome = "/home/aifs1/gu/phd/research/workingPaper"
 
-
 def parseArugments():
 
     parser = argparse.ArgumentParser(description='fixJson')
@@ -40,7 +39,7 @@ def parseArugments():
         '-a',
         action='append',
         dest='algorithms',
-        help='algorithms: astar, pts, ptshhat, ptsnancy, bees, beepsnancy, default(all)',
+        help='algorithms: wastar, astar, pts, ptshhat, ptsnancy, bees, beepsnancy, default(all)',
         default=[])
 
     parser.add_argument('-z',
@@ -71,7 +70,7 @@ def main():
 
         for fileName in os.listdir(fileDir):
 
-            print("processing ", fileName)
+            # print("processing ", fileName)
             if fileName[-5:] != ".json":
                 continue
 
