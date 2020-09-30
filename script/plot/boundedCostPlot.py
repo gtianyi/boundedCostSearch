@@ -28,17 +28,17 @@ def configure():
 
     algorithms = OrderedDict(
         {
-            "pts": "PTS",
+            # "pts": "PTS",
             "ptshhat": "PTS-h^",
             "ptsnancy": "expected work",
             "bees": "BEES",
-            "beepsnancy": "BEEPS-expected work",
+            # "beepsnancy": "BEEPS-expected work",
         }
     )
 
     baseline = {"tile":
                 {
-                    "uniform": {"astar": "A*"},
+                    "uniform": {"wastar": "WA*"},
                     "heavy": {"ptshhat": "PTS-h^"}
                 },
                 "pancake":
@@ -117,8 +117,8 @@ def makeLinePlot(width, height, xAxis, yAxis, dataframe, hue,
     plt.xlabel(xLabel, color='black', fontsize=18)
 
     plt.savefig(outputName, bbox_inches="tight", pad_inches=0)
-    plt.savefig(outputName.replace(".jpg", ".eps"),
-                bbox_inches="tight", pad_inches=0)
+   #  plt.savefig(outputName.replace(".jpg", ".eps"),
+                # bbox_inches="tight", pad_inches=0)
     plt.close()
     plt.clf()
     plt.cla()
@@ -136,11 +136,26 @@ def makePairWiseDf(rawdf, baseline, algorithms):
     BaselineDf = rawdf[rawdf["Algorithm"] == baseline]
 
     # print("baseline data count, ", len(BaselineDf))
+
+    # for instance in BaselineDf["instance"].unique():
+        # dfins = rawdf[rawdf["instance"] == instance]
+        # # keep instances solved by all algorithms across all bounds
+        # if len(dfins) == len(algorithms) * len(BaselineDf["Cost Bound w.r.t. Optimal"].unique()):
+            # df = df.append(dfins)
+
     for instance in BaselineDf["instance"].unique():
-        dfins = rawdf[rawdf["instance"] == instance]
-        # keep instances solved by all algorithms across all bounds
-        if len(dfins) == len(algorithms) * len(BaselineDf["Cost Bound w.r.t. Optimal"].unique()):
-            df = df.append(dfins)
+        for boundP in BaselineDf["Cost Bound w.r.t. Optimal"].unique():
+            # print(instance, boundP)
+            dfins = rawdf[(rawdf["instance"] == instance) &
+                          (rawdf["Cost Bound w.r.t. Optimal"] == boundP)]
+            if len(dfins) == len(algorithms):  # keep instances solved by all algorithms
+                df = df.append(dfins)
+
+    boundPercents = BaselineDf["Cost Bound w.r.t. Optimal"].unique()
+    boundPercents.sort()
+    for boundP in boundPercents:
+        print("bound percent ", boundP, "valid instances: ", len(
+            df[df["Cost Bound w.r.t. Optimal"] == boundP]["instance"].unique()))
 
     differenceNodeGen = []
 
@@ -201,7 +216,7 @@ def readData(args, algorithms):
 
             with open(inPath_alg + "/" + jsonFile) as json_data:
 
-                print("reading ", alg, jsonFile)
+                # print("reading ", alg, jsonFile)
                 resultData = json.load(json_data)
 
                 algorithm.append(algorithms[resultData["algorithm"]])
