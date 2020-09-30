@@ -39,13 +39,14 @@ class RaceTrack
 public:
     typedef double        Cost;
     static constexpr Cost COST_MAX = std::numeric_limits<Cost>::max();
+    static constexpr int  INT_MAX  = std::numeric_limits<int>::max();
 
     class State
     {
     public:
         State() {}
 
-        State(size_t x_, size_t y_, size_t dx_, size_t dy_)
+        State(int x_, int y_, int dx_, int dy_)
             : x(x_)
             , y(y_)
             , dx(dx_)
@@ -76,22 +77,25 @@ public:
 
         void generateKey()
         {
-            // This will provide a unique hash for every state in the 15 puzzle,
-            // Other puzzle variants may/will see collisions...
-            unsigned long long val = 0xCBF29CE484222325;
-            val    = val ^ x ^ (dx << 8) ^ (y << 16) ^ (dy << 24);
+            // This will provide a unique hash for every state in the racetrack,
+            unsigned long long val        = 0xCBF29CE484222325;
+            unsigned int       x_unsigned = static_cast<unsigned int>(x);
+
+            val = val ^ x_unsigned ^ (static_cast<size_t>(dx) << 8) ^
+                  (static_cast<size_t>(y) << 16) ^
+                  (static_cast<size_t>(dy) << 24);
             theKey = val;
         }
 
         unsigned long long key() const { return theKey; }
 
-        size_t getX() const { return x; }
+        int getX() const { return x; }
 
-        size_t getY() const { return y; }
+        int getY() const { return y; }
 
-        size_t getDX() const { return dx; }
+        int getDX() const { return dx; }
 
-        size_t getDY() const { return dy; }
+        int getDY() const { return dy; }
 
         std::string toString() const
         {
@@ -110,7 +114,7 @@ public:
         void markStart() { label = 's'; }
 
     private:
-        size_t             x, y, dx, dy;
+        int                x, y, dx, dy;
         char               label;
         unsigned long long theKey =
           std::numeric_limits<unsigned long long>::max();
@@ -245,7 +249,8 @@ public:
     Cost dijkstraMaxH(const State& state) const
     {
         // cout << state;
-        return static_cast<double>(dijkstraMap[state.getX()][state.getY()]) /
+        return static_cast<double>(dijkstraMap[static_cast<size_t>(
+                 state.getX())][static_cast<size_t>(state.getY())]) /
                maxSpeed;
     }
 
@@ -260,7 +265,7 @@ public:
                  blockedCells.end();
     }
 
-    bool isCollisionFree(size_t x, size_t y, size_t dx, size_t dy,
+    bool isCollisionFree(int x, int y, int dx, int dy,
                          Location& lastLegalLocation) const
     {
         double distance = round(sqrt(pow(static_cast<double>(dx), 2.0) +
@@ -297,8 +302,8 @@ public:
         std::vector<State> successors;
 
         for (auto action : actions) {
-            size_t newDX = state.getDX() + action.first;
-            size_t newDY = state.getDY() + action.second;
+            int newDX = state.getDX() + action.first;
+            int newDY = state.getDY() + action.second;
 
             // check if dx, dy already 0?
             // otherwise will alway stay?
@@ -321,8 +326,8 @@ public:
             } else if (lastLegalLocation !=
                        Location(state.getX(), state.getY())) {
                 // air bag
-                State succ(lastLegalLocation.first, lastLegalLocation.second, 0,
-                           0);
+                State succ(static_cast<int>(lastLegalLocation.first),
+                           static_cast<int>(lastLegalLocation.second), 0, 0);
 
                 successors.push_back(succ);
             }
@@ -440,7 +445,8 @@ private:
         maxYSpeed = static_cast<double>(mapHeight) / 2;
         maxSpeed  = max(maxXSpeed, maxYSpeed);
 
-        startState = State(startLocation.first, startLocation.second, 0, 0);
+        startState = State(static_cast<int>(startLocation.first),
+                           static_cast<int>(startLocation.second), 0, 0);
         // cout << "size: " << mapWidth << "x" << mapHeight << "\n";
         // cout << "blocked: " << blockedCells.size() << "\n";
         // cout << "finish: " << finishline.size() << "\n";
@@ -460,7 +466,7 @@ private:
         getline(input, line);
         getline(input, line);
         stringstream ss(line);
-        size_t       x, y, dx, dy;
+        int          x, y, dx, dy;
         ss >> x;
         ss >> y;
         ss >> dx;
@@ -480,10 +486,10 @@ private:
         }
 
         // visualize the dijkstra map (for debug usage)
-        /*vector<int> rotateCol(mapWidth, INT_MAX);*/
-        // vector<vector<int>> rotatedMap(mapHeight, rotateCol);
-        // for (int i = 0; i < rotatedMap.size(); i++) {
-        // for (int j = 0; j < rotateCol.size(); j++) {
+        /*vector<size_t>         rotateCol(mapWidth, INT_MAX);*/
+        // vector<vector<size_t>> rotatedMap(mapHeight, rotateCol);
+        // for (size_t i = 0; i < rotatedMap.size(); i++) {
+        // for (size_t j = 0; j < rotateCol.size(); j++) {
         // rotatedMap[i][j] = dijkstraMap[j][i];
         //}
         //}
@@ -585,7 +591,7 @@ private:
 
     std::unordered_set<Location, pair_hash> blockedCells;
     std::unordered_set<Location, pair_hash> finishline;
-    vector<pair<size_t, size_t>>            actions;
+    vector<pair<int, int>>                  actions;
     vector<vector<size_t>>                  dijkstraMap;
     size_t                                  mapWidth;
     size_t                                  mapHeight;

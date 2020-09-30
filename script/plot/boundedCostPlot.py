@@ -32,14 +32,15 @@ def configure():
             "ptshhat": "PTS-h^",
             "ptsnancy": "expected work",
             "bees": "BEES",
-            # "beepsnancy": "BEEPS-expected work",
+            # "wastar": "WA*",
+            # "astar": "A*",
         }
     )
 
     baseline = {"tile":
                 {
-                    "uniform": {"wastar": "WA*"},
-                    "heavy": {"ptshhat": "PTS-h^"}
+                    "uniform": {"astar": "A*"},
+                    "heavy": {"wastar": "WA*"}
                 },
                 "pancake":
                 {
@@ -77,6 +78,13 @@ def parseArugments():
         racetrack : barto-big,uniform-small, barto-bigger, hanse-bigger-double',
         default='uniform')
 
+    parser.add_argument(
+        '-b',
+        action='store',
+        dest='boundPercentStart',
+        help='bound percent start: anything above 1.2',
+        default='1.2')
+
     parser.add_argument('-z',
                         action='store',
                         dest='size',
@@ -87,8 +95,8 @@ def parseArugments():
         '-t',
         action='store',
         dest='plotType',
-        help='plot type, nodeGen(default), cpu, coverage, nodeGenDiff',
-        default='nodeGen')
+        help='plot type, nodeGen, cpu, coverage, nodeGenDiff(default)',
+        default='nodeGenDiff')
 
     return parser
 
@@ -213,6 +221,9 @@ def readData(args, algorithms):
 
             boundPercentStr = numbersInFileName[0]
             boundP = int(boundPercentStr)
+
+            if(boundP/100 < float(args.boundPercentStart)):
+                continue
 
             with open(inPath_alg + "/" + jsonFile) as json_data:
 
