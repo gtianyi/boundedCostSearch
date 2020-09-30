@@ -168,27 +168,7 @@ public:
         return correctedDerr[state];
     }
 
-    Cost heuristic(const State& state)
-    {
-        // Check if the heuristic of this state has been updated
-        if (correctedH.find(state) != correctedH.end()) {
-            // DEBUG_MSG(
-            //"find h in table " << state << " h " << correctedH[state]);
-
-            return correctedH[state];
-        }
-
-        Cost h = dijkstraMaxH(state);
-
-        updateHeuristic(state, h);
-
-        return correctedH[state];
-    }
-
-    Cost heuristic_no_recording(const State& state)
-    {
-        return dijkstraMaxH(state);
-    }
+    Cost heuristic(const State& state) { return dijkstraMaxH(state); }
 
     Cost epsilonHGlobal() { return curEpsilonH; }
 
