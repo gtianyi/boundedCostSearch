@@ -15,6 +15,7 @@ import in_place
 
 researchHome = "/home/aifs1/gu/phd/research/workingPaper"
 
+
 def parseArugments():
 
     parser = argparse.ArgumentParser(description='fixJson')
@@ -39,14 +40,14 @@ def parseArugments():
         '-a',
         action='append',
         dest='algorithms',
-        help='algorithms: wastar, astar, pts, ptshhat, ptsnancy, bees, beepsnancy, default(all)',
+        help='algorithms: wastar, astar, pts, ptshhat, ptsnancy, bees default(all)',
         default=[])
 
-    parser.add_argument('-z',
-                        action='store',
-                        dest='size',
-                        help='domain size (default: 4)',
-                        default='4')
+#     parser.add_argument('-z',
+    # action='store',
+    # dest='size',
+    # help='domain size (default: 4)',
+    # default='4')
 
     return parser
 
@@ -57,17 +58,21 @@ def main():
     args = parser.parse_args()
     print(args)
 
-    algorithms = ['astar', 'pts', 'ptshhat', 'ptsnancy', 'bees', 'beepsnancy']
+    algorithms = ['astar', 'pts', 'ptshhat', 'ptsnancy', 'bees', 'wastar']
 
     if len(args.algorithms) != 0:
         algorithms = args.algorithms
 
     for algorithm in algorithms:
-        print("processing ", algorithm)
 
         fileDir = researchHome + "/boundedCostSearch/tianyi_results/" + \
             args.domain+"/"+args.subdomain+"/"+algorithm+"/"
 
+        if not os.path.exists(fileDir):
+            print("not found, skip ", algorithm)
+            continue
+
+        print("processing ", algorithm)
         for fileName in os.listdir(fileDir):
 
             # print("processing ", fileName)
@@ -84,6 +89,7 @@ def main():
                         file.write(line[:-3])
                     else:
                         file.write(line)
+
 
 if __name__ == '__main__':
     main()

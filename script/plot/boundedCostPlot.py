@@ -28,7 +28,7 @@ def configure():
 
     algorithms = OrderedDict(
         {
-            # "pts": "PTS",
+            "pts": "PTS",
             "ptshhat": "PTS-h^",
             "ptsnancy": "expected work",
             "bees": "BEES",
@@ -44,7 +44,7 @@ def configure():
                 },
                 "pancake":
                 {
-                    "16": {"astar": "A*"}
+                    "regular": {"astar": "A*"}
                 }
                 }
 
