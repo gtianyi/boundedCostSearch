@@ -55,11 +55,19 @@ def solverConfig():
                               "/realtime-nancy/build_release/tile-pdb-heavy-inverse idastar heavy"},
                      "pancake": {"regular": researchHome +
                                  "/realtime-nancy/build_release/distributionPractice"
-                                 " -d pancake -s regular -a wastar -p 1"}}
+                                 " -d pancake -s regular -a wastar -p 1"},
+                     "racetrack": {"barto-big": researchHome +
+                                   "/realtime-nancy/build_release/distributionPractice"
+                                   " -d racetrack -s barto-big -a wastar -p 1",
+                                   "uniform-small": researchHome +
+                                   "/realtime-nancy/build_release/distributionPractice"
+                                   " -d racetrack -s uniform-small -a wastar -p 1"}
+                     }
 
     problemFolder = {
         "tile": "slidingTile",
-        "pancake": "pancake"
+        "pancake": "pancake",
+        "racetrack": "racetrack"
     }
 
     return optimalSolver, problemFolder
@@ -82,7 +90,7 @@ def solverOutPutParser(args, outStr):
                     sol = lineContent[2].decode("utf-8")
                     return sol
 
-    elif args.domain == "pancake":
+    elif args.domain == "pancake" or args.domain == "racetrack":
         return outStr[0].split()[2].decode("utf-8")
 
     return "error: parsing solver output"
@@ -99,6 +107,10 @@ def main():
 
     problemDir = researchHome+"/realtime-nancy/worlds/" + \
         problemFolder[args.domain]+"/"
+
+    if args.domain == "racetrack":
+        problemDir = researchHome+"/realtime-nancy/worlds/" + \
+        problemFolder[args.domain]+"-"+args.subdomain+"/"
 
     solutionJson = {}
 
