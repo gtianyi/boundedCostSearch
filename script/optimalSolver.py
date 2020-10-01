@@ -59,6 +59,9 @@ def solverConfig():
                      "racetrack": {"barto-big": researchHome +
                                    "/realtime-nancy/build_release/distributionPractice"
                                    " -d racetrack -s barto-big -a wastar -p 1",
+                                   "barto-bigger": researchHome +
+                                   "/realtime-nancy/build_release/distributionPractice"
+                                   " -d racetrack -s barto-bigger -a wastar -p 1",
                                    "uniform-small": researchHome +
                                    "/realtime-nancy/build_release/distributionPractice"
                                    " -d racetrack -s uniform-small -a wastar -p 1"}

@@ -45,6 +45,11 @@ def configure():
                 "pancake":
                 {
                     "regular": {"astar": "A*"}
+                },
+                "racetrack":
+                {
+                    "barto-big": {"astar": "A*"},
+                    "uniform-small": {"astar": "A*"}
                 }
                 }
 
@@ -145,19 +150,19 @@ def makePairWiseDf(rawdf, baseline, algorithms):
 
     # print("baseline data count, ", len(BaselineDf))
 
-    # for instance in BaselineDf["instance"].unique():
-        # dfins = rawdf[rawdf["instance"] == instance]
-        # # keep instances solved by all algorithms across all bounds
-        # if len(dfins) == len(algorithms) * len(BaselineDf["Cost Bound w.r.t. Optimal"].unique()):
-            # df = df.append(dfins)
-
     for instance in BaselineDf["instance"].unique():
-        for boundP in BaselineDf["Cost Bound w.r.t. Optimal"].unique():
-            # print(instance, boundP)
-            dfins = rawdf[(rawdf["instance"] == instance) &
-                          (rawdf["Cost Bound w.r.t. Optimal"] == boundP)]
-            if len(dfins) == len(algorithms):  # keep instances solved by all algorithms
-                df = df.append(dfins)
+        dfins = rawdf[rawdf["instance"] == instance]
+        # keep instances solved by all algorithms across all bounds
+        if len(dfins) == len(algorithms) * len(BaselineDf["Cost Bound w.r.t. Optimal"].unique()):
+            df = df.append(dfins)
+
+    # for instance in BaselineDf["instance"].unique():
+        # for boundP in BaselineDf["Cost Bound w.r.t. Optimal"].unique():
+            # # print(instance, boundP)
+            # dfins = rawdf[(rawdf["instance"] == instance) &
+                          # (rawdf["Cost Bound w.r.t. Optimal"] == boundP)]
+            # if len(dfins) == len(algorithms):  # keep instances solved by all algorithms
+                # df = df.append(dfins)
 
     boundPercents = BaselineDf["Cost Bound w.r.t. Optimal"].unique()
     boundPercents.sort()
@@ -216,7 +221,7 @@ def readData(args, algorithms):
             numbersInFileName = re.findall(r'\d+', jsonFile)
             sizeStr = numbersInFileName[1]
 
-            if sizeStr != domainSize:
+            if domainType == "pancake" and sizeStr != domainSize:
                 continue
 
             boundPercentStr = numbersInFileName[0]
