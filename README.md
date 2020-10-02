@@ -63,6 +63,8 @@ ninja bcs
 
 ## Run
 ```
+cd <repo>
+cd ../build
 bin/bcs -h
 This is a bounded cost search benchmark
 Usage:
@@ -81,4 +83,101 @@ Usage:
   -o, --performenceOut arg  performence Out file
   -v, --pathOut arg         path Out file
   -h, --help                Print usage
+```
+
+## Experiments Pipeline
+1. check if the bounded cost algorithm can solve single instance
+```
+cd 
+cd <repo>
+cd ../build
+bin/bcs -h
+```
+
+2. Compute optimal solution for all instances
+```
+cd <repo>/script
+python optimalSolver.py -h
+optional arguments:
+  -h, --help    show this help message and exit
+  -d DOMAIN     domain: tile(default), pancake, racetrack
+  -s SUBDOMAIN  subdomain: tile: uniform(default), heavy, inverse; 
+                           pancake: regular, heavy; 
+                           racetrack : barto-big,uniform-small, 
+                                       barto-bigger, hanse-bigger-double
+  -z SIZE       domain size (default: 4)
+```
+
+check if the optimal solution json is generated correctly
+```
+cd <repo>
+cd ../optimalSolution/
+ls -l
+total 52
+drwxrwxr-x  2 gu gu 4096 Oct  1 15:55 .
+drwxrwxr-x 12 gu gu 4096 Sep 30 09:26 ..
+-rw-rw-r--  1 gu gu 5676 Sep 29 12:03 pancake.regular.json
+-rw-rw-r--  1 gu gu  741 Oct  1 15:17 racetrack.barto-bigger.json
+-rw-rw-r--  1 gu gu  666 Oct  1 07:02 racetrack.barto-big.json
+-rw-rw-r--  1 gu gu  766 Oct  1 15:55 racetrack.hansen-bigger.json
+-rw-rw-r--  1 gu gu  616 Oct  1 15:43 racetrack.uniform.json
+-rw-rw-r--  1 gu gu  766 Oct  1 07:03 racetrack.uniform-small.json
+-rw-rw-r--  1 gu gu 1992 Sep 25 14:35 tile.heavy.json
+-rw-rw-r--  1 gu gu 1892 Sep 22 12:51 tile.uniform.json
+```
+
+3. run experiment script   
+(better check if it can run correctly for a single instance befor batch run)
+```
+cd <repo>/script/testHarnesses
+./singleThread-boundedCostSolver.sh -h
+
+[-f instance]                    default: 1
+[-n # of instances to test]      default: 1
+[-d domain]                      default: tile
+[-s subdomain]                   default: uniform
+[-z domain size]                 default: 4
+[-u boundedCost solver]
+ support list,eg: -u a1 -u a2    default: pts ptshhat ptsnancy bees astar wastar
+[-b bound percent wrt optimal]
+ support list,eg: -b 10 -b 300   default: 60 80 100 120 140 160 180 200 220 240 
+                                          260 280 300 320 340 360 380 400 420 
+                                          440 460 480 500 520 540 560 580 600
+[-t time limit]                  default: 1800 (seconds)
+[-m memory limit]                default: 7(GB)
+[-h help]
+```
+
+4. fix json format error caused by batch run on ai cluster 
+```
+cd <repo>/script
+python fixJson.py -h
+
+usage: fixJson.py [-h] [-d DOMAIN] [-s SUBDOMAIN] [-a ALGORITHMS]
+optional arguments:
+  -h, --help     show this help message and exit
+  -d DOMAIN      domain: tile(default), pancake, racetrack
+  -s SUBDOMAIN   subdomain: tile: uniform(default), heavy, inverse; 
+                            pancake: regular, heavy; 
+                            racetrack : barto-big,uniform-small, 
+                                        barto-bigger, hanse-bigger-double
+  -a ALGORITHMS  algorithms: wastar, astar, pts, ptshhat, ptsnancy, bees default(all)
+```
+
+5. plot results
+```
+cd <repo>/script/plot
+boundedCostPlot.py -h
+usage: boundedCostPlot.py [-h] [-d DOMAIN] [-s SUBDOMAIN] [-b BOUNDPERCENTSTART] [-z SIZE] [-t PLOTTYPE]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -d DOMAIN             domain: tile(default), pancake, racetrack
+  -s SUBDOMAIN          subdomain: tile: uniform(default), heavy, inverse; 
+                                   pancake: regular, heavy; 
+                                   racetrack : barto-big,uniform-small, 
+                                               barto-bigger, hanse-bigger-double
+  -b BOUNDPERCENTSTART  bound percent start: anything above 1.2
+  -z SIZE               domain size (default: 4)
+  -t PLOTTYPE           plot type, nodeGen, cpu, coverage, nodeGenDiff(default)
 ```
