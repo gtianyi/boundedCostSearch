@@ -49,7 +49,10 @@ def configure():
                 "racetrack":
                 {
                     "barto-big": {"astar": "A*"},
-                    "uniform-small": {"astar": "A*"}
+                    "barto-bigger": {"astar": "A*"},
+                    "hansen-bigger": {"astar": "A*"},
+                    "uniform-small": {"astar": "A*"},
+                    "uniform": {"astar": "A*"}
                 }
                 }
 
