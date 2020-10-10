@@ -24,47 +24,76 @@ from pandas.plotting import table
 import numpy as np
 
 
-def configure():
+class Configure:
+    def __init__(self):
 
-    algorithms = OrderedDict(
-        {
-            "pts": "PTS",
-            "ptshhat": "PTS-h^",
-            "ptsnancy": "expected work",
-            "bees": "BEES",
-            # "wastar": "WA*",
-            # "astar": "A*",
-        }
-    )
+        self.algorithms=OrderedDict(
+            {
+                "pts": "PTS",
+                "ptshhat": "PTS-h^",
+                "ptsnancy": "expected work",
+                "bees": "BEES",
+                # "wastar": "WA*",
+                # "astar": "A*",
+            }
+        )
 
-    baseline = {"tile":
-                {
-                    "uniform": {"astar": "A*"},
-                    "heavy": {"wastar": "WA*"}
-                },
-                "pancake":
-                {
-                    "regular": {"astar": "A*"}
-                },
-                "racetrack":
-                {
-                    "barto-big": {"astar": "A*"},
-                    "barto-bigger": {"astar": "A*"},
-                    "hansen-bigger": {"astar": "A*"},
-                    "uniform-small": {"astar": "A*"},
-                    "uniform": {"astar": "A*"}
-                }
-                }
+        self.baseline = {"tile":
+                    {
+                        "uniform": {"bees": "BEES"},
+                        "heavy": {"bees": "BEES"}
+                    },
+                    "pancake":
+                    {
+                        "regular": {"bees": "BEES"}
+                    },
+                    "racetrack":
+                    {
+                        "barto-big": {"bees": "BEES"},
+                        "barto-bigger": {"bees": "BEES"},
+                        "hansen-bigger": {"bees": "BEES"},
+                        "uniform-small": {"bees": "BEES"},
+                        "uniform": {"bees": "BEES"}
+                    }
+                   }
 
-    algorithm_order = ['PTS', 'PTS-h^', 'expected work']
+        self.fixedbaseline = {"tile":
+                         {
+                             "uniform": {"wastar": "WA*"},
+                             "heavy": {"wastar": "WA*"}
+                         },
+                         "pancake":
+                         {
+                             "regular": {"astar": "A*"}
+                         },
+                         "racetrack":
+                         {
+                            "barto-big": {"astar": "A*"},
+                            "barto-bigger": {"astar": "A*"},
+                            "hansen-bigger": {"astar": "A*"},
+                            "uniform-small": {"astar": "A*"},
+                            "uniform": {"astar": "A*"}
+                         }
+                        }
 
-    showname = {"nodeGen": "Total Nodes Generated",
-                "nodeExp": "Total Nodes expanded",
-                "nodeGenDiff": "Algorithm Node Generated /  baseline Node Generated",
-                "cpu": "Raw CPU Time"}
+        self.algorithm_order = ['PTS', 'PTS-h^', 'expected work']
 
-    return algorithms, algorithm_order, showname, baseline
+        self.showname = {"nodeGen": "Total Nodes Generated",
+                    "nodeExp": "Total Nodes expanded",
+                    "nodeGenDiff": "Algorithm Node Generated /  baseline Node Generated",
+                    "cpu": "Raw CPU Time"}
 
+    def getAlgorithms(self):
+        return self.algorithms
+
+    def getBaseline(self):
+        return self.baseline
+
+    def getFixedBaseline(self):
+        return self.fixedbaseline
+
+    def getShowname(self):
+        return self.showname
 
 def parseArugments():
 
@@ -90,8 +119,15 @@ def parseArugments():
         '-b',
         action='store',
         dest='boundPercentStart',
-        help='bound percent start: anything above 1.2',
+        help='bound percent start: anything above 0.6,(default: 1.2)',
         default='1.2')
+
+    parser.add_argument(
+        '-e',
+        action='store',
+        dest='boundPercentEnd',
+        help='bound percent end: anything below 6, (default: 6)',
+        default='6')
 
     parser.add_argument('-z',
                         action='store',
@@ -103,7 +139,7 @@ def parseArugments():
         '-t',
         action='store',
         dest='plotType',
-        help='plot type, nodeGen, cpu, coverage, nodeGenDiff(default)',
+        help='plot type, nodeGen, cpu, coverage, nodeGenDiff(default), fixedbaseline',
         default='nodeGenDiff')
 
     return parser
@@ -134,7 +170,7 @@ def makeLinePlot(width, height, xAxis, yAxis, dataframe, hue,
 
     plt.savefig(outputName, bbox_inches="tight", pad_inches=0)
    #  plt.savefig(outputName.replace(".jpg", ".eps"),
-                # bbox_inches="tight", pad_inches=0)
+    # bbox_inches="tight", pad_inches=0)
     plt.close()
     plt.clf()
     plt.cla()
@@ -163,9 +199,9 @@ def makePairWiseDf(rawdf, baseline, algorithms):
         # for boundP in BaselineDf["Cost Bound w.r.t. Optimal"].unique():
             # # print(instance, boundP)
             # dfins = rawdf[(rawdf["instance"] == instance) &
-                          # (rawdf["Cost Bound w.r.t. Optimal"] == boundP)]
+            # (rawdf["Cost Bound w.r.t. Optimal"] == boundP)]
             # if len(dfins) == len(algorithms):  # keep instances solved by all algorithms
-                # df = df.append(dfins)
+            # df = df.append(dfins)
 
     boundPercents = BaselineDf["Cost Bound w.r.t. Optimal"].unique()
     boundPercents.sort()
@@ -230,7 +266,8 @@ def readData(args, algorithms):
             boundPercentStr = numbersInFileName[0]
             boundP = int(boundPercentStr)
 
-            if(boundP/100 < float(args.boundPercentStart)):
+            if(boundP/100 < float(args.boundPercentStart) or
+               boundP/100 > float(args.boundPercentEnd)):
                 continue
 
             with open(inPath_alg + "/" + jsonFile) as json_data:
@@ -348,19 +385,21 @@ def plotting(args, algorithms, showname, baseline):
                      "Cost Bound w.r.t. Optimal", showname[args.plotType],
                      out_file + args.plotType+".jpg")
 
-
 def main():
     parser = parseArugments()
     args = parser.parse_args()
     print(args)
 
-    algorithms, _, showname, baseline = configure()
+    config = Configure()
 
-    curBaseline = baseline[args.domain][args.subdomain]
+    baselines = config.getBaseline()
+    algorithms = config.getAlgorithms()
+    showname = config.getShowname()
 
-    algorithms.update(curBaseline)
+    cureBaseline = baselines[args.domain][args.subdomain]
+    algorithms.update(cureBaseline)
 
-    plotting(args, algorithms, showname, next(iter(curBaseline.values())))
+    plotting(args, algorithms, showname, next(iter(cureBaseline.values())))
 
 
 if __name__ == '__main__':
