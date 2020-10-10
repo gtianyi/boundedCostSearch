@@ -57,8 +57,11 @@ public:
                 auto newD = this->domain.distance(child);
 
                 // prune by bound
-                if (newG + newH > Node::bound) {
-                    continue;
+                if (this->sortingFunction != "astar" &&
+                    this->sortingFunction != "wastar") {
+                    if (newG + newH > Node::bound) {
+                        continue;
+                    }
                 }
 
                 Node* childNode =
