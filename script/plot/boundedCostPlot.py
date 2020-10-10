@@ -40,7 +40,7 @@ class Configure:
 
         self.baseline = {"tile":
                     {
-                        "uniform": {"bees": "BEES"},
+                        "uniform": {"wastar-with-bound": "WA*-with-bound"},
                         "heavy": {"bees": "BEES"}
                     },
                     "pancake":
@@ -59,7 +59,7 @@ class Configure:
 
         self.fixedbaseline = {"tile":
                          {
-                             "uniform": {"wastar": "WA*"},
+                             "uniform": {"astar": "WA*"},
                              "heavy": {"wastar": "WA*"}
                          },
                          "pancake":
@@ -81,6 +81,7 @@ class Configure:
         self.showname = {"nodeGen": "Total Nodes Generated",
                     "nodeExp": "Total Nodes expanded",
                     "nodeGenDiff": "Algorithm Node Generated /  baseline Node Generated",
+                    "fixedbaseline": "Algorithm Node Generated /  baseline Node Generated",
                     "cpu": "Raw CPU Time"}
 
         self.additionalAlgorithms = {"tile":
@@ -88,18 +89,18 @@ class Configure:
                         "uniform": {"wastar-with-bound": "WA*-with-bound"},
                         "heavy": {"wastar-with-bound": "WA*-with-bound"}
                     },
-                    "pancake":
-                    {
-                        "regular": {"astar-with-bound": "A*-with-bound"}
-                    },
-                    "racetrack":
-                    {
-                        "barto-big": {"astar-with-bound": "A*-with-bound"},
-                        "barto-bigger": {"astar-with-bound": "A*-with-bound"},
-                        "hansen-bigger": {"astar-with-bound": "A*-with-bound"},
-                        "uniform-small": {"astar-with-bound": "A*-with-bound"},
-                        "uniform": {"astar-with-bound": "A*-with-bound"}
-                    }
+             #        "pancake":
+                    # {
+                        # "regular": {"astar-with-bound": "A*-with-bound"}
+                    # },
+                    # "racetrack":
+                    # {
+                        # "barto-big": {"astar-with-bound": "A*-with-bound"},
+                        # "barto-bigger": {"astar-with-bound": "A*-with-bound"},
+                        # "hansen-bigger": {"astar-with-bound": "A*-with-bound"},
+                        # "uniform-small": {"astar-with-bound": "A*-with-bound"},
+                        # "uniform": {"astar-with-bound": "A*-with-bound"}
+                    # }
                    }
 
     def getAlgorithms(self):
@@ -229,7 +230,9 @@ def makePairWiseDf(rawdf, baseline, algorithms):
     boundPercents.sort()
     for boundP in boundPercents:
         print("bound percent ", boundP, "valid instances: ", len(
-            df[df["Cost Bound w.r.t. Optimal"] == boundP]["instance"].unique()))
+            df[df["Cost Bound w.r.t. Optimal"] == boundP]["instance"].unique()), "baseline avg:",
+              df[(df["Cost Bound w.r.t. Optimal"] == boundP) &
+                 (df["Algorithm"] == baseline)]["nodeGen"].mean())
 
     differenceNodeGen = []
 
@@ -252,6 +255,65 @@ def makePairWiseDf(rawdf, baseline, algorithms):
 
     return df
 
+def makeFixedbaselineDf(rawdf, fixedbaseline, algorithms, args):
+    df = pd.DataFrame()
+    df["Algorithm"] = np.nan
+    df["instance"] = np.nan
+    df["Cost Bound w.r.t. Optimal"] = np.nan
+    df["nodeGen"] = np.nan
+    df["nodeExp"] = np.nan
+    df["cpu"] = np.nan
+
+
+    bounds = rawdf["Cost Bound w.r.t. Optimal"].unique()
+    BaselineDf = readFixedBaselineData(args, fixedbaseline, bounds)
+    baseline = next(iter(fixedbaseline.values()))
+
+    # print("baseline data count, ", len(BaselineDf))
+
+    for instance in BaselineDf["instance"].unique():
+        dfins = rawdf[rawdf["instance"] == instance]
+        # keep instances solved by all algorithms across all bounds
+        if len(dfins) == len(algorithms) * len(BaselineDf["Cost Bound w.r.t. Optimal"].unique()):
+            df = df.append(dfins)
+
+
+    df = df.append(BaselineDf)
+    # for instance in BaselineDf["instance"].unique():
+        # for boundP in BaselineDf["Cost Bound w.r.t. Optimal"].unique():
+            # # print(instance, boundP)
+            # dfins = rawdf[(rawdf["instance"] == instance) &
+            # (rawdf["Cost Bound w.r.t. Optimal"] == boundP)]
+            # if len(dfins) == len(algorithms):  # keep instances solved by all algorithms
+            # df = df.append(dfins)
+
+    bounds.sort()
+    for boundP in bounds:
+        print("bound percent ", boundP, "valid instances: ", len(
+            df[df["Cost Bound w.r.t. Optimal"] == boundP]["instance"].unique()), "baseline avg:",
+              df[(df["Cost Bound w.r.t. Optimal"] == boundP) &
+                 (df["Algorithm"] == baseline)]["nodeGen"].mean())
+
+    differenceNodeGen = []
+
+    for rowdata in df.iterrows():
+        row = rowdata[1]
+        relateastar = df[(df["instance"] == row['instance']) &
+                         (df["Algorithm"] == baseline) &
+                         (df["Cost Bound w.r.t. Optimal"] == row['Cost Bound w.r.t. Optimal'])]
+        if relateastar.empty:
+            print("error! fixed baseline not found")
+            differenceNodeGen.append(np.nan)
+        else:
+            diffNodeGen = row['nodeGen'] / relateastar['nodeGen']
+            # print("row",row)
+            # print("relateastar",relateastar)
+            diffNodeGen = diffNodeGen.values[0]
+            differenceNodeGen.append(diffNodeGen)
+
+    df["fixedbaseline"] = differenceNodeGen
+
+    return df
 
 def readData(args, algorithms):
     domainSize = args.size
@@ -297,7 +359,7 @@ def readData(args, algorithms):
                 # print("reading ", alg, jsonFile)
                 resultData = json.load(json_data)
 
-                algorithm.append(algorithms[resultData["algorithm"]])
+                algorithm.append(algorithms[alg])
                 boundPercent.append(boundP/100)
                 cpu.append(resultData["cpu time"])
                 instance.append(resultData["instance"])
@@ -316,6 +378,68 @@ def readData(args, algorithms):
 
     # print rawdf
     return rawdf
+
+def readFixedBaselineData(args, fixedbaseline, bounds):
+
+    baseline = next(iter(fixedbaseline.values()))
+    baseline_key = next(iter(fixedbaseline.keys()))
+
+    algorithm=[]
+    boundPercent=[]
+    cpu = []
+    instance = []
+    nodeExpanded = []
+    nodeGenerated = []
+
+    print("reading in fixed baseline data...", fixedbaseline)
+
+    inPath = "../../../tianyi_results/" + args.domain + "/" + args.subdomain + '/alg'
+
+    inPath_alg = inPath.replace('alg', baseline_key)
+    for jsonFile in os.listdir(inPath_alg):
+        if jsonFile[-5:] != ".json":
+            continue
+
+        numbersInFileName = re.findall(r'\d+', jsonFile)
+        sizeStr = numbersInFileName[1]
+
+        if args.domain == "pancake" and sizeStr != args.size:
+            continue
+
+        boundPercentStr = numbersInFileName[0]
+        boundP = int(boundPercentStr)
+
+        # since fixed baseline is not changing with bound, we only have data for b=100
+        if(boundP/100 != 1):
+            continue
+
+        with open(inPath_alg + "/" + jsonFile) as json_data:
+
+            # print("reading ", alg, jsonFile)
+            resultData = json.load(json_data)
+
+            for bp in bounds:
+
+                algorithm.append(baseline)
+                cpu.append(resultData["cpu time"])
+                instance.append(resultData["instance"])
+                nodeExpanded.append(resultData["node expanded"])
+                nodeGenerated.append(resultData["node generated"])
+
+                boundPercent.append(bp)
+
+    rawdf = pd.DataFrame({
+        "Algorithm": algorithm,
+        "instance": instance,
+        "Cost Bound w.r.t. Optimal": boundPercent,
+
+        "nodeGen": nodeGenerated,
+        "nodeExp": nodeExpanded,
+        "cpu": cpu,
+    })
+
+    return rawdf
+
 
 
 def makeCoverageTable(algorithms):
@@ -390,20 +514,39 @@ def plotting(args, config):
     print("building plots...")
 
     algorithms = config.getAlgorithms()
-    # algorithms.update(config.getAdditionalAlgorithms())
-    cureBaseline = config.getBaseline()[args.domain][args.subdomain]
-    baseline = next(iter(cureBaseline.values()))
+    algorithms.update(config.getAdditionalAlgorithms()[args.domain][args.subdomain])
+
     showname = config.getShowname()
 
     if args.plotType == "coverage":
         makeCoverageTable(algorithms)
     elif args.plotType == "nodeGenDiff":
+
+        cureBaseline = config.getBaseline()[args.domain][args.subdomain]
+        baseline = next(iter(cureBaseline.values()))
+
         rawdf = readData(args, algorithms)
         df = makePairWiseDf(rawdf, baseline, algorithms)
+
+
         makeLinePlot("Cost Bound w.r.t. Optimal", args.plotType, df, "Algorithm",
                      "Cost Bound w.r.t. Optimal",
                      showname[args.plotType].replace("baseline", baseline),
                      createOutFilePrefix(args) + args.plotType+".jpg")
+
+    elif args.plotType == "fixedbaseline":
+
+        fixedbaseline = config.getFixedBaseline()[args.domain][args.subdomain]
+        baseline = next(iter(fixedbaseline.values()))
+
+        rawdf = readData(args, algorithms)
+        df = makeFixedbaselineDf(rawdf, fixedbaseline, algorithms, args)
+
+        makeLinePlot("Cost Bound w.r.t. Optimal", args.plotType, df, "Algorithm",
+                     "Cost Bound w.r.t. Optimal",
+                     showname[args.plotType].replace("baseline", baseline),
+                     createOutFilePrefix(args) + args.plotType+".jpg")
+
     else:
         df = readData(args, algorithms)
         makeLinePlot("Cost Bound w.r.t. Optimal", args.plotType, df, "Algorithm",
