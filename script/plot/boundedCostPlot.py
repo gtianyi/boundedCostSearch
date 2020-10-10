@@ -83,6 +83,25 @@ class Configure:
                     "nodeGenDiff": "Algorithm Node Generated /  baseline Node Generated",
                     "cpu": "Raw CPU Time"}
 
+        self.additionalAlgorithms = {"tile":
+                    {
+                        "uniform": {"wastar-with-bound": "WA*-with-bound"},
+                        "heavy": {"wastar-with-bound": "WA*-with-bound"}
+                    },
+                    "pancake":
+                    {
+                        "regular": {"astar-with-bound": "A*-with-bound"}
+                    },
+                    "racetrack":
+                    {
+                        "barto-big": {"astar-with-bound": "A*-with-bound"},
+                        "barto-bigger": {"astar-with-bound": "A*-with-bound"},
+                        "hansen-bigger": {"astar-with-bound": "A*-with-bound"},
+                        "uniform-small": {"astar-with-bound": "A*-with-bound"},
+                        "uniform": {"astar-with-bound": "A*-with-bound"}
+                    }
+                   }
+
     def getAlgorithms(self):
         return self.algorithms
 
@@ -94,6 +113,9 @@ class Configure:
 
     def getShowname(self):
         return self.showname
+
+    def getAdditionalAlgorithms(self):
+        return self.additionalAlgorithms
 
 def parseArugments():
 
@@ -145,10 +167,10 @@ def parseArugments():
     return parser
 
 
-def makeLinePlot(width, height, xAxis, yAxis, dataframe, hue,
+def makeLinePlot(xAxis, yAxis, dataframe, hue,
                  xLabel, yLabel, outputName):
     sns.set(rc={
-        'figure.figsize': (width, height),
+        'figure.figsize': (13, 10),
         'font.size': 27,
         'text.color': 'black'
     })
@@ -349,57 +371,51 @@ def makeCoverageTable(algorithms):
 
     plt.savefig(out_file, dpi=200)
 
-
-def plotting(args, algorithms, showname, baseline):
-    print("building plots...")
-
-    domainSize = args.size
-    domainType = args.domain
-    subdomainType = args.subdomain
+def createOutFilePrefix(args):
 
     nowstr = datetime.now().strftime("%d%m%Y-%H%M")
 
-    out_dir = "../../../tianyi_plots/" + domainType
+    outDirectory = "../../../tianyi_plots/" + args.domain
 
-    width = 13
-    height = 10
+    if not os.path.exists(outDirectory):
+        os.mkdir(outDirectory)
 
-    if not os.path.exists(out_dir):
-        os.mkdir(out_dir)
+    outFilePrefix = outDirectory + '/' + args.domain + "-" + \
+        args.subdomain + "-" + args.size + '-' + nowstr
 
-    out_file = out_dir + '/' + domainType + "-" + \
-        subdomainType + "-" + domainSize + '-' + nowstr
+    return outFilePrefix
+
+
+def plotting(args, config):
+    print("building plots...")
+
+    algorithms = config.getAlgorithms()
+    # algorithms.update(config.getAdditionalAlgorithms())
+    cureBaseline = config.getBaseline()[args.domain][args.subdomain]
+    baseline = next(iter(cureBaseline.values()))
+    showname = config.getShowname()
 
     if args.plotType == "coverage":
         makeCoverageTable(algorithms)
     elif args.plotType == "nodeGenDiff":
         rawdf = readData(args, algorithms)
         df = makePairWiseDf(rawdf, baseline, algorithms)
-        makeLinePlot(width, height, "Cost Bound w.r.t. Optimal", args.plotType, df, "Algorithm",
+        makeLinePlot("Cost Bound w.r.t. Optimal", args.plotType, df, "Algorithm",
                      "Cost Bound w.r.t. Optimal",
                      showname[args.plotType].replace("baseline", baseline),
-                     out_file + args.plotType+".jpg")
+                     createOutFilePrefix(args) + args.plotType+".jpg")
     else:
         df = readData(args, algorithms)
-        makeLinePlot(width, height, "Cost Bound w.r.t. Optimal", args.plotType, df, "Algorithm",
+        makeLinePlot("Cost Bound w.r.t. Optimal", args.plotType, df, "Algorithm",
                      "Cost Bound w.r.t. Optimal", showname[args.plotType],
-                     out_file + args.plotType+".jpg")
+                     createOutFilePrefix(args) + args.plotType+".jpg")
 
 def main():
     parser = parseArugments()
     args = parser.parse_args()
     print(args)
 
-    config = Configure()
-
-    baselines = config.getBaseline()
-    algorithms = config.getAlgorithms()
-    showname = config.getShowname()
-
-    cureBaseline = baselines[args.domain][args.subdomain]
-    algorithms.update(cureBaseline)
-
-    plotting(args, algorithms, showname, next(iter(cureBaseline.values())))
+    plotting(args, Configure())
 
 
 if __name__ == '__main__':
