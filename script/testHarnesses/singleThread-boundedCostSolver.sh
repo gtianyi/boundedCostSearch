@@ -137,19 +137,20 @@ optimalSolRetriever="${research_home}/boundedCostSearch/tianyicodebase/script/op
 if [ "$domain" == "tile" ]; then
     infile_name="instance-${size}x${size}.st"
     outfile="${outfile_path}/BoundPercent-BoundNumber-size-${size}-instance.json"
+    infile="${infile_path}/${infile_name}"
 fi
 
 if [ "$domain" == "pancake" ]; then
     infile_name="instance-${size}.pan"
     outfile="${outfile_path}/BoundPercent-BoundNumber-size-${size}-instance.json"
+    infile="${infile_path}/${size}/${infile_name}"
 fi
 
 if [ "$domain" == "racetrack" ]; then
     infile_name="${subdomain}-instance.init"
     outfile="${outfile_path}/BoundPercent-BoundNumber-instance.json"
+    infile="${infile_path}/${infile_name}"
 fi
-
-infile="${infile_path}/${infile_name}"
 
 last=$(($first + $n_of_i))
 
