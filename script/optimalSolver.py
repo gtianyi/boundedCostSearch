@@ -55,7 +55,10 @@ def solverConfig():
                               "/realtime-nancy/build_release/tile-pdb-heavy-inverse idastar heavy"},
                      "pancake": {"regular": researchHome +
                                  "/realtime-nancy/build_release/distributionPractice"
-                                 " -d pancake -s regular -a wastar -p 1"},
+                                 " -d pancake -s regular -a wastar -p 1",
+                                 "heavy": researchHome +
+                                 "/realtime-nancy/build_release/distributionPractice"
+                                 " -d pancake -s heavy -a wastar -p 1"},
                      "racetrack": {"barto-big": researchHome +
                                    "/realtime-nancy/build_release/distributionPractice"
                                    " -d racetrack -s barto-big -a wastar -p 1",
@@ -120,6 +123,9 @@ def main():
     if args.domain == "racetrack":
         problemDir = researchHome+"/realtime-nancy/worlds/" + \
         problemFolder[args.domain]+"-"+args.subdomain+"/"
+    elif args.domain == "pancake":
+        problemDir = researchHome+"/realtime-nancy/worlds/" + \
+        problemFolder[args.domain]+"/"+args.size+"/"
 
     solutionJson = {}
 
