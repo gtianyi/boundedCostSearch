@@ -87,6 +87,8 @@ def main():
                         file.write(line[:-2])
                     elif line[-4] == '}':
                         file.write(line[:-3])
+                    elif line[-5] == '}':
+                        file.write(line[:-4])
                     else:
                         file.write(line)
 
