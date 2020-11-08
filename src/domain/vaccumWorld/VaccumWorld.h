@@ -1,6 +1,6 @@
 #pragma once
-#include "../utility/SlidingWindow.h"
-#include "../utility/debug.h"
+#include "../../utility/SlidingWindow.h"
+#include "../../utility/debug.h"
 #include <algorithm>
 #include <cassert>
 #include <cmath>
