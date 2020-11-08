@@ -4,6 +4,7 @@
 #include "domain/PancakePuzzle.h"
 #include "domain/RaceTrack.h"
 #include "domain/SlidingTilePuzzle.h"
+#include "domain/vaccumWorld/VaccumWorld.h"
 #include "search/BEES.hpp"
 #include "search/PotentialSearch.hpp"
 #include "utility/PriorityQueue.h"

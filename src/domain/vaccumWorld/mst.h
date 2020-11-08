@@ -8,6 +8,7 @@
 #define MST_H
 
 #include <cmath>
+#include <limits>
 #include <queue>
 #include <vector>
 
@@ -19,7 +20,7 @@ template<typename Location>
 struct edge
 {
     // default constructor
-    edge(Location& l_, Location& r_, double w_)
+    edge(Location& l_, Location& r_, int w_)
         : left(l_)
         , right(r_)
         , weight(w_)
@@ -32,7 +33,7 @@ struct edge
 
     Location left;
     Location right;
-    double   weight;
+    int      weight;
     bool     operator>(const edge& n) const { return weight < n.weight; }
     bool     operator<(const edge& n) const { return weight > n.weight; }
     bool     operator==(const edge& _node) const
@@ -54,6 +55,8 @@ struct edge
 template<typename Location>
 int mst(vector<Location>& nodeList)
 {
+    assert(nodeList.size() > 1);
+
     priority_queue<edge<Location>> edgeQueue;
     DisjointSet<Location>          djSet;
     // construct graph
@@ -61,8 +64,8 @@ int mst(vector<Location>& nodeList)
         for (int j = 0; j < nodeList.size(); j++) {
             if (i <= j)
                 continue;
-            double d = std::fabs(nodeList[i].first - nodeList[j].first) +
-                       std::fabs(nodeList[i].second - nodeList[j].second);
+            int d = std::abs(nodeList[i].first - nodeList[j].first) +
+                    std::abs(nodeList[i].second - nodeList[j].second);
             edge<Location> e(nodeList[i], nodeList[j], d);
             edgeQueue.push(e);
             djSet.createSet(nodeList[i]);
@@ -81,6 +84,38 @@ int mst(vector<Location>& nodeList)
         }
     }
     return hvalue;
+};
+
+// last node is robot
+template<typename Location>
+int greedyTraversal(vector<Location>& nodeList)
+{
+    assert(nodeList.size() > 1);
+
+    int cost = 0;
+
+    auto cur = nodeList.back();
+    nodeList.pop_back();
+
+    while (!nodeList.empty()) {
+        auto bestIt   = nodeList.begin();
+        int  bestDist = std::numeric_limits<int>::max();
+
+        for (auto it = nodeList.begin(); it != nodeList.end(); ++it) {
+            int dist = std::abs(*it.first - cur.first) +
+                       std::abs(*it.second - cur.second);
+            if (dist < bestDist) {
+                bestDist = dist;
+                bestIt   = it;
+            }
+        }
+
+        cost += bestDist;
+        cur = *bestIt;
+        nodeList.erase(bestIt);
+    }
+
+    return cost;
 };
 
 #endif

@@ -2,6 +2,7 @@
 #include "../../utility/SlidingWindow.h"
 #include "../../utility/debug.h"
 #include <algorithm>
+#include <bitset>
 #include <cassert>
 #include <cmath>
 #include <fstream>
@@ -16,7 +17,7 @@
 #include <unordered_set>
 #include <vector>
 
-#include <bitset>
+#include "mst.h"
 
 using namespace std;
 
@@ -39,7 +40,6 @@ class VaccumWorld
 public:
     typedef double        Cost;
     static constexpr Cost COST_MAX = std::numeric_limits<Cost>::max();
-    static constexpr int  INT_MAX  = std::numeric_limits<int>::max();
 
     class State
     {
@@ -114,6 +114,8 @@ public:
             return dirts;
         }
 
+        int getDirtCount() const { return static_cast<int>(dirts.size()); }
+
         unsigned int getCleanedDirtsCount() const { return cleanedDirtsCount; }
 
         bool isNoDirt() const { return dirts.empty(); }
@@ -179,16 +181,12 @@ public:
 
     Cost distance(const State& state)
     {
-        // Check if the distance of this state has been updated
-        if (correctedD.find(state) != correctedD.end()) {
-            return correctedD[state];
-        }
+        vector<Location> dirtsPlusRobot;
+        dirtsPlusRobot.insert(dirtsPlusRobot.end(), state.getDirts().begin(),
+                              state.getDirts().end());
+        dirtsPlusRobot.push_back(Location(state.getX(), state.getY()));
 
-        Cost d = greedyTraversal(state);
-
-        updateDistance(state, d);
-
-        return correctedD[state];
+        return greedyTraversal(dirtsPlusRobot);
     }
 
     /*Cost distanceErr(const State& state)*/
@@ -205,7 +203,16 @@ public:
     // return correctedDerr[state];
     /*}*/
 
-    Cost heuristic(const State& state) { return minimumSpanningTree(state); }
+    Cost heuristic(const State& state)
+    {
+
+        vector<Location> dirtsPlusRobot;
+        dirtsPlusRobot.insert(dirtsPlusRobot.end(), state.getDirts().begin(),
+                              state.getDirts().end());
+        dirtsPlusRobot.push_back(Location(state.getX(), state.getY()));
+
+        return mst(dirtsPlusRobot) + state.getDirtCount();
+    }
 
     Cost epsilonHGlobal() { return curEpsilonH; }
 
