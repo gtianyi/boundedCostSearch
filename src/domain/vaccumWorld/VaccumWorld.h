@@ -432,9 +432,9 @@ private:
             }
         }
 
-        cout << "size: " << mapWidth << "x" << mapHeight << "\n";
-        cout << "blocked: " << blockedCells.size() << "\n";
-        cout << "dirts: " << dirts.size() << "\n";
+        // cout << "size: " << mapWidth << "x" << mapHeight << "\n";
+        // cout << "blocked: " << blockedCells.size() << "\n";
+        // cout << "dirts: " << dirts.size() << "\n";
 
         startState =
           State(static_cast<int>(startLocation.first),
