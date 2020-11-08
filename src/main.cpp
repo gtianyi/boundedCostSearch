@@ -19,14 +19,16 @@ int main(int argc, char** argv)
 
     auto optionAdder = options.add_options();
 
-    optionAdder("d,domain", "domain type: randomtree, tile, pancake, racetrack",
-                cxxopts::value<std::string>()->default_value("tile"));
+    optionAdder(
+      "d,domain",
+      "domain type: randomtree, tile, pancake, racetrack, vaccumworld",
+      cxxopts::value<std::string>()->default_value("vaccumworld"));
 
     optionAdder("s,subdomain",
                 "puzzle type: uniform, inverse, heavy, sqrt; "
                 "pancake type: regular, heavy, sumheavy;"
                 "racetrack map : barto-big, barto-bigger, hanse-bigger-double, "
-                "uniform",
+                "vaccumworld: uniform, heavy ",
                 cxxopts::value<std::string>()->default_value("uniform"));
 
     optionAdder("a,alg", "suboptimal algorithm: pts, ptshhat, ptsnancy",
@@ -112,6 +114,18 @@ int main(int argc, char** argv)
 
         searchPtr =
           new BoundedCostSearch<RaceTrack>(*world, bound, alg, weight);
+    } else if (d == "vaccumworld") {
+        VaccumWorld* world;
+
+        world = new VaccumWorld(cin);
+
+        if (sd == "heavy") {
+            world->setVariant(1);
+        }
+
+        searchPtr =
+          new BoundedCostSearch<VaccumWorld>(*world, bound, alg, weight);
+
     } else {
         cout << "unknow domain!\n";
         std::cout << options.help() << std::endl;
