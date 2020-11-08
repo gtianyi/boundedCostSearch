@@ -60,13 +60,15 @@ int mst(vector<Location>& nodeList)
     priority_queue<edge<Location>> edgeQueue;
     DisjointSet<Location>          djSet;
     // construct graph
-    for (int i = 0; i < nodeList.size(); i++) {
-        for (int j = 0; j < nodeList.size(); j++) {
+    for (unsigned int i = 0; i < nodeList.size(); i++) {
+        for (unsigned int j = 0; j < nodeList.size(); j++) {
             if (i <= j)
                 continue;
-            int d = std::abs(nodeList[i].first - nodeList[j].first) +
-                    std::abs(nodeList[i].second - nodeList[j].second);
-            edge<Location> e(nodeList[i], nodeList[j], d);
+            unsigned long d = max(nodeList[i].first, nodeList[j].first) -
+                              min(nodeList[i].first, nodeList[j].first) +
+                              max(nodeList[i].second, nodeList[j].second) -
+                              min(nodeList[i].second, nodeList[j].second);
+            edge<Location> e(nodeList[i], nodeList[j], static_cast<int>(d));
             edgeQueue.push(e);
             djSet.createSet(nodeList[i]);
             djSet.createSet(nodeList[j]);
@@ -84,7 +86,7 @@ int mst(vector<Location>& nodeList)
         }
     }
     return hvalue;
-};
+}
 
 // last node is robot
 template<typename Location>
@@ -92,18 +94,19 @@ int greedyTraversal(vector<Location>& nodeList)
 {
     assert(nodeList.size() > 1);
 
-    int cost = 0;
+    unsigned long cost = 0;
 
     auto cur = nodeList.back();
     nodeList.pop_back();
 
     while (!nodeList.empty()) {
-        auto bestIt   = nodeList.begin();
-        int  bestDist = std::numeric_limits<int>::max();
+        auto          bestIt   = nodeList.begin();
+        unsigned long bestDist = std::numeric_limits<unsigned long>::max();
 
         for (auto it = nodeList.begin(); it != nodeList.end(); ++it) {
-            int dist = std::abs(*it.first - cur.first) +
-                       std::abs(*it.second - cur.second);
+            unsigned long dist =
+              max(it->first, cur.first) - min(it->first, cur.first) +
+              max(it->second, cur.second) - min(it->second, cur.second);
             if (dist < bestDist) {
                 bestDist = dist;
                 bestIt   = it;
@@ -115,7 +118,7 @@ int greedyTraversal(vector<Location>& nodeList)
         nodeList.erase(bestIt);
     }
 
-    return cost;
-};
+    return static_cast<int>(cost);
+}
 
 #endif
