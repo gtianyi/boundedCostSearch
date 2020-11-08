@@ -114,6 +114,7 @@ int main(int argc, char** argv)
 
         searchPtr =
           new BoundedCostSearch<RaceTrack>(*world, bound, alg, weight);
+
     } else if (d == "vaccumworld") {
         VaccumWorld* world;
 
