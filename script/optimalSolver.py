@@ -140,7 +140,7 @@ def main():
         counter += 1
         command = solver + " < " + problemDir+problemFile
 
-        print("command ",command)
+        # print("command ",command)
 
         process = Popen("exec " + command, stdin=PIPE,
                         stdout=PIPE, stderr=PIPE, shell=True)
