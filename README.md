@@ -68,21 +68,24 @@ cd ../build
 bin/bcs -h
 This is a bounded cost search benchmark
 Usage:
-  ./bcs [OPTION...] < [input instance file]
+  ./bcs [OPTION...]
 
-  -d, --domain arg          domain type: randomtree, tile, pancake, racetrack
-                            (default: tile)
+  -d, --domain arg          domain type: randomtree, tile, pancake,
+                            racetrack, vaccumworld (default: vaccumworld)
   -s, --subdomain arg       puzzle type: uniform, inverse, heavy, sqrt;
-                            pancake type: regular, heavy, sumheavy;racetrack map :
+                            pancake type: regular, heavy, sumheavy; racetrack map :
                             barto-big, barto-bigger, hanse-bigger-double,
-                            uniform (default: uniform)
-  -a, --alg arg             suboptimal algorithm: pts, ptshhat, ptsnancy
-                            (default: ptsnancy)
+                            vaccumworld: uniform, heavy;  (default: uniform)
+  -a, --alg arg             baseline algorithm: pts, bees, beeps; new
+                            algorithm: ptshhat, ptsnancy, beepsnancy; other
+                            algorithm: astar, wastar;  (default: ptsnancy)
   -b, --bound arg           cost bound (default: 10)
   -i, --instance arg        instance file name (default: 2-4x4.st)
+  -w, --weight arg          weight for wA* baseline (default: 2)
   -o, --performenceOut arg  performence Out file
   -v, --pathOut arg         path Out file
   -h, --help                Print usage
+
 ```
 
 ## Experiments Pipeline

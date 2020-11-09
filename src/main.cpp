@@ -26,12 +26,15 @@ int main(int argc, char** argv)
 
     optionAdder("s,subdomain",
                 "puzzle type: uniform, inverse, heavy, sqrt; "
-                "pancake type: regular, heavy, sumheavy;"
+                "pancake type: regular, heavy, sumheavy; "
                 "racetrack map : barto-big, barto-bigger, hanse-bigger-double, "
-                "vaccumworld: uniform, heavy ",
+                "vaccumworld: uniform, heavy; ",
                 cxxopts::value<std::string>()->default_value("uniform"));
 
-    optionAdder("a,alg", "suboptimal algorithm: pts, ptshhat, ptsnancy",
+    optionAdder("a,alg",
+                "baseline algorithm: pts, bees, beeps; "
+                "new algorithm: ptshhat, ptsnancy, beepsnancy; "
+                "other algorithm: astar, wastar; ",
                 cxxopts::value<std::string>()->default_value("ptsnancy"));
 
     optionAdder("b,bound", "cost bound",
