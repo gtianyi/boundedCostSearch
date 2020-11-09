@@ -30,7 +30,7 @@ class Configure:
         self.algorithms = OrderedDict(
             {
                 "pts": "PTS",
-                # "ptshhat": "PTS-h^",
+                "ptshhat": "PTS-h^",
                 "ptsnancy": "expected work",
                 "bees": "BEES",
                 # "wastar": "WA*",
@@ -56,6 +56,12 @@ class Configure:
                              "hansen-bigger": {"bees": "BEES"},
                              "uniform-small": {"bees": "BEES"},
                              "uniform": {"bees": "BEES"}
+                         },
+                         "vaccumworld":
+                         {
+                             "uniform": {"wastar": "WA*"},
+                             "heavy": {"wastar": "WA*"}
+                             # "heavy": {"wastar": "WA*"}
                          }
                          }
 
@@ -97,6 +103,12 @@ class Configure:
                                          # "heavy": {"wastar": "WA*"}
                                          "heavy": {}
                                      },
+                                     "vaccumworld":
+                                     {
+                                         "uniform": {"wastar": "WA*"},
+                                         # "heavy": {"wastar": "WA*"}
+                                         "heavy": {}
+                                     },
                                      # "racetrack":
                                      # {
                                      # "barto-big": {"astar-with-bound": "A*-with-bound"},
@@ -131,7 +143,7 @@ def parseArugments():
         '-d',
         action='store',
         dest='domain',
-        help='domain: tile(default), pancake, racetrack',
+        help='domain: tile(default), pancake, racetrack, vaccumworld',
         default='tile')
 
     parser.add_argument(
@@ -140,7 +152,8 @@ def parseArugments():
         dest='subdomain',
         help='subdomain: tile: uniform(default), heavy, inverse; \
         pancake: regular, heavy; \
-        racetrack : barto-big,uniform-small, barto-bigger, hanse-bigger-double',
+        racetrack : barto-big,uniform-small, barto-bigger, hanse-bigger-double;\
+        vaccumworld: uniform, heavy',
         default='uniform')
 
     parser.add_argument(
@@ -365,12 +378,11 @@ def readData(args, algorithms):
                 resultData = json.load(json_data)
                 # if alg == "ptsnancy":
                 # if alg == "ptsnancy" and resultData["node generated"] > 1000:
-                    # print("reading ", alg, jsonFile, "generated: ",
-                          # resultData["node generated"])
+                # print("reading ", alg, jsonFile, "generated: ",
+                # resultData["node generated"])
 
                 # if alg == "ptsnancy" and resultData["node generated"] > 1000:
-                    # continue
-
+                # continue
 
                 algorithm.append(algorithms[alg])
                 boundPercent.append(boundP/100)

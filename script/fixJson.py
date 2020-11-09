@@ -24,7 +24,7 @@ def parseArugments():
         '-d',
         action='store',
         dest='domain',
-        help='domain: tile(default), pancake, racetrack',
+        help='domain: tile(default), pancake, racetrack, vaccumworld',
         default='tile')
 
     parser.add_argument(
