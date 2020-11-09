@@ -26,7 +26,7 @@ def parseArugments():
         '-d',
         action='store',
         dest='domain',
-        help='domain: tile(default), pancake, racetrack',
+        help='domain: tile(default), pancake, racetrack, vaccumworld',
         default='tile')
 
     parser.add_argument(
@@ -35,7 +35,8 @@ def parseArugments():
         dest='subdomain',
         help='subdomain: tile: uniform(default), heavy, inverse; \
         pancake: regular, heavy; \
-        racetrack : barto-big,uniform-small, barto-bigger, hanse-bigger-double',
+        racetrack : barto-big,uniform-small, barto-bigger, hanse-bigger-double\
+        vaccumworld: uniform, heavy;',
         default='uniform')
 
     parser.add_argument('-z',
@@ -73,13 +74,17 @@ def solverConfig():
                                    " -d racetrack -s uniform -a wastar -p 1",
                                    "uniform-small": researchHome +
                                    "/realtime-nancy/build_release/distributionPractice"
-                                   " -d racetrack -s uniform-small -a wastar -p 1"}
+                                   " -d racetrack -s uniform-small -a wastar -p 1"},
+                     "vaccumworld": {"uniform": researchHome +
+                                     "/boundedCostSearch/tianyicodebase_build_release/bin/bcs"
+                                     " -d vaccumworld -a astar"}
                      }
 
     problemFolder = {
         "tile": "slidingTile",
         "pancake": "pancake",
-        "racetrack": "racetrack"
+        "racetrack": "racetrack",
+        "vaccumworld": "vaccumworld/200x200"
     }
 
     return optimalSolver, problemFolder
@@ -102,7 +107,7 @@ def solverOutPutParser(args, outStr):
                     sol = lineContent[2].decode("utf-8")
                     return sol
 
-    elif args.domain == "pancake" or args.domain == "racetrack":
+    elif args.domain in ["pancake", "racetrack", "vaccumworld"]:
         return outStr[0].split()[2].decode("utf-8")
 
     return "error: parsing solver output"
@@ -122,10 +127,10 @@ def main():
 
     if args.domain == "racetrack":
         problemDir = researchHome+"/realtime-nancy/worlds/" + \
-        problemFolder[args.domain]+"-"+args.subdomain+"/"
+            problemFolder[args.domain]+"-"+args.subdomain+"/"
     elif args.domain == "pancake":
         problemDir = researchHome+"/realtime-nancy/worlds/" + \
-        problemFolder[args.domain]+"/"+args.size+"/"
+            problemFolder[args.domain]+"/"+args.size+"/"
 
     solutionJson = {}
 
@@ -135,7 +140,7 @@ def main():
         counter += 1
         command = solver + " < " + problemDir+problemFile
 
-        # print("command ",command)
+        print("command ",command)
 
         process = Popen("exec " + command, stdin=PIPE,
                         stdout=PIPE, stderr=PIPE, shell=True)
