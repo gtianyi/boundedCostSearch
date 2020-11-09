@@ -152,6 +152,12 @@ if [ "$domain" == "racetrack" ]; then
     infile="${infile_path}/${infile_name}"
 fi
 
+if [ "$domain" == "vaccumworld" ]; then
+    infile_name="instance.vw"
+    outfile="${outfile_path}/BoundPercent-BoundNumber-instance.json"
+    infile="${infile_path}/200x200/${infile_name}"
+fi
+
 last=$(($first + $n_of_i))
 
 for solverId in "${!boundedCostSolvers[@]}"; do
