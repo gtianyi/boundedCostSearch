@@ -169,7 +169,8 @@ int heavyMinimumSpanningTree(vector<Location>& nodeList,
     while (edgeQueueGreatestFirst.size() > 0) {
         edge<Location> e = edgeQueueGreatestFirst.top();
         edgeQueueGreatestFirst.pop();
-        hvalue += e.weight + static_cast<int>(currentWeight) + weightAdded;
+        hvalue +=
+          e.weight * max(1, (static_cast<int>(currentWeight) + weightAdded));
         weightAdded += 1;
     }
 
