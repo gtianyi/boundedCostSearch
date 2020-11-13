@@ -201,7 +201,12 @@ public:
                               state.getDirts().end());
         dirtsPlusRobot.push_back(Location(state.getX(), state.getY()));
 
-        return mst(dirtsPlusRobot) + state.getDirtCount();
+        if (costVariant == 1)
+            return heavyMinimumSpanningTree(dirtsPlusRobot,
+                                            state.getCleanedDirtsCount()) +
+                   state.getDirtCount();
+
+        return minimumSpanningTree(dirtsPlusRobot) + state.getDirtCount();
     }
 
     Cost epsilonHGlobal() { return curEpsilonH; }

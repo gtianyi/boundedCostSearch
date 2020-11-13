@@ -8,6 +8,7 @@
 #define MST_H
 
 #include <cmath>
+#include <iostream>
 #include <limits>
 #include <queue>
 #include <vector>
@@ -53,7 +54,7 @@ struct edge
 };
 
 template<typename Location>
-int mst(vector<Location>& nodeList)
+int minimumSpanningTree(vector<Location>& nodeList)
 {
     assert(nodeList.size() > 1);
 
@@ -119,6 +120,68 @@ int greedyTraversal(vector<Location>& nodeList)
     }
 
     return static_cast<int>(cost);
+}
+
+template<typename Location>
+int heavyMinimumSpanningTree(vector<Location>& nodeList,
+                             unsigned int      currentWeight)
+{
+    assert(nodeList.size() > 1);
+
+    priority_queue<edge<Location>> edgeQueue;
+    DisjointSet<Location>          djSet;
+    // construct graph
+    for (unsigned int i = 0; i < nodeList.size(); i++) {
+        for (unsigned int j = 0; j < nodeList.size(); j++) {
+            if (i <= j)
+                continue;
+            unsigned long d = max(nodeList[i].first, nodeList[j].first) -
+                              min(nodeList[i].first, nodeList[j].first) +
+                              max(nodeList[i].second, nodeList[j].second) -
+                              min(nodeList[i].second, nodeList[j].second);
+            edge<Location> e(nodeList[i], nodeList[j], static_cast<int>(d));
+            edgeQueue.push(e);
+            djSet.createSet(nodeList[i]);
+            djSet.createSet(nodeList[j]);
+        }
+    }
+    auto cmp = [](edge<Location> left, edge<Location> right) {
+        return left > right;
+    };
+    std::priority_queue<edge<Location>, std::vector<edge<Location>>,
+                        decltype(cmp)>
+      edgeQueueGreatestFirst(cmp);
+
+    // Generate mst get hvalue
+    while (edgeQueue.size() > 0) {
+        edge<Location> e = edgeQueue.top();
+        edgeQueue.pop();
+        if (djSet.findSet(e.left) != djSet.findSet(e.right)) {
+            djSet.unionSets(e.left, e.right);
+            edgeQueueGreatestFirst.push(e);
+        }
+    }
+
+    int hvalue      = 0;
+    int weightAdded = 0;
+
+    int prevWeight = std::numeric_limits<int>::max();
+    // get hvalue
+    while (edgeQueueGreatestFirst.size() > 0) {
+        edge<Location> e = edgeQueueGreatestFirst.top();
+
+        assert(e.weight <= prevWeight);
+        std::cout << "MST Weight " << prevWeight;
+
+        edgeQueueGreatestFirst.pop();
+        hvalue += e.weight + static_cast<int>(currentWeight) + weightAdded;
+        weightAdded += 1;
+
+        prevWeight = e.weight;
+    }
+    std::cout << "\n";
+
+    return hvalue;
 }
 
 #endif
