@@ -252,26 +252,33 @@ public:
 
 private:
     static bool duplicateDetection(Node*                              node,
-                                   unordered_map<State, Node*, Hash>& closed)
+                                   unordered_map<State, Node*, Hash>& closed,
+                                   PriorityQueue<Node*>&              open)
     {
         // Check if this state exists
         typename unordered_map<State, Node*, Hash>::iterator it =
           closed.find(node->getState());
 
         if (it != closed.end()) {
-            // This state has been generated before, check if its node is on
-            // OPEN
-            if (it->second->onOpen()) {
-                // This node is on OPEN, keep the better g-value
-                if (node->getGValue() < it->second->getGValue()) {
-                    it->second->setGValue(node->getGValue());
-                    it->second->setParent(node->getParent());
-                    it->second->setHValue(node->getHValue());
-                    it->second->setDValue(node->getDValue());
-                    it->second->setEpsilonH(node->getEpsilonH());
-                    it->second->setEpsilonD(node->getEpsilonD());
-                    it->second->setState(node->getState());
+            // if the new node is better, update it on close
+            if (node->getGValue() < it->second->getGValue()) {
+                it->second->setGValue(node->getGValue());
+                it->second->setParent(node->getParent());
+                it->second->setHValue(node->getHValue());
+                it->second->setDValue(node->getDValue());
+                it->second->setEpsilonH(node->getEpsilonH());
+                it->second->setEpsilonD(node->getEpsilonD());
+                it->second->setState(node->getState());
+
+                // This state has been generated before, check if its node is on
+                // OPEN
+                if (it->second->onOpen()) {
+                    // This node is on OPEN, keep the better g-value
+                    open.remove(it->second);
                 }
+
+                // reopen the node
+                open.push(it->second);
             }
 
             return true;

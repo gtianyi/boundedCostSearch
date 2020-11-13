@@ -361,6 +361,7 @@ public:
             else
                 return state.getCleanedDirtsCount() + 1;
         }
+
         return 1;
     }
 

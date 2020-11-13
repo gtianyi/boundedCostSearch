@@ -18,7 +18,8 @@ public:
     double run(PriorityQueue<Node*>& open, PriorityQueue<Node*>& openhat,
                unordered_map<State, Node*, Hash>& closed,
                unordered_map<State, Node*, Hash>& expanded,
-               std::function<bool(Node*, unordered_map<State, Node*, Hash>&)>
+               std::function<bool(Node*, unordered_map<State, Node*, Hash>&,
+                                  PriorityQueue<Node*>&)>
                                       duplicateDetection,
                SearchResultContainer& res)
     {
@@ -75,7 +76,7 @@ public:
                   new Node(newG, newH, newD, this->domain.epsilonHGlobal(),
                            this->domain.epsilonDGlobal(), child, cur);
 
-                bool dup = duplicateDetection(childNode, closed);
+                bool dup = duplicateDetection(childNode, closed, open);
 
                 if (!dup && childNode->getFValue() < bestF) {
                     bestF     = childNode->getFValue();

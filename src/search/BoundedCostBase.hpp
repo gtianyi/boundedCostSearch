@@ -25,7 +25,8 @@ public:
       PriorityQueue<Node*>& open, PriorityQueue<Node*>& openhat,
       unordered_map<State, Node*, Hash>& closed,
       unordered_map<State, Node*, Hash>& expanded,
-      std::function<bool(Node*, unordered_map<State, Node*, Hash>&)>
+      std::function<bool(Node*, unordered_map<State, Node*, Hash>&,
+                         PriorityQueue<Node*>&)>
                              duplicateDetection,
       SearchResultContainer& res) = 0;
 

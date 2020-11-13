@@ -77,7 +77,10 @@ def solverConfig():
                                    " -d racetrack -s uniform-small -a wastar -p 1"},
                      "vaccumworld": {"uniform": researchHome +
                                      "/boundedCostSearch/tianyicodebase_build_release/bin/bcs"
-                                     " -d vaccumworld -a astar"}
+                                     " -d vaccumworld -a astar",
+                                     "heavy": researchHome +
+                                     "/boundedCostSearch/tianyicodebase_build_release/bin/bcs"
+                                     " -d vaccumworld -a astar -s heavy"}
                      }
 
     problemFolder = {

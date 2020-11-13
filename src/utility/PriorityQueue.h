@@ -133,7 +133,7 @@ public:
         for (size_t i = 0; i < c.size(); i++) {
             if (c[i] == item) {
                 swap(c[i], c[last()]);
-                c.erase(c.begin() + last());
+                c.erase(c.begin() + static_cast<long int>(last()));
                 if (comp(c[i], c[parent(i)]))
                     pullUp(i);
                 else
@@ -169,9 +169,9 @@ private:
 
     size_t parent(size_t i) { return i > 1 ? (i - 1) / 2 : 0; }
 
-    size_t rightChild(size_t i) { return 2 * i + 2; }
+    size_t rightChild(size_t i) { return static_cast<size_t>(2 * i + 2); }
 
-    size_t leftChild(size_t i) { return 2 * i + 1; }
+    size_t leftChild(size_t i) { return static_cast<size_t>(2 * i + 1); }
 
     void pullUp(size_t i)
     {
