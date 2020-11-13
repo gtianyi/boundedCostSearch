@@ -158,9 +158,12 @@ int heavyMinimumSpanningTree(vector<Location>& nodeList,
         edgeQueue.pop();
         if (djSet.findSet(e.left) != djSet.findSet(e.right)) {
             djSet.unionSets(e.left, e.right);
+            std::cout << "small first weight " << e.weight;
             edgeQueueGreatestFirst.push(e);
         }
     }
+
+    std::cout << "\n";
 
     int hvalue      = 0;
     int weightAdded = 0;
