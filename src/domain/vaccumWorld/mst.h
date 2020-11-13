@@ -158,31 +158,20 @@ int heavyMinimumSpanningTree(vector<Location>& nodeList,
         edgeQueue.pop();
         if (djSet.findSet(e.left) != djSet.findSet(e.right)) {
             djSet.unionSets(e.left, e.right);
-            std::cout << "small first weight " << e.weight;
             edgeQueueGreatestFirst.push(e);
         }
     }
 
-    std::cout << "\n";
-
     int hvalue      = 0;
     int weightAdded = 0;
 
-    int prevWeight = std::numeric_limits<int>::max();
     // get hvalue
     while (edgeQueueGreatestFirst.size() > 0) {
         edge<Location> e = edgeQueueGreatestFirst.top();
-
-        assert(e.weight <= prevWeight);
-        std::cout << "MST Weight " << prevWeight;
-
         edgeQueueGreatestFirst.pop();
         hvalue += e.weight + static_cast<int>(currentWeight) + weightAdded;
         weightAdded += 1;
-
-        prevWeight = e.weight;
     }
-    std::cout << "\n";
 
     return hvalue;
 }
