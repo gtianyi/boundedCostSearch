@@ -31,17 +31,25 @@ public:
     typedef double        Cost;
     static constexpr Cost COST_MAX = std::numeric_limits<Cost>::max();
 
+    struct Action
+    {
+        int  moveX;
+        int  moveY;
+        bool vaccum;
+    };
+
     class State
     {
     public:
         State() {}
 
         State(int x_, int y_, std::unordered_set<Location, pair_hash>&& dirts_,
-              unsigned int cleanedDirtsCount_)
+              unsigned int cleanedDirtsCount_, Action fromAction_)
             : x(x_)
             , y(y_)
             , dirts(dirts_)
             , cleanedDirtsCount(cleanedDirtsCount_)
+            , fromAction(fromAction_)
         {
             generateKey();
         }
@@ -60,6 +68,8 @@ public:
             }
 
             stream << "\n";
+
+            stream << "key " << state.key() << "\n";
 
             return stream;
         }
@@ -115,6 +125,8 @@ public:
             return dirts.find(loc) != dirts.end();
         }
 
+        bool isCleanAction() const { return fromAction.vaccum; }
+
         std::string toString() const
         {
             std::string s = to_string(x) + " " + to_string(y) + " ";
@@ -144,18 +156,12 @@ public:
         unsigned int                            cleanedDirtsCount;
         unsigned long long                      theKey =
           std::numeric_limits<unsigned long long>::max();
+        Action fromAction;
     };
 
     struct HashState
     {
         std::size_t operator()(const State& s) const { return s.key(); }
-    };
-
-    struct Action
-    {
-        int  moveX;
-        int  moveY;
-        bool vaccum;
     };
 
     VaccumWorld(std::istream& input)
@@ -207,6 +213,7 @@ public:
                    state.getDirtCount();
 
         return minimumSpanningTree(dirtsPlusRobot) + state.getDirtCount();
+        // return minimumSpanningTree(dirtsPlusRobot);
     }
 
     Cost epsilonHGlobal() { return curEpsilonH; }
@@ -305,7 +312,7 @@ public:
                     auto newDirts = state.getDirts();
                     newDirts.erase(robotLoc);
                     State succ(state.getX(), state.getY(), std::move(newDirts),
-                               state.getCleanedDirtsCount() + 1);
+                               state.getCleanedDirtsCount() + 1, action);
                     successors.push_back(succ);
                 }
 
@@ -318,7 +325,7 @@ public:
             if (isLegalLocation(newX, newY)) {
                 auto  dirts = state.getDirts();
                 State succ(newX, newY, std::move(dirts),
-                           state.getCleanedDirtsCount());
+                           state.getCleanedDirtsCount(), action);
 
                 successors.push_back(succ);
             }
@@ -348,8 +355,12 @@ public:
         // 0: uniform cost.
         // 1: heavy cost: one plus the number of dirt piles the robot has
         //    cleaned up (the weight from the dirt drains the battery faster).
-        if (costVariant == 1)
-            return state.getCleanedDirtsCount() + 1;
+        if (costVariant == 1) {
+            if (state.isCleanAction())
+                return state.getCleanedDirtsCount();
+            else
+                return state.getCleanedDirtsCount() + 1;
+        }
         return 1;
     }
 
@@ -441,9 +452,9 @@ private:
         // cout << "blocked: " << blockedCells.size() << "\n";
         // cout << "dirts: " << dirts.size() << "\n";
 
-        startState =
-          State(static_cast<int>(startLocation.first),
-                static_cast<int>(startLocation.second), std::move(dirts), 0);
+        startState = State(static_cast<int>(startLocation.first),
+                           static_cast<int>(startLocation.second),
+                           std::move(dirts), 0, Action{-999, -999, false});
     }
 
     void initilaizeActions()
