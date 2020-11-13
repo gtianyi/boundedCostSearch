@@ -32,7 +32,7 @@ public:
             // Check if current node is goal
             if (this->domain.isGoal(cur->getState())) {
                 this->getSolutionPath(res, cur);
-                return cur->getFValue();
+                return cur->getGValue();
             }
 
             res.nodesExpanded++;
@@ -59,6 +59,7 @@ public:
                 // prune by bound
                 if (this->sortingFunction != "astar" &&
                     this->sortingFunction != "wastar") {
+                    // if (this->sortingFunction != "wastar") {
                     if (newG + newH > Node::bound) {
                         continue;
                     }
@@ -68,12 +69,7 @@ public:
                   new Node(newG, newH, newD, this->domain.epsilonHGlobal(),
                            this->domain.epsilonDGlobal(), child, cur);
 
-                bool dup = false;
-                if (this->sortingFunction == "astar") {
-                    dup = closed.find(childNode->getState()) != closed.end();
-                } else {
-                    dup = duplicateDetection(childNode, closed);
-                }
+                bool dup = duplicateDetection(childNode, closed);
 
                 if (!dup && childNode->getFValue() < bestF) {
                     bestF     = childNode->getFValue();
