@@ -38,6 +38,8 @@ public:
 
             res.nodesExpanded++;
 
+            // cout << cur->getState();
+
             open.pop();
             cur->close();
 

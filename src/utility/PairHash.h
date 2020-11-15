@@ -13,3 +13,10 @@ struct pair_hash
         return h1 ^ h2;
     }
 };
+
+template<class T>
+inline void hash_combine(unsigned long long& seed, const T& v)
+{
+    std::hash<T> hasher;
+    seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+}

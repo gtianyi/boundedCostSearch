@@ -108,6 +108,7 @@ public:
 
         bool onOpen() { return open; }
         void close() { open = false; }
+        void reopen() { open = true; }
 
         static bool compareNodesF(const Node* n1, const Node* n2)
         {
@@ -253,13 +254,17 @@ public:
 private:
     static bool duplicateDetection(Node*                              node,
                                    unordered_map<State, Node*, Hash>& closed,
-                                   PriorityQueue<Node*>&              open)
+                                   PriorityQueue<Node*>&)
     {
         // Check if this state exists
         typename unordered_map<State, Node*, Hash>::iterator it =
           closed.find(node->getState());
 
         if (it != closed.end()) {
+            /*cout << "dup found \n";*/
+            // cout << "new " << node->getState();
+            // cout << "old " << it->second->getState();
+
             // if the new node is better, update it on close
             if (node->getGValue() < it->second->getGValue()) {
                 it->second->setGValue(node->getGValue());
@@ -272,13 +277,17 @@ private:
 
                 // This state has been generated before, check if its node is on
                 // OPEN
-                if (it->second->onOpen()) {
-                    // This node is on OPEN, keep the better g-value
-                    open.remove(it->second);
-                }
+                /*if (it->second->onOpen()) {*/
+                //// This node is on OPEN, keep the better g-value
+                // open.remove(it->second);
+                // open.push(it->second);
+                ////} else {
+                //////cout << "reopen\n";
+                //// it->second->reopen();
+                /*}*/
 
-                // reopen the node
-                open.push(it->second);
+                //// reopen the node
+                /*open.push(it->second);*/
             }
 
             return true;

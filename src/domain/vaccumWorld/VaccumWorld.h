@@ -86,21 +86,17 @@ public:
 
         void generateKey()
         {
-            // This will provide a unique hash for every state in the racetrack,
-            unsigned long long val        = 0xCBF29CE484222325;
-            unsigned int       x_unsigned = static_cast<unsigned int>(x);
+            // This will provide a unique hash for every state in the
+            // vaccumworld, the normal hash_combine seems go out of the search
+            // space for 200x200, so we use the slower string combine here
+            string sKey = to_string(x) + to_string(y);
 
-            val = val ^ x_unsigned ^ (static_cast<size_t>(y) << 8);
-
-            unsigned int shift = 8;
             for (const auto& dirt : dirts) {
-                shift *= 2;
-                val = val ^ (static_cast<size_t>(dirt.first) << shift);
-                shift *= 2;
-                val = val ^ (static_cast<size_t>(dirt.second) << shift);
+                sKey += to_string(dirt.first);
+                sKey += to_string(dirt.second);
             }
 
-            theKey = val;
+            theKey = std::hash<string>{}(sKey);
         }
 
         unsigned long long key() const { return theKey; }
@@ -214,6 +210,7 @@ public:
 
         return minimumSpanningTree(dirtsPlusRobot) + state.getDirtCount();
         // return minimumSpanningTree(dirtsPlusRobot);
+        // return 0;
     }
 
     Cost epsilonHGlobal() { return curEpsilonH; }
