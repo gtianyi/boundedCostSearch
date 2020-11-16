@@ -94,6 +94,8 @@ def run_task(internal_task, task, task_memory_limit):
                 process.terminate()
                 process.kill()
 
+            time.sleep(0.05)
+
         process.wait()
 
         if process.returncode == 0:
