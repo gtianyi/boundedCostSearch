@@ -59,7 +59,7 @@ def solverConfig():
                                  " -d pancake -s regular -a wastar -p 1",
                                  "heavy": researchHome +
                                  "/realtime-nancy/build_release/distributionPractice"
-                                 " -d pancake -s heavy -a wastar -p 1"},
+                                 " -d pancake -s heavy -a wastar -p 3"},
                      "racetrack": {"barto-big": researchHome +
                                    "/realtime-nancy/build_release/distributionPractice"
                                    " -d racetrack -s barto-big -a wastar -p 1",
