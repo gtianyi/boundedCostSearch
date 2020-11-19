@@ -31,7 +31,7 @@ class Configure:
             {
                 "pts": "PTS",
                 "ptshhat": "PTS-h^",
-                "ptsnancy": "expected work",
+                "ptsnancy": "expected work - 0 f",
                 "bees": "BEES",
                 # "wastar": "WA*",
                 # "astar": "A*",
@@ -40,7 +40,8 @@ class Configure:
 
         self.baseline = {"tile":
                          {
-                             "uniform": {"wastar-with-bound": "WA*-with-bound"},
+                             # "uniform": {"wastar-with-bound": "WA*-with-bound"},
+                             "uniform": {"bees": "BEES"},
                              "heavy": {"bees": "BEES"}
                          },
                          "pancake":
@@ -59,8 +60,9 @@ class Configure:
                          },
                          "vaccumworld":
                          {
-                             "uniform": {"wastar": "WA*"},
-                             "heavy": {"wastar": "WA*"}
+                             # "uniform": {"wastar": "WA*"},
+                             "uniform": {"bees": "BEES"},
+                             "heavy": {"bees": "BEES"}
                              # "heavy": {"wastar": "WA*"}
                          }
                          }
@@ -92,31 +94,41 @@ class Configure:
                          "fixedbaseline": "Algorithm Node Generated /  baseline Node Generated",
                          "cpu": "Raw CPU Time"}
 
+        self.totalInstance = {"tile": "100", "pancake": "100",
+                              "racetrack": "25", "vaccumworld": "60"}
+
         self.additionalAlgorithms = {"tile":
                                      {
-                                         "uniform": {"wastar-with-bound": "WA*-with-bound"},
-                                         "heavy": {"wastar-with-bound": "WA*-with-bound"}
+                                         # "uniform": {"wastar-with-bound": "WA*-with-bound",
+                                         # "ptsnancy-if0thenverysmall": "expected work - no 0 op"},
+                                         "uniform": {"ptsnancy-if0thenverysmall": "expected work - no 0 op",
+                                                     "ptsnancy-if001thenfhat": "expected work - 0 fhat"},
+                                         "heavy": {"ptsnancy-if0thenverysmall": "expected work - no 0 op",
+                                                   "ptsnancy-if001thenfhat": "expected work - 0 fhat"}
                                      },
                                      "pancake":
                                      {
-                                         "regular": {"astar-with-bound": "A*-with-bound"},
+                                         # "regular": {"astar-with-bound": "A*-with-bound"},
+                                         "regular": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"},
                                          # "heavy": {"wastar": "WA*"}
+                                         # "heavy": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"}
                                          "heavy": {}
                                      },
                                      "vaccumworld":
                                      {
-                                         "uniform": {"wastar": "WA*"},
+                                         "uniform": {},
+                                         # "uniform": {"wastar": "WA*"},
                                          # "heavy": {"wastar": "WA*"}
-                                         "heavy": {}
+                                         "heavy": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"}
                                      },
-                                     # "racetrack":
-                                     # {
-                                     # "barto-big": {"astar-with-bound": "A*-with-bound"},
-                                     # "barto-bigger": {"astar-with-bound": "A*-with-bound"},
-                                     # "hansen-bigger": {"astar-with-bound": "A*-with-bound"},
-                                     # "uniform-small": {"astar-with-bound": "A*-with-bound"},
-                                     # "uniform": {"astar-with-bound": "A*-with-bound"}
-                                     # }
+                                     "racetrack":
+                                     {
+                                         "barto-big": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"},
+                                         "barto-bigger": {},
+                                         "hansen-bigger": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"},
+                                         "uniform-small": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"},
+                                         "uniform": {}
+                                     }
                                      }
 
     def getAlgorithms(self):
@@ -130,6 +142,9 @@ class Configure:
 
     def getShowname(self):
         return self.showname
+
+    def getTotalInstance(self):
+        return self.totalInstance
 
     def getAdditionalAlgorithms(self):
         return self.additionalAlgorithms
@@ -187,7 +202,7 @@ def parseArugments():
 
 
 def makeLinePlot(xAxis, yAxis, dataframe, hue,
-                 xLabel, yLabel, outputName):
+                 xLabel, yLabel, totalInstance, outputName):
     sns.set(rc={
         'figure.figsize': (13, 10),
         'font.size': 27,
@@ -205,6 +220,8 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
                       )
 
     ax.tick_params(colors='black', labelsize=12)
+    ax.legend().set_title('Solved/Total: ' +
+                          str(len(dataframe['instance'].unique()))+'/'+totalInstance)
     ax.set_yscale("log")
     plt.ylabel(yLabel, color='black', fontsize=18)
     plt.xlabel(xLabel, color='black', fontsize=18)
@@ -544,6 +561,7 @@ def plotting(args, config):
                       [args.domain][args.subdomain])
 
     showname = config.getShowname()
+    totalInstance = config.getTotalInstance()
 
     if args.plotType == "coverage":
         makeCoverageTable(algorithms)
@@ -557,7 +575,9 @@ def plotting(args, config):
 
         makeLinePlot("Cost Bound w.r.t. Optimal", args.plotType, df, "Algorithm",
                      "Cost Bound w.r.t. Optimal",
-                     showname[args.plotType].replace("baseline", baseline),
+                     # "Cost Bound w.r.t. Suboptimal(w=3)",
+                     showname[args.plotType].replace(
+                         "baseline", baseline), totalInstance[args.domain],
                      createOutFilePrefix(args) + args.plotType+".jpg")
 
     elif args.plotType == "fixedbaseline":
@@ -570,13 +590,14 @@ def plotting(args, config):
 
         makeLinePlot("Cost Bound w.r.t. Optimal", args.plotType, df, "Algorithm",
                      "Cost Bound w.r.t. Optimal",
-                     showname[args.plotType].replace("baseline", baseline),
+                     showname[args.plotType].replace(
+                         "baseline", baseline), totalInstance[args.domain],
                      createOutFilePrefix(args) + args.plotType+".jpg")
 
     else:
         df = readData(args, algorithms)
         makeLinePlot("Cost Bound w.r.t. Optimal", args.plotType, df, "Algorithm",
-                     "Cost Bound w.r.t. Optimal", showname[args.plotType],
+                     "Cost Bound w.r.t. Optimal", showname[args.plotType], totalInstance[args.domain],
                      createOutFilePrefix(args) + args.plotType+".jpg")
 
 
