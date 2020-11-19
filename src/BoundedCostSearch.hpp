@@ -56,13 +56,40 @@ public:
             return 1 / (1 - getHHatValue() / (bound + 1 - g));
         }
 
+        Cost getPotentialNancyValue() const
+        {
+            if (getHValue() == getHHatValue() || getHValue() == 0) {
+                return getFValue() <= bound ? 1. : 0.;
+            }
+
+            auto mean               = getFHatValue();
+            auto standard_deviation = std::abs(mean - getFValue()) / 2;
+            auto cdf_xi =
+              cumulative_distribution((bound - mean) / standard_deviation);
+            auto cdf_alpha = cumulative_distribution((getFValue() - mean) /
+                                                     standard_deviation);
+
+            assert(cdf_xi >= 0 && cdf_xi <= 1);
+            assert(cdf_alpha >= 0 && cdf_alpha <= 1);
+
+            /*    cout << "g " << g << " h " << h << " h hat" <<
+             * getHHatValue()*/
+            //<< " f hat" << getFHatValue() << "std " <<
+            // standard_deviation
+            //<< "\n";
+            // cout << "cdf_xi " << cdf_xi << " cdf_alpha " << cdf_alpha
+            // <<
+            // "\n"; cout << "epsH " << epsH << " epsD " << epsD << "\n";
+            /*cout << "p " << (cdf_xi - cdf_alpha) / (1 - cdf_alpha) <<
+             * "\n";*/
+
+            return (cdf_xi - cdf_alpha) / (1 - cdf_alpha);
+        }
+
         Cost getPTSNancyValue() const
         {
             auto nancypts = getPotentialNancyValue();
-            if (nancypts == 0) {
-                // cout << "nancypts is 0: " << nancypts << "\n";
-                nancypts = 0.000001;
-            }
+
             return d / nancypts;
             // return d / (1 + getPotentialNancyValue());
         }
@@ -159,8 +186,17 @@ public:
 
         static bool compareNodesPTSNancy(const Node* n1, const Node* n2)
         {
-            // Tie break on g-value
-            if (n1->getPTSNancyValue() == n2->getPTSNancyValue()) {
+            if (n1->getPotentialNancyValue() < 0.01 &&
+                n2->getPotentialNancyValue() >= 0.01) {
+                return false;
+            } else if (n1->getPotentialNancyValue() >= 0.01 &&
+                       n2->getPotentialNancyValue() < 0.01) {
+                return true;
+            } else if (n1->getPotentialNancyValue() < 0.01 &&
+                       n2->getPotentialNancyValue() < 0.01) {
+                return n1->getFValue() < n2->getFValue();
+            } else if (n1->getPTSNancyValue() == n2->getPTSNancyValue()) {
+                // Tie break on g-value
                 return n1->getGValue() > n2->getGValue();
             }
             return n1->getPTSNancyValue() < n2->getPTSNancyValue();
@@ -170,36 +206,6 @@ public:
         double cumulative_distribution(double x) const
         {
             return (1 + std::erf(x / std::sqrt(2.))) / 2.;
-        }
-
-        Cost getPotentialNancyValue() const
-        {
-            if (getHValue() == getHHatValue() || getHValue() == 0) {
-                return getFValue() <= bound ? 1. : 0.;
-            }
-
-            auto mean               = getFHatValue();
-            auto standard_deviation = std::abs(mean - getFValue()) / 2;
-            auto cdf_xi =
-              cumulative_distribution((bound - mean) / standard_deviation);
-            auto cdf_alpha = cumulative_distribution((getFValue() - mean) /
-                                                     standard_deviation);
-
-            assert(cdf_xi >= 0 && cdf_xi <= 1);
-            assert(cdf_alpha >= 0 && cdf_alpha <= 1);
-
-            /*    cout << "g " << g << " h " << h << " h hat" <<
-             * getHHatValue()*/
-            //<< " f hat" << getFHatValue() << "std " <<
-            // standard_deviation
-            //<< "\n";
-            // cout << "cdf_xi " << cdf_xi << " cdf_alpha " << cdf_alpha
-            // <<
-            // "\n"; cout << "epsH " << epsH << " epsD " << epsD << "\n";
-            /*cout << "p " << (cdf_xi - cdf_alpha) / (1 - cdf_alpha) <<
-             * "\n";*/
-
-            return (cdf_xi - cdf_alpha) / (1 - cdf_alpha);
         }
     };
 
