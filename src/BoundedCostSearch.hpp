@@ -202,6 +202,24 @@ public:
             return n1->getPTSNancyValue() < n2->getPTSNancyValue();
         }
 
+        static bool compareNodesPTSNancyOnlyProb(const Node* n1, const Node* n2)
+        {
+            if (n1->getPotentialNancyValue() == n2->getPotentialNancyValue()) {
+                // Tie break on g-value
+                return n1->getGValue() > n2->getGValue();
+            }
+            return n1->getPotentialNancyValue() > n2->getPotentialNancyValue();
+        }
+
+        static bool compareNodesD(const Node* n1, const Node* n2)
+        {
+            if (n1->getDValue() == n2->getDValue()) {
+                // Tie break on g-value
+                return n1->getGValue() > n2->getGValue();
+            }
+            return n1->getDValue() < n2->getDValue();
+        }
+
     private:
         double cumulative_distribution(double x) const
         {
@@ -217,7 +235,8 @@ public:
         Node::weight = weight_;
 
         if (algStr == "wastar" || algStr == "astar" || algStr == "pts" ||
-            algStr == "ptshhat" || algStr == "ptsnancy") {
+            algStr == "ptshhat" || algStr == "ptsnancy" ||
+            algStr == "ptsnancyonlyprob" || algStr == "ptsnancyonlyeffort") {
             algorithm = new PotentialSearch<Domain, Node>(domain, algStr);
         } else if (algStr == "bees" || algStr == "beeps" ||
                    algStr == "beepsnancy") {

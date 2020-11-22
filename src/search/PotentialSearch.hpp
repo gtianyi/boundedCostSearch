@@ -122,6 +122,10 @@ private:
             open.swapComparator(Node::compareNodesPTSHHat);
         } else if (this->sortingFunction == "ptsnancy") {
             open.swapComparator(Node::compareNodesPTSNancy);
+        } else if (this->sortingFunction == "ptsnancyonlyprob") {
+            open.swapComparator(Node::compareNodesPTSNancyOnlyProb);
+        } else if (this->sortingFunction == "ptsnancyonlyeffort") {
+            open.swapComparator(Node::compareNodesD);
         } else {
             cout << "Unknown algorithm!\n";
             exit(1);

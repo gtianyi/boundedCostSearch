@@ -99,12 +99,18 @@ class Configure:
 
         self.additionalAlgorithms = {"tile":
                                      {
+                                         "uniform": {},
                                          # "uniform": {"wastar-with-bound": "WA*-with-bound",
                                          # "ptsnancy-if0thenverysmall": "expected work - no 0 op"},
-                                         "uniform": {"ptsnancy-if0thenverysmall": "expected work - no 0 op",
-                                                     "ptsnancy-if001thenfhat": "expected work - 0 fhat"},
-                                         "heavy": {"ptsnancy-if0thenverysmall": "expected work - no 0 op",
-                                                   "ptsnancy-if001thenfhat": "expected work - 0 fhat"}
+                                         # "uniform": {"ptsnancy-if0thenverysmall": "expected work - no 0 op",
+                                                     # "ptsnancy-if001thenfhat": "expected work - 0 fhat",
+                                                     # "ptsnancyonlyprob": "1/p(n)",
+                                                     # "ptsnancyonlyeffort": "t(n)"},
+                                         "heavy": {}
+                                        #  "ptsnancy-if0thenverysmall": "expected work - no 0 op",
+                                                   # "ptsnancy-if001thenfhat": "expected work - 0 fhat",
+                                                   # "ptsnancyonlyprob": "1/p(n)",
+                                                   # "ptsnancyonlyeffort": "t(n)"
                                      },
                                      "pancake":
                                      {
@@ -112,7 +118,9 @@ class Configure:
                                          "regular": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"},
                                          # "heavy": {"wastar": "WA*"}
                                          # "heavy": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"}
-                                         "heavy": {}
+                                         "heavy": {"ptsnancyonlyprob": "1/p(n)",
+                                                   "ptsnancyonlyeffort": "t(n)"}
+
                                      },
                                      "vaccumworld":
                                      {
@@ -123,7 +131,11 @@ class Configure:
                                      },
                                      "racetrack":
                                      {
-                                         "barto-big": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"},
+                                         "barto-big": {
+                                             "ptsnancy-if0thenverysmall": "expected work - no 0 op",
+                                             "ptsnancyonlyprob": "1/p(n)",
+                                             "ptsnancyonlyeffort": "t(n)"
+                                         },
                                          "barto-bigger": {},
                                          "hansen-bigger": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"},
                                          "uniform-small": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"},
@@ -214,9 +226,10 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
                       hue=hue,
                       style=hue,
                       palette="muted",
-                      data=dataframe
+                      data=dataframe,
                       # data=dataframe,
                       # err_style="bars"
+                      dashes=False
                       )
 
     ax.tick_params(colors='black', labelsize=12)
