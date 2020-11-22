@@ -94,6 +94,14 @@ public:
             // return d / (1 + getPotentialNancyValue());
         }
 
+        Cost getPTSNancyValueWithDHat() const
+        {
+            auto nancypts = getPotentialNancyValue();
+
+            return getDHatValue() / nancypts;
+            // return d / (1 + getPotentialNancyValue());
+        }
+
         void setHValue(Cost val) { h = val; }
         void setGValue(Cost val) { g = val; }
         void setDValue(Cost val) { d = val; }
@@ -220,6 +228,26 @@ public:
             return n1->getDValue() < n2->getDValue();
         }
 
+        static bool compareNodesPTSNancyWithDhat(const Node* n1, const Node* n2)
+        {
+            if (n1->getPotentialNancyValue() < 0.01 &&
+                n2->getPotentialNancyValue() >= 0.01) {
+                return false;
+            } else if (n1->getPotentialNancyValue() >= 0.01 &&
+                       n2->getPotentialNancyValue() < 0.01) {
+                return true;
+            } else if (n1->getPotentialNancyValue() < 0.01 &&
+                       n2->getPotentialNancyValue() < 0.01) {
+                return n1->getFValue() < n2->getFValue();
+            } else if (n1->getPTSNancyValueWithDHat() ==
+                       n2->getPTSNancyValueWithDHat()) {
+                // Tie break on g-value
+                return n1->getGValue() > n2->getGValue();
+            }
+            return n1->getPTSNancyValueWithDHat() <
+                   n2->getPTSNancyValueWithDHat();
+        }
+
     private:
         double cumulative_distribution(double x) const
         {
@@ -236,7 +264,8 @@ public:
 
         if (algStr == "wastar" || algStr == "astar" || algStr == "pts" ||
             algStr == "ptshhat" || algStr == "ptsnancy" ||
-            algStr == "ptsnancyonlyprob" || algStr == "ptsnancyonlyeffort") {
+            algStr == "ptsnancyonlyprob" || algStr == "ptsnancyonlyeffort" ||
+            algStr == "ptsnancywithdhat") {
             algorithm = new PotentialSearch<Domain, Node>(domain, algStr);
         } else if (algStr == "bees" || algStr == "beeps" ||
                    algStr == "beepsnancy") {
