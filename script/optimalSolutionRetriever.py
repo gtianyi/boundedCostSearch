@@ -56,7 +56,12 @@ def main():
     # print(args)
 
     solutionFile = researchHome+"/boundedCostSearch/optimalSolution/" +\
-        args.domain+"."+args.subdomain+".json"
+        args.domain+"."+args.subdomain
+
+    if args.domain == "pancake":
+        solutionFile += "."+args.size
+
+    solutionFile += ".json"
 
     with open(solutionFile) as json_file:
         data = json.load(json_file)

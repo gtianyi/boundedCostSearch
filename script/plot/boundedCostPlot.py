@@ -29,8 +29,8 @@ class Configure:
 
         self.algorithms = OrderedDict(
             {
-                "pts": "PTS",
-                "ptshhat": "PTS-h^",
+                # "pts": "PTS",
+                # "ptshhat": "PTS-h^",
                 "ptsnancy": "expected work - 0 f",
                 "bees": "BEES",
                 # "wastar": "WA*",
@@ -99,14 +99,15 @@ class Configure:
 
         self.additionalAlgorithms = {"tile":
                                      {
-                                         "uniform": {},
+                                         "uniform": {"ptsnancywithdhat":"expected work - dhat"},
                                          # "uniform": {"wastar-with-bound": "WA*-with-bound",
                                          # "ptsnancy-if0thenverysmall": "expected work - no 0 op"},
                                          # "uniform": {"ptsnancy-if0thenverysmall": "expected work - no 0 op",
                                                      # "ptsnancy-if001thenfhat": "expected work - 0 fhat",
                                                      # "ptsnancyonlyprob": "1/p(n)",
                                                      # "ptsnancyonlyeffort": "t(n)"},
-                                         "heavy": {}
+                                         # "heavy": {}
+                                         "heavy": {"ptsnancywithdhat":"expected work - dhat"}
                                         #  "ptsnancy-if0thenverysmall": "expected work - no 0 op",
                                                    # "ptsnancy-if001thenfhat": "expected work - 0 fhat",
                                                    # "ptsnancyonlyprob": "1/p(n)",

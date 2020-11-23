@@ -7,7 +7,8 @@ print_usage() {
     echo "[-s subdomain]                   default: uniform"
     echo "[-z domain size]                 default: 4"
     echo "[-u boundedCost solver]"
-    echo " support list,eg: -u a1 -u a2    default: pts ptshhat ptsnancy bees astar wastar"
+    echo " support list,eg: -u a1 -u a2    available: pts ptshhat ptsnancy bees astar wastar ptsnancywithdhat"
+    echo "                                 default: pts ptshhat ptsnancy bees ptsnancywithdhat"
     echo "[-b bound percent wrt optimal]"
     echo " support list,eg: -b 10 -b 300   default: 60 80 100 120 140 160 180 200 220 240 260 280 300 320 340 360 380 400 420 440 460 480 500 520 540 560 580 600"
     echo "[-t time limit]                  default: 1800 (seconds)"
@@ -27,7 +28,8 @@ n_of_i=1
 domain="tile"
 subdomain="uniform"
 size="4"
-boundedCostSolvers=("pts" "ptshhat" "ptsnancy" "bees" "astar" "wastar")
+#boundedCostSolvers=("pts" "ptshhat" "ptsnancy" "bees" "astar" "wastar")
+boundedCostSolvers=("pts" "ptshhat" "ptsnancy" "bees" "ptsnancywithdhat")
 boundPercents=(60 80 100 120 140 160 180 200 220 240 260 280 300 320 340 360 380 400 420 440 460 480 500 520 540 560 580 600)
 timeLimit=1800
 memoryLimit=7
@@ -183,7 +185,7 @@ for solverId in "${!boundedCostSolvers[@]}"; do
             tempfile="${outfile_instance}.temp"
 
             curFileName=${infile_name/instance/$instance}
-            retrieverCommand="python ${optimalSolRetriever} -d ${domain} -s ${subdomain} -i ${curFileName}"
+            retrieverCommand="python ${optimalSolRetriever} -d ${domain} -s ${subdomain} -z ${size} -i ${curFileName}"
             optimalSolution=$(${retrieverCommand})
 
             percent=$((${boundPercent} * ${optimalSolution}))

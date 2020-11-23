@@ -155,7 +155,12 @@ def main():
         print(problemFile, sol, str(counter/total*100)+"%")
 
     outFile = researchHome+"/boundedCostSearch/optimalSolution/" +\
-        args.domain+"."+args.subdomain+".json"
+        args.domain+"."+args.subdomain
+
+    if args.domain == "pancake":
+        outFile += "."+args.size
+
+    outFile += ".json"
 
     with open(outFile, 'w') as json_file:
         json.dump(solutionJson, json_file)
