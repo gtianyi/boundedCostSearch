@@ -265,6 +265,7 @@ public:
         if (algStr == "wastar" || algStr == "astar" || algStr == "pts" ||
             algStr == "ptshhat" || algStr == "ptsnancy" ||
             algStr == "ptsnancyonlyprob" || algStr == "ptsnancyonlyeffort" ||
+            algStr == "ptsnancyonlyeffort-dhat" ||
             algStr == "ptsnancywithdhat") {
             algorithm = new PotentialSearch<Domain, Node>(domain, algStr);
         } else if (algStr == "bees" || algStr == "beeps" ||

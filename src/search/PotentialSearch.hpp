@@ -126,6 +126,8 @@ private:
             open.swapComparator(Node::compareNodesPTSNancyOnlyProb);
         } else if (this->sortingFunction == "ptsnancyonlyeffort") {
             open.swapComparator(Node::compareNodesD);
+        } else if (this->sortingFunction == "ptsnancyonlyeffort-dhat") {
+            open.swapComparator(Node::compareNodesDHat);
         } else if (this->sortingFunction == "ptsnancywithdhat") {
             open.swapComparator(Node::compareNodesPTSNancyWithDhat);
         } else {
