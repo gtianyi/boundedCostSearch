@@ -29,8 +29,8 @@ class Configure:
 
         self.algorithms = OrderedDict(
             {
-                # "pts": "PTS",
-                # "ptshhat": "PTS-h^",
+                "pts": "PTS",
+                "ptshhat": "PTS-h^",
                 "ptsnancy": "expected work - 0 f",
                 "bees": "BEES",
                 # "wastar": "WA*",
@@ -115,17 +115,21 @@ class Configure:
                                      },
                                      "pancake":
                                      {
+                                         "regular": {"ptsnancywithdhat":"expected work - dhat"},
+                                         "heavy": {"ptsnancywithdhat":"expected work - dhat"},
                                          # "regular": {"astar-with-bound": "A*-with-bound"},
-                                         "regular": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"},
+                                         # "regular": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"},
                                          # "heavy": {"wastar": "WA*"}
                                          # "heavy": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"}
-                                         "heavy": {"ptsnancyonlyprob": "1/p(n)",
-                                                   "ptsnancyonlyeffort": "t(n)"}
+                                         # "heavy": {"ptsnancyonlyprob": "1/p(n)",
+                                                   # "ptsnancyonlyeffort": "t(n)"}
+
 
                                      },
                                      "vaccumworld":
                                      {
-                                         "uniform": {},
+                                         # "uniform": {},
+                                         "uniform": {"ptsnancywithdhat":"expected work - dhat"},
                                          # "uniform": {"wastar": "WA*"},
                                          # "heavy": {"wastar": "WA*"}
                                          "heavy": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"}
@@ -140,7 +144,8 @@ class Configure:
                                          "barto-bigger": {},
                                          "hansen-bigger": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"},
                                          "uniform-small": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"},
-                                         "uniform": {}
+                                         # "uniform": {}
+                                         "uniform": {"ptsnancywithdhat":"expected work - dhat"},
                                      }
                                      }
 
