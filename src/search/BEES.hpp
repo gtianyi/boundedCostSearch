@@ -119,7 +119,8 @@ public:
 private:
     void sortOpen(PriorityQueue<Node*>& open)
     {
-        if (this->sortingFunction == "bees") {
+        if (this->sortingFunction == "bees" ||
+            this->sortingFunction == "bees-EpsGlobal") {
             open.swapComparator(Node::compareNodesF);
         } else if (this->sortingFunction == "beeps") {
             open.swapComparator(Node::compareNodesPTSHHat);
@@ -133,6 +134,14 @@ private:
 
     void sortOpenHat(PriorityQueue<Node*>& openhat)
     {
-        openhat.swapComparator(Node::compareNodesDHat);
+
+        if (this->sortingFunction == "bees") {
+            openhat.swapComparator(Node::compareNodesDHat);
+        } else if (this->sortingFunction == "bees-EpsGlobal") {
+            openhat.swapComparator(Node::compareNodesD);
+        } else {
+            cout << "Unknown algorithm!\n";
+            exit(1);
+        }
     }
 };

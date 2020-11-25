@@ -269,7 +269,7 @@ public:
             algStr == "ptsnancywithdhat") {
             algorithm = new PotentialSearch<Domain, Node>(domain, algStr);
         } else if (algStr == "bees" || algStr == "beeps" ||
-                   algStr == "beepsnancy") {
+                   algStr == "beepsnancy" || algStr == "bees-EpsGlobal") {
             algorithm = new BEES<Domain, Node>(domain, algStr);
         }
     }
