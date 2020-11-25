@@ -99,39 +99,39 @@ class Configure:
 
         self.additionalAlgorithms = {"tile":
                                      {
-                                         "uniform": {"ptsnancywithdhat":"expected work - dhat",
+                                         "uniform": {"ptsnancywithdhat": "expected work - dhat",
                                                      "ptsnancyonlyeffort": "t(n)",
                                                      "ptsnancyonlyeffort-dhat": "t(n)-dhat"},
                                          # "uniform": {"wastar-with-bound": "WA*-with-bound",
                                          # "ptsnancy-if0thenverysmall": "expected work - no 0 op"},
                                          # "uniform": {"ptsnancy-if0thenverysmall": "expected work - no 0 op",
-                                                     # "ptsnancy-if001thenfhat": "expected work - 0 fhat",
-                                                     # "ptsnancyonlyprob": "1/p(n)",
-                                                     # "ptsnancyonlyeffort": "t(n)"},
+                                         # "ptsnancy-if001thenfhat": "expected work - 0 fhat",
+                                         # "ptsnancyonlyprob": "1/p(n)",
+                                         # "ptsnancyonlyeffort": "t(n)"},
                                          # "heavy": {}
-                                         "heavy": {"ptsnancywithdhat":"expected work - dhat"}
-                                        #  "ptsnancy-if0thenverysmall": "expected work - no 0 op",
-                                                   # "ptsnancy-if001thenfhat": "expected work - 0 fhat",
-                                                   # "ptsnancyonlyprob": "1/p(n)",
-                                                   # "ptsnancyonlyeffort": "t(n)"
+                                         "heavy": {"ptsnancywithdhat": "expected work - dhat"}
+                                         #  "ptsnancy-if0thenverysmall": "expected work - no 0 op",
+                                         # "ptsnancy-if001thenfhat": "expected work - 0 fhat",
+                                         # "ptsnancyonlyprob": "1/p(n)",
+                                         # "ptsnancyonlyeffort": "t(n)"
                                      },
                                      "pancake":
                                      {
-                                         "regular": {"ptsnancywithdhat":"expected work - dhat"},
-                                         "heavy": {"ptsnancywithdhat":"expected work - dhat"},
+                                         "regular": {"ptsnancywithdhat": "expected work - dhat"},
+                                         "heavy": {"ptsnancywithdhat": "expected work - dhat"},
                                          # "regular": {"astar-with-bound": "A*-with-bound"},
                                          # "regular": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"},
                                          # "heavy": {"wastar": "WA*"}
                                          # "heavy": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"}
                                          # "heavy": {"ptsnancyonlyprob": "1/p(n)",
-                                                   # "ptsnancyonlyeffort": "t(n)"}
+                                         # "ptsnancyonlyeffort": "t(n)"}
 
 
                                      },
                                      "vaccumworld":
                                      {
                                          # "uniform": {},
-                                         "uniform": {"ptsnancywithdhat":"expected work - dhat"},
+                                         "uniform": {"ptsnancywithdhat": "expected work - dhat"},
                                          # "uniform": {"wastar": "WA*"},
                                          # "heavy": {"wastar": "WA*"}
                                          "heavy": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"}
@@ -147,7 +147,7 @@ class Configure:
                                          "hansen-bigger": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"},
                                          "uniform-small": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"},
                                          # "uniform": {}
-                                         "uniform": {"ptsnancywithdhat":"expected work - dhat"},
+                                         "uniform": {"ptsnancywithdhat": "expected work - dhat"},
                                      }
                                      }
 
@@ -505,59 +505,48 @@ def readFixedBaselineData(args, fixedbaseline, bounds):
     return rawdf
 
 
-def makeCoverageTable(algorithms):
+def makeCoverageTable(df, args, totalInstance):
+    out_file = createOutFilePrefix(args) + args.plotType+".jpg"
 
-    inPath = "../../../tianyi_results/"
-    out_file = "../../../tianyi_plots/coverageSummary-" + \
-        datetime.now().strftime("%d%m%Y-%H%M")+".jpg"
-
-    domains = []
-    subdomains = []
     algs = []
-    # size=[]
-    memOut = []
-    total = []
 
-    for domain in os.listdir(inPath):
-        for subdomain in os.listdir(inPath+domain+"/"):
-            for alg in os.listdir(inPath+domain+"/"+subdomain+"/"):
-                if alg not in algorithms:
-                    continue
-                domains.append(domain)
-                subdomains.append(subdomain)
-                algs.append(algorithms[alg])
+    boundSolved = {}
 
-                allFiles = os.listdir(inPath+domain+"/"+subdomain+"/"+alg)
+    boundStr = df["Cost Bound w.r.t. Optimal"].unique()
+    bounds = [float(i) for i in boundStr]
+    bounds.sort()
 
-                outOfMem = [f for f in allFiles if f[-5:] != ".json"]
+    for cbound in bounds:
+        boundSolved[str(cbound)] = []
 
-                total.append(len(allFiles))
-                memOut.append(len(outOfMem))
+    for alg in df["Algorithm"].unique():
 
-                # index = jsonFile.find('size') + 5
-                # sizeStr = jsonFile[index:]
-                # indexEnd = sizeStr.find('-')
-                # sizeStr = sizeStr[:indexEnd]
+        algs.append(alg)
 
-                # size.append(sizeStr)
+        for cbound in df["Cost Bound w.r.t. Optimal"].unique():
+            dfins = df[(df["Algorithm"] == alg) & (
+                df["Cost Bound w.r.t. Optimal"] == cbound)]
+            boundSolved[str(cbound)].append(str(len(dfins))+"/"+totalInstance)
 
-    df = pd.DataFrame({
-        "Domain": domains,
-        "Subdomain": subdomains,
-        "Algorithm": algs,
-        # "Size": size,
-        "Out of Memory": memOut,
-        "Total": total
-    })
+    data={"Algorihtm" : algs}
+    data.update(boundSolved)
 
-    ax = plt.subplot(frame_on=False)  # no visible frame
+    nrows, ncols = len(algs)+1, len(bounds)
+    hcell, wcell = 0.3, 1
+    hpad, wpad = 0, 0
+    fig=plt.figure(figsize=(ncols*wcell+wpad, nrows*hcell+hpad))
+    ax = fig.add_subplot(111)
+    ax.axis('off')
+
+    tabledf = pd.DataFrame(data)
+
+    # ax = plt.subplot(frame_on=False)  # no visible frame
     ax.xaxis.set_visible(False)  # hide the x axis
     ax.yaxis.set_visible(False)  # hide the y axis
 
-    table(ax, df, loc='upper right')  # where df is your data frame
+    table(ax, tabledf, loc='center')  # where tabledf is your data frame
 
     plt.savefig(out_file, dpi=200)
-
 
 def createOutFilePrefix(args):
 
@@ -584,14 +573,15 @@ def plotting(args, config):
     showname = config.getShowname()
     totalInstance = config.getTotalInstance()
 
+    rawdf = readData(args, algorithms)
+
     if args.plotType == "coverage":
-        makeCoverageTable(algorithms)
+        makeCoverageTable(rawdf, args, totalInstance[args.domain])
     elif args.plotType == "nodeGenDiff":
 
         cureBaseline = config.getBaseline()[args.domain][args.subdomain]
         baseline = next(iter(cureBaseline.values()))
 
-        rawdf = readData(args, algorithms)
         df = makePairWiseDf(rawdf, baseline, algorithms)
 
         makeLinePlot("Cost Bound w.r.t. Optimal", args.plotType, df, "Algorithm",
@@ -606,7 +596,6 @@ def plotting(args, config):
         fixedbaseline = config.getFixedBaseline()[args.domain][args.subdomain]
         baseline = next(iter(fixedbaseline.values()))
 
-        rawdf = readData(args, algorithms)
         df = makeFixedbaselineDf(rawdf, fixedbaseline, algorithms, args)
 
         makeLinePlot("Cost Bound w.r.t. Optimal", args.plotType, df, "Algorithm",
@@ -616,8 +605,7 @@ def plotting(args, config):
                      createOutFilePrefix(args) + args.plotType+".jpg")
 
     else:
-        df = readData(args, algorithms)
-        makeLinePlot("Cost Bound w.r.t. Optimal", args.plotType, df, "Algorithm",
+        makeLinePlot("Cost Bound w.r.t. Optimal", args.plotType, rawdf, "Algorithm",
                      "Cost Bound w.r.t. Optimal", showname[args.plotType], totalInstance[args.domain],
                      createOutFilePrefix(args) + args.plotType+".jpg")
 
