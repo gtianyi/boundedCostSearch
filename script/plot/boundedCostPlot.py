@@ -29,25 +29,27 @@ class Configure:
 
         self.algorithms = OrderedDict(
             {
-                # "pts": "PTS",
+                "pts": "PTS",
                 # "ptshhat": "PTS-h^",
-                "ptsnancy": "expected work - 0 f",
-                "bees": "BEES",
-                # "wastar": "WA*",
-                # "astar": "A*",
+                # "ptsnancy": "expected work - 0 f",
+                "bees-EpsGlobal": "BEES",
+                "ptsnancywithdhat": "expected work - dhat",
+                # "bees": "BEES - EpsLocal",
+                # "astar-with-bound": "A*",
             }
         )
 
         self.baseline = {"tile":
                          {
-                             # "uniform": {"wastar-with-bound": "WA*-with-bound"},
-                             "uniform": {"bees": "BEES"},
-                             "heavy": {"bees": "BEES"}
+                             "uniform": { "wastar-with-bound": "WA*-with-bound", },
+                             # "uniform": { "wastar": "WA*"},
+                             "heavy": {"wastar-with-bound": "WA*"}
                          },
                          "pancake":
                          {
-                             "regular": {"bees": "BEES"},
-                             "heavy": {"bees": "BEES"}
+                             # "regular": {"ptsnancywithdhat": "expected work - dhat"},
+                             "regular": {"wastar": "WA*"},
+                             "heavy": { "bees-EpsGlobal": "BEES"}
                              # "heavy": {"wastar": "WA*"}
                          },
                          "racetrack":
@@ -69,7 +71,7 @@ class Configure:
 
         self.fixedbaseline = {"tile":
                               {
-                                  "uniform": {"astar": "WA*"},
+                                  "uniform": {"astar": "A*"},
                                   "heavy": {"wastar": "WA*"}
                               },
                               "pancake":
@@ -99,9 +101,13 @@ class Configure:
 
         self.additionalAlgorithms = {"tile":
                                      {
-                                         "uniform": {"ptsnancywithdhat": "expected work - dhat",
-                                                     "ptsnancyonlyeffort": "t(n)",
-                                                     "ptsnancyonlyeffort-dhat": "t(n)-dhat"},
+                                         "uniform": { "wastar-with-bound": "WA*"},
+                                         # "uniform": {"ptsnancywithdhat": "expected work - dhat",
+                                                    # "bees": "BEES - EpsLocal",
+                                                     # },
+                                         # "uniform": {"ptsnancywithdhat": "expected work - dhat",
+                                                     # "ptsnancyonlyeffort": "t(n)",
+                                                     # "ptsnancyonlyeffort-dhat": "t(n)-dhat"},
                                          # "uniform": {"wastar-with-bound": "WA*-with-bound",
                                          # "ptsnancy-if0thenverysmall": "expected work - no 0 op"},
                                          # "uniform": {"ptsnancy-if0thenverysmall": "expected work - no 0 op",
@@ -109,7 +115,8 @@ class Configure:
                                          # "ptsnancyonlyprob": "1/p(n)",
                                          # "ptsnancyonlyeffort": "t(n)"},
                                          # "heavy": {}
-                                         "heavy": {"ptsnancywithdhat": "expected work - dhat"}
+                                         # "heavy": {"ptsnancywithdhat": "expected work - dhat"}
+                                         "heavy": {"wastar-with-bound": "WA*"}
                                          #  "ptsnancy-if0thenverysmall": "expected work - no 0 op",
                                          # "ptsnancy-if001thenfhat": "expected work - 0 fhat",
                                          # "ptsnancyonlyprob": "1/p(n)",
@@ -117,8 +124,10 @@ class Configure:
                                      },
                                      "pancake":
                                      {
-                                         "regular": {"ptsnancywithdhat": "expected work - dhat"},
-                                         "heavy": {"ptsnancywithdhat": "expected work - dhat"},
+                                         "regular": {"wastar": "WA*"},
+                                         # "regular": {},
+                                         # "heavy": {"wastar": "WA*"},
+                                         "heavy": {},
                                          # "regular": {"astar-with-bound": "A*-with-bound"},
                                          # "regular": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"},
                                          # "heavy": {"wastar": "WA*"}
