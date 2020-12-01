@@ -13,6 +13,7 @@ print_usage() {
     echo " support list,eg: -b 10 -b 300   default: 60 80 100 120 140 160 180 200 220 240 260 280 300 320 340 360 380 400 420 440 460 480 500 520 540 560 580 600"
     echo "[-t time limit]                  default: 1800 (seconds)"
     echo "[-m memory limit]                default: 7(GB)"
+    echo "[-w weight of wA*]               default: 2"
     echo "[-h help]"
     exit 1
 }
@@ -33,6 +34,7 @@ boundedCostSolvers=("pts" "ptshhat" "ptsnancy" "bees" "ptsnancywithdhat")
 boundPercents=(60 80 100 120 140 160 180 200 220 240 260 280 300 320 340 360 380 400 420 440 460 480 500 520 540 560 580 600)
 timeLimit=1800
 memoryLimit=7
+weight="2"
 
 solverCleared=false
 boundCleared=false
@@ -106,6 +108,13 @@ for ((i = 1; i <= "$#"; i++)); do
         if [ $((i + 1)) -le "$#" ]; then
             var=$((i + 1))
             timeLimit=${!var}
+        fi
+    fi
+
+    if [ ${!i} == "-w" ]; then
+        if [ $((i + 1)) -le "$#" ]; then
+            var=$((i + 1))
+            weight=${!var}
         fi
     fi
 
@@ -199,7 +208,13 @@ for solverId in "${!boundedCostSolvers[@]}"; do
             else
 
                 command="${executable} -d ${domain} -s ${subdomain} -a ${solverName} \
-                    -b ${bound} -o ${outfile_instance} -i ${instance} < ${infile_instance}"
+                    -b ${bound} -o ${outfile_instance} -i ${instance} "
+
+                if [ "${solverName}" == "wastar" ]; then
+                    command+="-w ${weight} "
+                fi
+
+                command+="< ${infile_instance}"
 
                 echo "${command}" > ${tempfile}
 
