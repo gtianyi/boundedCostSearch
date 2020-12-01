@@ -30,9 +30,10 @@ public:
             // Pop lowest fhat-value off open
             Node* cur = open.top();
 
-            cout << "d " << cur->getDValue() << " dhat " << cur->getDHatValue()
-                 << " epsD " << cur->getEpsilonD() << " epsD now "
-                 << this->domain.epsilonDGlobal() << "\n";
+            /*cout << "d " << cur->getDValue() << " dhat " <<
+             * cur->getDHatValue()*/
+            //<< " epsD " << cur->getEpsilonD() << " epsD now "
+            //<< this->domain.epsilonDGlobal() << "\n";
 
             // Check if current node is goal
             if (this->domain.isGoal(cur->getState())) {

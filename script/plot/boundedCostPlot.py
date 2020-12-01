@@ -15,8 +15,9 @@ import os
 from collections import OrderedDict
 # import sys
 from datetime import datetime
-
 import re
+from scipy.stats import gmean
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
@@ -30,7 +31,7 @@ class Configure:
         self.algorithms = OrderedDict(
             {
                 "pts": "PTS",
-                # "ptshhat": "PTS-h^",
+                "ptshhat": "PTS-h^",
                 # "ptsnancy": "expected work - 0 f",
                 "bees-EpsGlobal": "BEES",
                 "ptsnancywithdhat": "expected work - dhat",
@@ -41,7 +42,9 @@ class Configure:
 
         self.baseline = {"tile":
                          {
-                             "uniform": { "wastar-with-bound": "WA*-with-bound", },
+                             "uniform": {"astar": "A*"},
+                             # "uniform": { "wastar-with-bound": "WA*" },
+                             # "uniform": { "bees-EpsGlobal": "BEES" },
                              # "uniform": { "wastar": "WA*"},
                              "heavy": {"wastar-with-bound": "WA*"}
                          },
@@ -71,7 +74,8 @@ class Configure:
 
         self.fixedbaseline = {"tile":
                               {
-                                  "uniform": {"astar": "A*"},
+                                  # "uniform": {"astar": "A*"},
+                                  "uniform": {"wastar": "WA*"},
                                   "heavy": {"wastar": "WA*"}
                               },
                               "pancake":
@@ -101,7 +105,9 @@ class Configure:
 
         self.additionalAlgorithms = {"tile":
                                      {
-                                         "uniform": { "wastar-with-bound": "WA*"},
+                                         # "uniform": { "wastar-with-bound": "WA*"},
+                                         # "uniform": {"wastar": "WA*"},
+                                         "uniform": {},
                                          # "uniform": {"ptsnancywithdhat": "expected work - dhat",
                                                     # "bees": "BEES - EpsLocal",
                                                      # },
@@ -245,7 +251,9 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
                       palette="muted",
                       data=dataframe,
                       # data=dataframe,
-                      # err_style="bars"
+                      # err_styl="bars"
+                      estimator=gmean,
+                      ci=None,
                       dashes=False
                       )
 
@@ -331,7 +339,7 @@ def makeFixedbaselineDf(rawdf, fixedbaseline, algorithms, args):
     df["cpu"] = np.nan
 
     bounds = rawdf["Cost Bound w.r.t. Optimal"].unique()
-    BaselineDf = readFixedBaselineData(args, fixedbaseline, bounds)
+    BaselineDf = readFixedBaselineData(args, fixedbaseline)
     baseline = next(iter(fixedbaseline.values()))
 
     # print("baseline data count, ", len(BaselineDf))
@@ -339,10 +347,10 @@ def makeFixedbaselineDf(rawdf, fixedbaseline, algorithms, args):
     for instance in BaselineDf["instance"].unique():
         dfins = rawdf[rawdf["instance"] == instance]
         # keep instances solved by all algorithms across all bounds
-        if len(dfins) == len(algorithms) * len(BaselineDf["Cost Bound w.r.t. Optimal"].unique()):
+        if len(dfins) == len(algorithms) * len(bounds):
             df = df.append(dfins)
 
-    df = df.append(BaselineDf)
+    # df = df.append(BaselineDf)
     # for instance in BaselineDf["instance"].unique():
     # for boundP in BaselineDf["Cost Bound w.r.t. Optimal"].unique():
     # # print(instance, boundP)
@@ -354,17 +362,14 @@ def makeFixedbaselineDf(rawdf, fixedbaseline, algorithms, args):
     bounds.sort()
     for boundP in bounds:
         print("bound percent ", boundP, "valid instances: ", len(
-            df[df["Cost Bound w.r.t. Optimal"] == boundP]["instance"].unique()), "baseline avg:",
-            df[(df["Cost Bound w.r.t. Optimal"] == boundP) &
-               (df["Algorithm"] == baseline)]["nodeGen"].mean())
+            df[df["Cost Bound w.r.t. Optimal"] == boundP]["instance"].unique()), "valid baseline instance: ",
+            len(BaselineDf["instance"]))
 
     differenceNodeGen = []
 
     for rowdata in df.iterrows():
         row = rowdata[1]
-        relateastar = df[(df["instance"] == row['instance']) &
-                         (df["Algorithm"] == baseline) &
-                         (df["Cost Bound w.r.t. Optimal"] == row['Cost Bound w.r.t. Optimal'])]
+        relateastar = BaselineDf[BaselineDf["instance"] == row['instance']]
         if relateastar.empty:
             print("error! fixed baseline not found")
             differenceNodeGen.append(np.nan)
@@ -452,7 +457,7 @@ def readData(args, algorithms):
     return rawdf
 
 
-def readFixedBaselineData(args, fixedbaseline, bounds):
+def readFixedBaselineData(args, fixedbaseline):
 
     baseline = next(iter(fixedbaseline.values()))
     baseline_key = next(iter(fixedbaseline.keys()))
@@ -491,15 +496,13 @@ def readFixedBaselineData(args, fixedbaseline, bounds):
             # print("reading ", alg, jsonFile)
             resultData = json.load(json_data)
 
-            for bp in bounds:
+            algorithm.append(baseline)
+            cpu.append(resultData["cpu time"])
+            instance.append(resultData["instance"])
+            nodeExpanded.append(resultData["node expanded"])
+            nodeGenerated.append(resultData["node generated"])
 
-                algorithm.append(baseline)
-                cpu.append(resultData["cpu time"])
-                instance.append(resultData["instance"])
-                nodeExpanded.append(resultData["node expanded"])
-                nodeGenerated.append(resultData["node generated"])
-
-                boundPercent.append(bp)
+            boundPercent.append(boundP/100)
 
     rawdf = pd.DataFrame({
         "Algorithm": algorithm,
@@ -615,7 +618,8 @@ def plotting(args, config):
 
     else:
         makeLinePlot("Cost Bound w.r.t. Optimal", args.plotType, rawdf, "Algorithm",
-                     "Cost Bound w.r.t. Optimal", showname[args.plotType], totalInstance[args.domain],
+                     "Cost Bound w.r.t. Optimal", showname[args.plotType],
+                     totalInstance[args.domain],
                      createOutFilePrefix(args) + args.plotType+".jpg")
 
 

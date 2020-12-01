@@ -176,18 +176,30 @@ public:
 
         static bool compareNodesPTS(const Node* n1, const Node* n2)
         {
-            // Tie break on g-value
+            // Tie break on low f, high g-value, low d
             if (n1->getPTSValue() == n2->getPTSValue()) {
-                return n1->getGValue() > n2->getGValue();
+                if (n1->getFValue() == n2->getFValue()) {
+                    if (n1->getGValue() == n1->getGValue()) {
+                        return n1->getDValue() < n2->getDValue();
+                    }
+                    return n1->getGValue() > n2->getGValue();
+                }
+                return n1->getFValue() < n2->getFValue();
             }
             return n1->getPTSValue() < n2->getPTSValue();
         }
 
         static bool compareNodesPTSHHat(const Node* n1, const Node* n2)
         {
-            // Tie break on g-value
+            // Tie break on low fhat, high g-value, low d
             if (n1->getPTSHHatValue() == n2->getPTSHHatValue()) {
-                return n1->getGValue() > n2->getGValue();
+                if (n1->getFHatValue() == n2->getFHatValue()) {
+                    if (n1->getGValue() == n1->getGValue()) {
+                        return n1->getDValue() < n2->getDValue();
+                    }
+                    return n1->getGValue() > n2->getGValue();
+                }
+                return n1->getFHatValue() < n2->getFHatValue();
             }
             return n1->getPTSHHatValue() < n2->getPTSHHatValue();
         }
@@ -230,19 +242,33 @@ public:
 
         static bool compareNodesPTSNancyWithDhat(const Node* n1, const Node* n2)
         {
-            if (n1->getPotentialNancyValue() < 0.01 &&
-                n2->getPotentialNancyValue() >= 0.01) {
-                return false;
-            } else if (n1->getPotentialNancyValue() >= 0.01 &&
-                       n2->getPotentialNancyValue() < 0.01) {
-                return true;
-            } else if (n1->getPotentialNancyValue() < 0.01 &&
-                       n2->getPotentialNancyValue() < 0.01) {
+            /*if (n1->getPotentialNancyValue() < 0.01 &&*/
+            // n2->getPotentialNancyValue() >= 0.01) {
+            // return false;
+            //} else if (n1->getPotentialNancyValue() >= 0.01 &&
+            // n2->getPotentialNancyValue() < 0.01) {
+            // return true;
+            //} else if (n1->getPotentialNancyValue() < 0.01 &&
+            // n2->getPotentialNancyValue() < 0.01) {
+            // return n1->getFValue() < n2->getFValue();
+            //} else if (n1->getPTSNancyValueWithDHat() ==
+            // n2->getPTSNancyValueWithDHat()) {
+            //// Tie break on g-value
+            // return n1->getGValue() > n2->getGValue();
+            //}
+            // return n1->getPTSNancyValueWithDHat() <
+            /*n2->getPTSNancyValueWithDHat();*/
+
+            // Tie break on low f, high g-value, low d
+            if (n1->getPTSNancyValueWithDHat() ==
+                n2->getPTSNancyValueWithDHat()) {
+                if (n1->getFValue() == n2->getFValue()) {
+                    if (n1->getGValue() == n1->getGValue()) {
+                        return n1->getDValue() < n2->getDValue();
+                    }
+                    return n1->getGValue() > n2->getGValue();
+                }
                 return n1->getFValue() < n2->getFValue();
-            } else if (n1->getPTSNancyValueWithDHat() ==
-                       n2->getPTSNancyValueWithDHat()) {
-                // Tie break on g-value
-                return n1->getGValue() > n2->getGValue();
             }
             return n1->getPTSNancyValueWithDHat() <
                    n2->getPTSNancyValueWithDHat();
