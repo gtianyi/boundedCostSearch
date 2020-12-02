@@ -16,7 +16,8 @@ from collections import OrderedDict
 # import sys
 from datetime import datetime
 import re
-from scipy.stats import gmean
+# from scipy.stats import gmean
+import math
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -97,7 +98,8 @@ class Configure:
         self.showname = {"nodeGen": "Total Nodes Generated",
                          "nodeExp": "Total Nodes expanded",
                          "nodeGenDiff": "Algorithm Node Generated /  baseline Node Generated",
-                         "fixedbaseline": "Algorithm Node Generated /  baseline Node Generated",
+                         "fixedbaseline": \
+                         "log10 (Algorithm Node Generated /  baseline Node Generated)",
                          "cpu": "Raw CPU Time"}
 
         self.totalInstance = {"tile": "100", "pancake": "100",
@@ -116,13 +118,14 @@ class Configure:
                                                      # "ptsnancyonlyeffort-dhat": "t(n)-dhat"},
                                          # "uniform": {"wastar-with-bound": "WA*-with-bound",
                                          # "ptsnancy-if0thenverysmall": "expected work - no 0 op"},
-                                         # "uniform": {"ptsnancy-if0thenverysmall": "expected work - no 0 op",
+                                         # "uniform": {"ptsnancy-if0thenverysmall": \
+                                                       # "expected work - no 0 op",
                                          # "ptsnancy-if001thenfhat": "expected work - 0 fhat",
                                          # "ptsnancyonlyprob": "1/p(n)",
                                          # "ptsnancyonlyeffort": "t(n)"},
-                                         # "heavy": {}
+                                         "heavy": {}
                                          # "heavy": {"ptsnancywithdhat": "expected work - dhat"}
-                                         "heavy": {"wastar-with-bound": "WA*"}
+                                         # "heavy": {"wastar-with-bound": "WA*"}
                                          #  "ptsnancy-if0thenverysmall": "expected work - no 0 op",
                                          # "ptsnancy-if001thenfhat": "expected work - 0 fhat",
                                          # "ptsnancyonlyprob": "1/p(n)",
@@ -135,9 +138,11 @@ class Configure:
                                          # "heavy": {"wastar": "WA*"},
                                          "heavy": {},
                                          # "regular": {"astar-with-bound": "A*-with-bound"},
-                                         # "regular": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"},
+                                         # "regular": {"ptsnancy-if0thenverysmall": \
+                                                        # "expected work - no 0 op"},
                                          # "heavy": {"wastar": "WA*"}
-                                         # "heavy": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"}
+                                         # "heavy": {"ptsnancy-if0thenverysmall": \
+                                         # "expected work - no 0 op"}
                                          # "heavy": {"ptsnancyonlyprob": "1/p(n)",
                                          # "ptsnancyonlyeffort": "t(n)"}
 
@@ -149,7 +154,8 @@ class Configure:
                                          "uniform": {"ptsnancywithdhat": "expected work - dhat"},
                                          # "uniform": {"wastar": "WA*"},
                                          # "heavy": {"wastar": "WA*"}
-                                         "heavy": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"}
+                                         "heavy": {"ptsnancy-if0thenverysmall": \
+                                                   "expected work - no 0 op"}
                                      },
                                      "racetrack":
                                      {
@@ -159,8 +165,10 @@ class Configure:
                                              "ptsnancyonlyeffort": "t(n)"
                                          },
                                          "barto-bigger": {},
-                                         "hansen-bigger": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"},
-                                         "uniform-small": {"ptsnancy-if0thenverysmall": "expected work - no 0 op"},
+                                         "hansen-bigger": {"ptsnancy-if0thenverysmall": \
+                                                           "expected work - no 0 op"},
+                                         "uniform-small": {"ptsnancy-if0thenverysmall": \
+                                                           "expected work - no 0 op"},
                                          # "uniform": {}
                                          "uniform": {"ptsnancywithdhat": "expected work - dhat"},
                                      }
@@ -252,15 +260,15 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
                       data=dataframe,
                       # data=dataframe,
                       # err_styl="bars"
-                      estimator=gmean,
-                      ci=None,
+                      # estimator=gmean,
+                      # ci=None,
                       dashes=False
                       )
 
     ax.tick_params(colors='black', labelsize=12)
     ax.legend().set_title('Solved/Total: ' +
                           str(len(dataframe['instance'].unique()))+'/'+totalInstance)
-    ax.set_yscale("log")
+    # ax.set_yscale("log")
     plt.ylabel(yLabel, color='black', fontsize=18)
     plt.xlabel(xLabel, color='black', fontsize=18)
 
@@ -328,6 +336,40 @@ def makePairWiseDf(rawdf, baseline, algorithms):
 
     return df
 
+def allSolvedDf(rawdf, algorithms):
+    df = pd.DataFrame()
+    df["Algorithm"] = np.nan
+    df["instance"] = np.nan
+    df["Cost Bound w.r.t. Optimal"] = np.nan
+    df["nodeGen"] = np.nan
+    df["nodeExp"] = np.nan
+    df["cpu"] = np.nan
+
+    # for instance in BaselineDf["instance"].unique():
+        # dfins = rawdf[rawdf["instance"] == instance]
+        # # keep instances solved by all algorithms across all bounds
+        # if len(dfins) == len(algorithms) * len(BaselineDf["Cost Bound w.r.t. Optimal"].unique()):
+            # df = df.append(dfins)
+
+    for instance in rawdf["instance"].unique():
+        for boundP in rawdf["Cost Bound w.r.t. Optimal"].unique():
+            # print(instance, boundP)
+            dfins = rawdf[(rawdf["instance"] == instance) &
+            (rawdf["Cost Bound w.r.t. Optimal"] == boundP)]
+
+            if len(dfins) == len(algorithms):  # keep instances solved by all algorithms
+                df = df.append(dfins)
+
+    boundPercents = rawdf["Cost Bound w.r.t. Optimal"].unique()
+    boundPercents.sort()
+    for boundP in boundPercents:
+        print("bound percent ", boundP, "valid instances: ", len(
+            df[df["Cost Bound w.r.t. Optimal"] == boundP]["instance"].unique()))
+
+    return df
+
+
+
 
 def makeFixedbaselineDf(rawdf, fixedbaseline, algorithms, args):
     df = pd.DataFrame()
@@ -340,30 +382,28 @@ def makeFixedbaselineDf(rawdf, fixedbaseline, algorithms, args):
 
     bounds = rawdf["Cost Bound w.r.t. Optimal"].unique()
     BaselineDf = readFixedBaselineData(args, fixedbaseline)
-    baseline = next(iter(fixedbaseline.values()))
 
     # print("baseline data count, ", len(BaselineDf))
 
-    for instance in BaselineDf["instance"].unique():
-        dfins = rawdf[rawdf["instance"] == instance]
-        # keep instances solved by all algorithms across all bounds
-        if len(dfins) == len(algorithms) * len(bounds):
-            df = df.append(dfins)
-
-    # df = df.append(BaselineDf)
     # for instance in BaselineDf["instance"].unique():
-    # for boundP in BaselineDf["Cost Bound w.r.t. Optimal"].unique():
-    # # print(instance, boundP)
-    # dfins = rawdf[(rawdf["instance"] == instance) &
-    # (rawdf["Cost Bound w.r.t. Optimal"] == boundP)]
-    # if len(dfins) == len(algorithms):  # keep instances solved by all algorithms
-    # df = df.append(dfins)
+        # dfins = rawdf[rawdf["instance"] == instance]
+        # # keep instances solved by all algorithms across all bounds
+        # if len(dfins) == len(algorithms) * len(bounds):
+            # df = df.append(dfins)
+
+    for instance in rawdf["instance"].unique():
+        for boundP in rawdf["Cost Bound w.r.t. Optimal"].unique():
+            # print(instance, boundP)
+            dfins = rawdf[(rawdf["instance"] == instance) &
+                          (rawdf["Cost Bound w.r.t. Optimal"] == boundP)]
+            if len(dfins) == len(algorithms):  # keep instances solved by all algorithms
+                df = df.append(dfins)
 
     bounds.sort()
     for boundP in bounds:
         print("bound percent ", boundP, "valid instances: ", len(
-            df[df["Cost Bound w.r.t. Optimal"] == boundP]["instance"].unique()), "valid baseline instance: ",
-            len(BaselineDf["instance"]))
+            df[df["Cost Bound w.r.t. Optimal"] == boundP]["instance"].unique()),
+              "valid baseline instance: ", len(BaselineDf["instance"]))
 
     differenceNodeGen = []
 
@@ -377,13 +417,12 @@ def makeFixedbaselineDf(rawdf, fixedbaseline, algorithms, args):
             diffNodeGen = row['nodeGen'] / relateastar['nodeGen']
             # print("row",row)
             # print("relateastar",relateastar)
-            diffNodeGen = diffNodeGen.values[0]
+            diffNodeGen = math.log(diffNodeGen.values[0], 10) # compute geometric mean in plots
             differenceNodeGen.append(diffNodeGen)
 
     df["fixedbaseline"] = differenceNodeGen
 
     return df
-
 
 def readData(args, algorithms):
     domainSize = args.size
@@ -617,6 +656,7 @@ def plotting(args, config):
                      createOutFilePrefix(args) + args.plotType+".jpg")
 
     else:
+        df=allSolvedDf(rawdf,algorithms)
         makeLinePlot("Cost Bound w.r.t. Optimal", args.plotType, rawdf, "Algorithm",
                      "Cost Bound w.r.t. Optimal", showname[args.plotType],
                      totalInstance[args.domain],
