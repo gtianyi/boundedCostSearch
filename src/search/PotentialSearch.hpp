@@ -32,8 +32,7 @@ public:
 
             /*cout << "d " << cur->getDValue() << " dhat " <<
              * cur->getDHatValue()*/
-            //<< " epsD " << cur->getEpsilonD() << " epsD now "
-            //<< this->domain.epsilonDGlobal() << "\n";
+            //<< " p " << cur->getPotentialNancyValue() << "\n";
 
             // Check if current node is goal
             if (this->domain.isGoal(cur->getState())) {
