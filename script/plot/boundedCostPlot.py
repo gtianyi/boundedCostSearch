@@ -53,7 +53,7 @@ class Configure:
                          {
                              # "regular": {"ptsnancywithdhat": "expected work - dhat"},
                              "regular": {"wastar": "WA*"},
-                             "heavy": { "bees-EpsGlobal": "BEES"}
+                             "heavy": {"bees-EpsGlobal": "BEES"}
                              # "heavy": {"wastar": "WA*"}
                          },
                          "racetrack":
@@ -98,9 +98,10 @@ class Configure:
         self.showname = {"nodeGen": "Total Nodes Generated",
                          "nodeExp": "Total Nodes expanded",
                          "nodeGenDiff": "Algorithm Node Generated /  baseline Node Generated",
-                         "fixedbaseline": \
+                         "fixedbaseline":
                          "log10 (Algorithm Node Generated /  baseline Node Generated)",
-                         "cpu": "Raw CPU Time"}
+                         "cpu": "Raw CPU Time",
+                         "solved": "Number of Solved Instances (Total=totalInstance)"}
 
         self.totalInstance = {"tile": "100", "pancake": "100",
                               "racetrack": "25", "vaccumworld": "60"}
@@ -111,15 +112,15 @@ class Configure:
                                          # "uniform": {"wastar": "WA*"},
                                          "uniform": {},
                                          # "uniform": {"ptsnancywithdhat": "expected work - dhat",
-                                                    # "bees": "BEES - EpsLocal",
-                                                     # },
+                                         # "bees": "BEES - EpsLocal",
+                                         # },
                                          # "uniform": {"ptsnancywithdhat": "expected work - dhat",
-                                                     # "ptsnancyonlyeffort": "t(n)",
-                                                     # "ptsnancyonlyeffort-dhat": "t(n)-dhat"},
+                                         # "ptsnancyonlyeffort": "t(n)",
+                                         # "ptsnancyonlyeffort-dhat": "t(n)-dhat"},
                                          # "uniform": {"wastar-with-bound": "WA*-with-bound",
                                          # "ptsnancy-if0thenverysmall": "expected work - no 0 op"},
                                          # "uniform": {"ptsnancy-if0thenverysmall": \
-                                                       # "expected work - no 0 op",
+                                         # "expected work - no 0 op",
                                          # "ptsnancy-if001thenfhat": "expected work - 0 fhat",
                                          # "ptsnancyonlyprob": "1/p(n)",
                                          # "ptsnancyonlyeffort": "t(n)"},
@@ -139,7 +140,7 @@ class Configure:
                                          "heavy": {},
                                          # "regular": {"astar-with-bound": "A*-with-bound"},
                                          # "regular": {"ptsnancy-if0thenverysmall": \
-                                                        # "expected work - no 0 op"},
+                                         # "expected work - no 0 op"},
                                          # "heavy": {"wastar": "WA*"}
                                          # "heavy": {"ptsnancy-if0thenverysmall": \
                                          # "expected work - no 0 op"}
@@ -238,14 +239,17 @@ def parseArugments():
         '-t',
         action='store',
         dest='plotType',
-        help='plot type, nodeGen, cpu, coverage, nodeGenDiff(default), fixedbaseline',
+        help='plot type, nodeGen, cpu, coveragetb, coverageplt, \
+                         nodeGenDiff(default), fixedbaseline',
         default='nodeGenDiff')
 
     return parser
 
+# _ = totalInstance
+
 
 def makeLinePlot(xAxis, yAxis, dataframe, hue,
-                 xLabel, yLabel, totalInstance, outputName):
+                 xLabel, yLabel, _, outputName):
     sns.set(rc={
         'figure.figsize': (13, 10),
         'font.size': 27,
@@ -258,23 +262,22 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
                       style=hue,
                       palette="muted",
                       data=dataframe,
-                      # data=dataframe,
-                      # err_styl="bars"
+                      err_style="bars",
                       # estimator=gmean,
                       # ci=None,
                       dashes=False
                       )
 
     ax.tick_params(colors='black', labelsize=12)
-    ax.legend().set_title('Solved/Total: ' +
-                          str(len(dataframe['instance'].unique()))+'/'+totalInstance)
+    # ax.legend().set_title('Solved/Total: ' +
+    # str(len(dataframe['instance'].unique()))+'/'+totalInstance)
     # ax.set_yscale("log")
     plt.ylabel(yLabel, color='black', fontsize=18)
     plt.xlabel(xLabel, color='black', fontsize=18)
 
     plt.savefig(outputName, bbox_inches="tight", pad_inches=0)
-   #  plt.savefig(outputName.replace(".jpg", ".eps"),
-    # bbox_inches="tight", pad_inches=0)
+    plt.savefig(outputName.replace(".jpg", ".eps"),
+                bbox_inches="tight", pad_inches=0)
     plt.close()
     plt.clf()
     plt.cla()
@@ -336,6 +339,7 @@ def makePairWiseDf(rawdf, baseline, algorithms):
 
     return df
 
+
 def allSolvedDf(rawdf, algorithms):
     df = pd.DataFrame()
     df["Algorithm"] = np.nan
@@ -346,16 +350,16 @@ def allSolvedDf(rawdf, algorithms):
     df["cpu"] = np.nan
 
     # for instance in BaselineDf["instance"].unique():
-        # dfins = rawdf[rawdf["instance"] == instance]
-        # # keep instances solved by all algorithms across all bounds
-        # if len(dfins) == len(algorithms) * len(BaselineDf["Cost Bound w.r.t. Optimal"].unique()):
-            # df = df.append(dfins)
+    # dfins = rawdf[rawdf["instance"] == instance]
+    # # keep instances solved by all algorithms across all bounds
+    # if len(dfins) == len(algorithms) * len(BaselineDf["Cost Bound w.r.t. Optimal"].unique()):
+    # df = df.append(dfins)
 
     for instance in rawdf["instance"].unique():
         for boundP in rawdf["Cost Bound w.r.t. Optimal"].unique():
             # print(instance, boundP)
             dfins = rawdf[(rawdf["instance"] == instance) &
-            (rawdf["Cost Bound w.r.t. Optimal"] == boundP)]
+                          (rawdf["Cost Bound w.r.t. Optimal"] == boundP)]
 
             if len(dfins) == len(algorithms):  # keep instances solved by all algorithms
                 df = df.append(dfins)
@@ -367,8 +371,6 @@ def allSolvedDf(rawdf, algorithms):
             df[df["Cost Bound w.r.t. Optimal"] == boundP]["instance"].unique()))
 
     return df
-
-
 
 
 def makeFixedbaselineDf(rawdf, fixedbaseline, algorithms, args):
@@ -386,10 +388,10 @@ def makeFixedbaselineDf(rawdf, fixedbaseline, algorithms, args):
     # print("baseline data count, ", len(BaselineDf))
 
     # for instance in BaselineDf["instance"].unique():
-        # dfins = rawdf[rawdf["instance"] == instance]
-        # # keep instances solved by all algorithms across all bounds
-        # if len(dfins) == len(algorithms) * len(bounds):
-            # df = df.append(dfins)
+    # dfins = rawdf[rawdf["instance"] == instance]
+    # # keep instances solved by all algorithms across all bounds
+    # if len(dfins) == len(algorithms) * len(bounds):
+    # df = df.append(dfins)
 
     for instance in rawdf["instance"].unique():
         for boundP in rawdf["Cost Bound w.r.t. Optimal"].unique():
@@ -403,7 +405,7 @@ def makeFixedbaselineDf(rawdf, fixedbaseline, algorithms, args):
     for boundP in bounds:
         print("bound percent ", boundP, "valid instances: ", len(
             df[df["Cost Bound w.r.t. Optimal"] == boundP]["instance"].unique()),
-              "valid baseline instance: ", len(BaselineDf["instance"]))
+            "valid baseline instance: ", len(BaselineDf["instance"]))
 
     differenceNodeGen = []
 
@@ -417,12 +419,14 @@ def makeFixedbaselineDf(rawdf, fixedbaseline, algorithms, args):
             diffNodeGen = row['nodeGen'] / relateastar['nodeGen']
             # print("row",row)
             # print("relateastar",relateastar)
-            diffNodeGen = math.log(diffNodeGen.values[0], 10) # compute geometric mean in plots
+            # compute geometric mean in plots
+            diffNodeGen = math.log(diffNodeGen.values[0], 10)
             differenceNodeGen.append(diffNodeGen)
 
     df["fixedbaseline"] = differenceNodeGen
 
     return df
+
 
 def readData(args, algorithms):
     domainSize = args.size
@@ -579,13 +583,13 @@ def makeCoverageTable(df, args, totalInstance):
                 df["Cost Bound w.r.t. Optimal"] == cbound)]
             boundSolved[str(cbound)].append(str(len(dfins))+"/"+totalInstance)
 
-    data={"Algorihtm" : algs}
+    data = {"Algorihtm": algs}
     data.update(boundSolved)
 
     nrows, ncols = len(algs)+1, len(bounds)
     hcell, wcell = 0.3, 1
     hpad, wpad = 0, 0
-    fig=plt.figure(figsize=(ncols*wcell+wpad, nrows*hcell+hpad))
+    fig = plt.figure(figsize=(ncols*wcell+wpad, nrows*hcell+hpad))
     ax = fig.add_subplot(111)
     ax.axis('off')
 
@@ -598,6 +602,32 @@ def makeCoverageTable(df, args, totalInstance):
     table(ax, tabledf, loc='center')  # where tabledf is your data frame
 
     plt.savefig(out_file, dpi=200)
+
+
+def makeCoveragePlot(df, args, totalInstance, showname):
+    algs = []
+    bound = []
+    solved = []
+
+    for alg in df["Algorithm"].unique():
+        for cbound in df["Cost Bound w.r.t. Optimal"].unique():
+            algs.append(alg)
+            bound.append(cbound)
+            dfins = df[(df["Algorithm"] == alg) & (
+                df["Cost Bound w.r.t. Optimal"] == cbound)]
+            solved.append(len(dfins))
+
+    rawdf = pd.DataFrame({
+        "Algorithm": algs,
+        "Cost Bound w.r.t. Optimal": bound,
+        "solved": solved
+    })
+
+    makeLinePlot("Cost Bound w.r.t. Optimal", "solved", rawdf, "Algorithm",
+                 "Cost Bound w.r.t. Optimal",
+                 showname["solved"].replace(
+                     "totalInstance", totalInstance), totalInstance,
+                 createOutFilePrefix(args) + args.plotType+".jpg")
 
 def createOutFilePrefix(args):
 
@@ -626,8 +656,10 @@ def plotting(args, config):
 
     rawdf = readData(args, algorithms)
 
-    if args.plotType == "coverage":
+    if args.plotType == "coveragetb":
         makeCoverageTable(rawdf, args, totalInstance[args.domain])
+    elif args.plotType == "coverageplt":
+        makeCoveragePlot(rawdf, args, totalInstance[args.domain], showname)
     elif args.plotType == "nodeGenDiff":
 
         cureBaseline = config.getBaseline()[args.domain][args.subdomain]
@@ -656,7 +688,7 @@ def plotting(args, config):
                      createOutFilePrefix(args) + args.plotType+".jpg")
 
     else:
-        df=allSolvedDf(rawdf,algorithms)
+        df = allSolvedDf(rawdf, algorithms)
         makeLinePlot("Cost Bound w.r.t. Optimal", args.plotType, rawdf, "Algorithm",
                      "Cost Bound w.r.t. Optimal", showname[args.plotType],
                      totalInstance[args.domain],
