@@ -10,7 +10,7 @@ print_usage() {
     echo " support list,eg: -u a1 -u a2    available: pts ptshhat ptsnancy bees astar wastar ptsnancywithdhat"
     echo "                                 default: pts ptshhat ptsnancy bees ptsnancywithdhat"
     echo "[-b bound percent wrt optimal]"
-    echo " support list,eg: -b 10 -b 300   default: 60 80 100 120 140 160 180 200 220 240 260 280 300 320 340 360 380 400 420 440 460 480 500 520 540 560 580 600"
+    echo " support list,eg: -b 10 -b 300   default: 100 120 140 160 180 200 220 240 260 280 300 320 340 360 380 400 420 440 460 480 500 520 540 560 580 600"
     echo "[-t time limit]                  default: 1800 (seconds)"
     echo "[-m memory limit]                default: 7(GB)"
     echo "[-w weight of wA*]               default: 2"
@@ -31,7 +31,7 @@ subdomain="uniform"
 size="4"
 #boundedCostSolvers=("pts" "ptshhat" "ptsnancy" "bees" "astar" "wastar")
 boundedCostSolvers=("pts" "ptshhat" "ptsnancy" "bees" "ptsnancywithdhat")
-boundPercents=(60 80 100 120 140 160 180 200 220 240 260 280 300 320 340 360 380 400 420 440 460 480 500 520 540 560 580 600)
+boundPercents=(100 120 140 160 180 200 220 240 260 280 300 320 340 360 380 400 420 440 460 480 500 520 540 560 580 600)
 timeLimit=1800
 memoryLimit=7
 weight="2"
