@@ -43,6 +43,13 @@ def parseArugments():
         help='algorithms: wastar, astar, pts, ptshhat, ptsnancy, bees default(all)',
         default=[])
 
+    parser.add_argument(
+        '-bt',
+        action='store',
+        dest='boundType',
+        help='boundType: absolute(default), wrtOpt;',
+        default='absolute')
+
 #     parser.add_argument('-z',
     # action='store',
     # dest='size',
@@ -63,9 +70,14 @@ def main():
     if len(args.algorithms) != 0:
         algorithms = args.algorithms
 
+    resultDir = "tianyi_results"
+
+    if args.boundType == "absolute":
+        resultDir = "tianyi_results_absolute_bound"
+
     for algorithm in algorithms:
 
-        fileDir = researchHome + "/boundedCostSearch/tianyi_results/" + \
+        fileDir = researchHome + "/boundedCostSearch/" + resultDir + "/" + \
             args.domain+"/"+args.subdomain+"/"+algorithm+"/"
 
         if not os.path.exists(fileDir):
