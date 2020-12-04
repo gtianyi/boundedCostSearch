@@ -47,8 +47,8 @@ def parseArugments():
         '-bt',
         action='store',
         dest='boundType',
-        help='boundType: absolute(default), wrtOpt;',
-        default='absolute')
+        help='boundType: absolute, wrtOpt(default);',
+        default='wrtOpt')
 
 #     parser.add_argument('-z',
     # action='store',

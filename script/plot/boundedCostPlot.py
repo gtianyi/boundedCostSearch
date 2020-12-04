@@ -107,7 +107,10 @@ class Configure:
         self.totalInstance = {"tile": "100", "pancake": "100",
                               "racetrack": "25", "vaccumworld": "60"}
 
-        self.absoluteBoundsLimit = {"tile":{"uniform": {"lower":40, "upper":900}}}
+        self.absoluteBoundsLimit = {"tile":{"uniform": {"lower":40, "upper":300},
+                                            "heavy": {"lower":700, "upper":6000}
+                                            }
+                                   }
 
         self.additionalAlgorithms = {"tile":
                                      {
@@ -253,8 +256,8 @@ def parseArugments():
         '-bt',
         action='store',
         dest='boundType',
-        help='bound type: absolute(default), wrtOpt',
-        default='absolute')
+        help='bound type: absolute, wrtOpt(default)',
+        default='wrtOpt')
 
     return parser
 
@@ -362,20 +365,20 @@ def allSolvedDf(rawdf, algorithms):
     df["nodeExp"] = np.nan
     df["cpu"] = np.nan
 
-    # for instance in BaselineDf["instance"].unique():
-    # dfins = rawdf[rawdf["instance"] == instance]
-    # # keep instances solved by all algorithms across all bounds
-    # if len(dfins) == len(algorithms) * len(BaselineDf["boundValues"].unique()):
-    # df = df.append(dfins)
-
     for instance in rawdf["instance"].unique():
-        for boundP in rawdf["boundValues"].unique():
-            # print(instance, boundP)
-            dfins = rawdf[(rawdf["instance"] == instance) &
-                          (rawdf["boundValues"] == boundP)]
+        dfins = rawdf[rawdf["instance"] == instance]
+        # keep instances solved by all algorithms across all bounds
+        if len(dfins) == len(algorithms) * len(rawdf["boundValues"].unique()):
+            df = df.append(dfins)
 
-            if len(dfins) == len(algorithms):  # keep instances solved by all algorithms
-                df = df.append(dfins)
+    # for instance in rawdf["instance"].unique():
+        # for boundP in rawdf["boundValues"].unique():
+            # # print(instance, boundP)
+            # dfins = rawdf[(rawdf["instance"] == instance) &
+                          # (rawdf["boundValues"] == boundP)]
+
+            # if len(dfins) == len(algorithms):  # keep instances solved by all algorithms
+                # df = df.append(dfins)
 
     boundPercents = rawdf["boundValues"].unique()
     boundPercents.sort()

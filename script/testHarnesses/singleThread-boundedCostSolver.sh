@@ -14,7 +14,7 @@ print_usage() {
     echo "[-t time limit]                  default: 1800 (seconds)"
     echo "[-m memory limit]                default: 7(GB)"
     echo "[-w weight of wA*]               default: 2"
-    echo "[-bt bound type]                 available: percentWrtOpt, absolute(default)"
+    echo "[-bt bound type]                 available: percentWrtOpt(default), absolute"
     echo "[-h help]"
     exit 1
 }
@@ -36,7 +36,7 @@ boundPercents=(100 120 140 160 180 200 220 240 260 280 300 320 340 360 380 400 4
 timeLimit=1800
 memoryLimit=7
 weight="2"
-boundType="absolute"
+boundType="percentWrtOpt"
 
 absoluteBounds=()
 absoluteBoundsTileUniform=(40 60 80 100 120 140 160 180 200 220 240 260 280 300 600 900)
