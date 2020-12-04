@@ -8,12 +8,13 @@ print_usage() {
     echo "[-z domain size]                 default: 4"
     echo "[-u boundedCost solver]"
     echo " support list,eg: -u a1 -u a2    available: pts ptshhat ptsnancy bees astar wastar ptsnancywithdhat"
-    echo "                                 default: pts ptshhat ptsnancy bees ptsnancywithdhat"
-    echo "[-b bound percent wrt optimal]"
-    echo " support list,eg: -b 10 -b 300   default: 100 120 140 160 180 200 220 240 260 280 300 320 340 360 380 400 420 440 460 480 500 520 540 560 580 600"
+    echo "                                 default: pts ptshhat bees-EpsGlobal ptsnancywithdhat"
+    echo "[-bp bound percent wrt optimal]"
+    echo " support list,eg: -bp 10 -bp 300 default: 100 120 140 160 180 200 220 240 260 280 300 320 340 360 380 400 420 440 460 480 500 520 540 560 580 600"
     echo "[-t time limit]                  default: 1800 (seconds)"
     echo "[-m memory limit]                default: 7(GB)"
     echo "[-w weight of wA*]               default: 2"
+    echo "[-bt bound type]                 available: percentWrtOpt, absolute(default)"
     echo "[-h help]"
     exit 1
 }
@@ -30,11 +31,16 @@ domain="tile"
 subdomain="uniform"
 size="4"
 #boundedCostSolvers=("pts" "ptshhat" "ptsnancy" "bees" "astar" "wastar")
-boundedCostSolvers=("pts" "ptshhat" "ptsnancy" "bees" "ptsnancywithdhat")
+boundedCostSolvers=("pts" "ptshhat" "bees-EpsGlobal" "ptsnancywithdhat")
 boundPercents=(100 120 140 160 180 200 220 240 260 280 300 320 340 360 380 400 420 440 460 480 500 520 540 560 580 600)
 timeLimit=1800
 memoryLimit=7
 weight="2"
+boundType="absolute"
+
+absoluteBounds=()
+absoluteBoundsTileUniform=(40 60 80 100 120 140 160 180 200 220 240 260 280 300 600 900)
+absoluteBoundsTileHeavy=(300 400 500 600 700 800 900 1000 2000 3000 4000 5000 6000)
 
 solverCleared=false
 boundCleared=false
@@ -86,7 +92,7 @@ for ((i = 1; i <= "$#"; i++)); do
         fi
     fi
 
-    if [ ${!i} == "-b" ]; then
+    if [ ${!i} == "-bp" ]; then
         if [ $((i + 1)) -le "$#" ]; then
             if ! $boundCleared; then
                 unset boundPercents
@@ -94,6 +100,13 @@ for ((i = 1; i <= "$#"; i++)); do
             fi
             var=$((i + 1))
             boundPercents+=(${!var})
+        fi
+    fi
+
+    if [ ${!i} == "-bt" ]; then
+        if [ $((i + 1)) -le "$#" ]; then
+            var=$((i + 1))
+            boundType=${!var}
         fi
     fi
 
@@ -130,16 +143,40 @@ echo "domain ${domain}"
 echo "subdomain ${subdomain}"
 echo "size ${size}"
 echo "solvers ${boundedCostSolvers[*]}"
-echo "boundPercents ${boundPercents[*]}"
 echo "time limit ${timeLimit}"
 echo "memory limit ${memoryLimit}"
+echo "bound type ${boundType}"
+
+if [ "$boundType" == "percentWrtOpt" ]; then 
+    echo "boundPercents ${boundPercents[*]}"
+fi
+
+if [ "$boundType" == "absolute" ]; then 
+    if [ "$domain" == "tile"  ] && [ "$subdomain" == "uniform"  ]; then
+        absoluteBounds=("${absoluteBoundsTileUniform[@]}")  
+    fi
+
+    if [ "$domain" == "tile"  ] && [ "$subdomain" == "heavy"  ]; then
+        absoluteBounds=("${absoluteBoundsTileHeavy[@]}")  
+    fi
+
+    echo "absolute bounds ${absoluteBounds[*]}"
+fi
 
 infile=""
 outfile=""
 
 research_home="/home/aifs1/gu/phd/research/workingPaper"
 infile_path="${research_home}/realtime-nancy/worlds/${domain}"
-outfile_path="${research_home}/boundedCostSearch/tianyi_results/${domain}/${subdomain}/solverDir"
+
+outfile_path=""
+if [ "$boundType" == "percentWrtOpt" ]; then 
+    outfile_path="${research_home}/boundedCostSearch/tianyi_results/${domain}/${subdomain}/solverDir"
+fi
+if [ "$boundType" == "absolute" ]; then 
+    outfile_path="${research_home}/boundedCostSearch/tianyi_results_absolute_bound/${domain}/${subdomain}/solverDir"
+fi
+
 infile_name=""
 
 limitWrapper="${research_home}/boundedCostSearch/tianyicodebase/script/testHarnesses/limitWrapper.py"
@@ -147,19 +184,19 @@ optimalSolRetriever="${research_home}/boundedCostSearch/tianyicodebase/script/op
 
 if [ "$domain" == "tile" ]; then
     infile_name="instance-${size}x${size}.st"
-    outfile="${outfile_path}/BoundPercent-BoundNumber-size-${size}-instance.json"
+    outfile="${outfile_path}/${boundType}-BoundNumber-size-${size}-instance.json"
     infile="${infile_path}/${infile_name}"
 fi
 
 if [ "$domain" == "pancake" ]; then
     infile_name="instance-${size}.pan"
-    outfile="${outfile_path}/BoundPercent-BoundNumber-size-${size}-instance.json"
+    outfile="${outfile_path}/${boundType}-BoundNumber-size-${size}-instance.json"
     infile="${infile_path}/${size}/${infile_name}"
 fi
 
 if [ "$domain" == "racetrack" ]; then
     infile_name="${subdomain}-instance.init"
-    outfile="${outfile_path}/BoundPercent-BoundNumber-instance.json"
+    outfile="${outfile_path}/${boundType}-BoundNumber-instance.json"
     infile="${infile_path}/${infile_name}"
 fi
 
@@ -170,6 +207,16 @@ if [ "$domain" == "vaccumworld" ]; then
 fi
 
 last=$(($first + $n_of_i))
+
+boundList=()
+
+if [ "$boundType" == "percentWrtOpt" ]; then 
+    boundList=("${boundPercents[@]}")  
+fi
+
+if [ "$boundType" == "absolute" ]; then 
+    boundList=("${absoluteBounds[@]}")  
+fi
 
 for solverId in "${!boundedCostSolvers[@]}"; do
 
@@ -182,24 +229,31 @@ for solverId in "${!boundedCostSolvers[@]}"; do
 
     executable="${research_home}/boundedCostSearch/tianyicodebase_build_release/bin/bcs"
 
-    for boundPercent in "${boundPercents[@]}"; do
-        echo "bound percent $boundPercent"
+    for boundTypeValue in "${boundList[@]}"; do
+        echo "${boundType} $boundTypeValue"
 
         instance=$first
         while ((instance < last)); do
             infile_instance="${infile/instance/$instance}"
             infile_instance="${infile_instance/tile/slidingTile}"
             outfile_instance="${outfile_alg/instance/$instance}"
-            outfile_instance="${outfile_instance/BoundNumber/$boundPercent}"
+            outfile_instance="${outfile_instance/BoundNumber/$boundTypeValue}"
             tempfile="${outfile_instance}.temp"
 
             curFileName=${infile_name/instance/$instance}
-            retrieverCommand="python ${optimalSolRetriever} -d ${domain} -s ${subdomain} -z ${size} -i ${curFileName}"
-            optimalSolution=$(${retrieverCommand})
 
-            percent=$((${boundPercent} * ${optimalSolution}))
-            bound=$(echo "$percent / 100" | bc)
-            echo "bound $bound"
+
+            bound=$boundTypeValue
+
+            if [ "$boundType" == "percentWrtOpt" ]; then 
+                retrieverCommand="python ${optimalSolRetriever} -d ${domain} -s ${subdomain} -z ${size} -i ${curFileName}"
+                optimalSolution=$(${retrieverCommand})
+
+                percent=$((${boundTypeValue} * ${optimalSolution}))
+                bound=$(echo "$percent / 100" | bc)
+            fi
+
+            echo "actural bound $bound"
 
             if [ -f ${outfile_instance} ] || [ -f ${tempfile} ]; then
 

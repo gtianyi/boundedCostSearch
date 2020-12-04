@@ -93,18 +93,21 @@ class Configure:
                               }
                               }
 
-        self.algorithm_order = ['PTS', 'PTS-h^', 'expected work']
-
         self.showname = {"nodeGen": "Total Nodes Generated",
                          "nodeExp": "Total Nodes expanded",
                          "nodeGenDiff": "Algorithm Node Generated /  baseline Node Generated",
                          "fixedbaseline":
                          "log10 (Algorithm Node Generated /  baseline Node Generated)",
                          "cpu": "Raw CPU Time",
-                         "solved": "Number of Solved Instances (Total=totalInstance)"}
+                         "solved": "Number of Solved Instances (Total=totalInstance)",
+                         "boundValues":{"absolute":"Cost Bound",
+                                        "wrtOpt":"Cost Bound w.r.t Optimal"}
+                         }
 
         self.totalInstance = {"tile": "100", "pancake": "100",
                               "racetrack": "25", "vaccumworld": "60"}
+
+        self.absoluteBoundsLimit = {"tile":{"uniform": {"lower":40, "upper":900}}}
 
         self.additionalAlgorithms = {"tile":
                                      {
@@ -190,6 +193,9 @@ class Configure:
     def getTotalInstance(self):
         return self.totalInstance
 
+    def getAbsoluteBoundLimits(self):
+        return self.absoluteBoundsLimit
+
     def getAdditionalAlgorithms(self):
         return self.additionalAlgorithms
 
@@ -243,6 +249,13 @@ def parseArugments():
                          nodeGenDiff(default), fixedbaseline',
         default='nodeGenDiff')
 
+    parser.add_argument(
+        '-bt',
+        action='store',
+        dest='boundType',
+        help='bound type: absolute(default), wrtOpt',
+        default='absolute')
+
     return parser
 
 # _ = totalInstance
@@ -271,7 +284,7 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
     ax.tick_params(colors='black', labelsize=12)
     # ax.legend().set_title('Solved/Total: ' +
     # str(len(dataframe['instance'].unique()))+'/'+totalInstance)
-    # ax.set_yscale("log")
+    ax.set_yscale("log")
     plt.ylabel(yLabel, color='black', fontsize=18)
     plt.xlabel(xLabel, color='black', fontsize=18)
 
@@ -287,7 +300,7 @@ def makePairWiseDf(rawdf, baseline, algorithms):
     df = pd.DataFrame()
     df["Algorithm"] = np.nan
     df["instance"] = np.nan
-    df["Cost Bound w.r.t. Optimal"] = np.nan
+    df["boundValues"] = np.nan
     df["nodeGen"] = np.nan
     df["nodeExp"] = np.nan
     df["cpu"] = np.nan
@@ -299,23 +312,23 @@ def makePairWiseDf(rawdf, baseline, algorithms):
     for instance in BaselineDf["instance"].unique():
         dfins = rawdf[rawdf["instance"] == instance]
         # keep instances solved by all algorithms across all bounds
-        if len(dfins) == len(algorithms) * len(BaselineDf["Cost Bound w.r.t. Optimal"].unique()):
+        if len(dfins) == len(algorithms) * len(BaselineDf["boundValues"].unique()):
             df = df.append(dfins)
 
     # for instance in BaselineDf["instance"].unique():
-        # for boundP in BaselineDf["Cost Bound w.r.t. Optimal"].unique():
+        # for boundP in BaselineDf["boundValues"].unique():
             # # print(instance, boundP)
             # dfins = rawdf[(rawdf["instance"] == instance) &
-            # (rawdf["Cost Bound w.r.t. Optimal"] == boundP)]
+            # (rawdf["boundValues"] == boundP)]
             # if len(dfins) == len(algorithms):  # keep instances solved by all algorithms
             # df = df.append(dfins)
 
-    boundPercents = BaselineDf["Cost Bound w.r.t. Optimal"].unique()
+    boundPercents = BaselineDf["boundValues"].unique()
     boundPercents.sort()
     for boundP in boundPercents:
         print("bound percent ", boundP, "valid instances: ", len(
-            df[df["Cost Bound w.r.t. Optimal"] == boundP]["instance"].unique()), "baseline avg:",
-            df[(df["Cost Bound w.r.t. Optimal"] == boundP) &
+            df[df["boundValues"] == boundP]["instance"].unique()), "baseline avg:",
+            df[(df["boundValues"] == boundP) &
                (df["Algorithm"] == baseline)]["nodeGen"].mean())
 
     differenceNodeGen = []
@@ -324,7 +337,7 @@ def makePairWiseDf(rawdf, baseline, algorithms):
         row = rowdata[1]
         relateastar = df[(df["instance"] == row['instance']) &
                          (df["Algorithm"] == baseline) &
-                         (df["Cost Bound w.r.t. Optimal"] == row['Cost Bound w.r.t. Optimal'])]
+                         (df["boundValues"] == row['boundValues'])]
         if relateastar.empty:
             print("error! baseline not found")
             differenceNodeGen.append(np.nan)
@@ -344,7 +357,7 @@ def allSolvedDf(rawdf, algorithms):
     df = pd.DataFrame()
     df["Algorithm"] = np.nan
     df["instance"] = np.nan
-    df["Cost Bound w.r.t. Optimal"] = np.nan
+    df["boundValues"] = np.nan
     df["nodeGen"] = np.nan
     df["nodeExp"] = np.nan
     df["cpu"] = np.nan
@@ -352,23 +365,23 @@ def allSolvedDf(rawdf, algorithms):
     # for instance in BaselineDf["instance"].unique():
     # dfins = rawdf[rawdf["instance"] == instance]
     # # keep instances solved by all algorithms across all bounds
-    # if len(dfins) == len(algorithms) * len(BaselineDf["Cost Bound w.r.t. Optimal"].unique()):
+    # if len(dfins) == len(algorithms) * len(BaselineDf["boundValues"].unique()):
     # df = df.append(dfins)
 
     for instance in rawdf["instance"].unique():
-        for boundP in rawdf["Cost Bound w.r.t. Optimal"].unique():
+        for boundP in rawdf["boundValues"].unique():
             # print(instance, boundP)
             dfins = rawdf[(rawdf["instance"] == instance) &
-                          (rawdf["Cost Bound w.r.t. Optimal"] == boundP)]
+                          (rawdf["boundValues"] == boundP)]
 
             if len(dfins) == len(algorithms):  # keep instances solved by all algorithms
                 df = df.append(dfins)
 
-    boundPercents = rawdf["Cost Bound w.r.t. Optimal"].unique()
+    boundPercents = rawdf["boundValues"].unique()
     boundPercents.sort()
     for boundP in boundPercents:
         print("bound percent ", boundP, "valid instances: ", len(
-            df[df["Cost Bound w.r.t. Optimal"] == boundP]["instance"].unique()))
+            df[df["boundValues"] == boundP]["instance"].unique()))
 
     return df
 
@@ -377,12 +390,12 @@ def makeFixedbaselineDf(rawdf, fixedbaseline, algorithms, args):
     df = pd.DataFrame()
     df["Algorithm"] = np.nan
     df["instance"] = np.nan
-    df["Cost Bound w.r.t. Optimal"] = np.nan
+    df["boundValues"] = np.nan
     df["nodeGen"] = np.nan
     df["nodeExp"] = np.nan
     df["cpu"] = np.nan
 
-    bounds = rawdf["Cost Bound w.r.t. Optimal"].unique()
+    bounds = rawdf["boundValues"].unique()
     BaselineDf = readFixedBaselineData(args, fixedbaseline)
 
     # print("baseline data count, ", len(BaselineDf))
@@ -394,17 +407,17 @@ def makeFixedbaselineDf(rawdf, fixedbaseline, algorithms, args):
     # df = df.append(dfins)
 
     for instance in rawdf["instance"].unique():
-        for boundP in rawdf["Cost Bound w.r.t. Optimal"].unique():
+        for boundP in rawdf["boundValues"].unique():
             # print(instance, boundP)
             dfins = rawdf[(rawdf["instance"] == instance) &
-                          (rawdf["Cost Bound w.r.t. Optimal"] == boundP)]
+                          (rawdf["boundValues"] == boundP)]
             if len(dfins) == len(algorithms):  # keep instances solved by all algorithms
                 df = df.append(dfins)
 
     bounds.sort()
     for boundP in bounds:
         print("bound percent ", boundP, "valid instances: ", len(
-            df[df["Cost Bound w.r.t. Optimal"] == boundP]["instance"].unique()),
+            df[df["boundValues"] == boundP]["instance"].unique()),
             "valid baseline instance: ", len(BaselineDf["instance"]))
 
     differenceNodeGen = []
@@ -428,13 +441,13 @@ def makeFixedbaselineDf(rawdf, fixedbaseline, algorithms, args):
     return df
 
 
-def readData(args, algorithms):
+def readData(args, algorithms, absoluteBoundsLimit):
     domainSize = args.size
     domainType = args.domain
     subdomainType = args.subdomain
 
     algorithm = []
-    boundPercent = []
+    boundValue = []
     cpu = []
     instance = []
     nodeExpanded = []
@@ -442,9 +455,13 @@ def readData(args, algorithms):
 
     print("reading in data...")
 
+    resultDir = "tianyi_results"
+    if args.boundType == "absolute":
+        resultDir = "tianyi_results_absolute_bound"
+
     domainDir = domainType
 
-    inPath = "../../../tianyi_results/" + domainDir + "/" + subdomainType + '/alg'
+    inPath = "../../../" + resultDir + "/" + domainDir + "/" + subdomainType + '/alg'
 
     for alg in algorithms:
         print("reading ", alg)
@@ -460,11 +477,18 @@ def readData(args, algorithms):
             if domainType == "pancake" and sizeStr != domainSize:
                 continue
 
-            boundPercentStr = numbersInFileName[0]
-            boundP = int(boundPercentStr)
+            boundValueStr = numbersInFileName[0]
+            boundV = int(boundValueStr)
 
-            if(boundP/100 < float(args.boundPercentStart) or
-               boundP/100 > float(args.boundPercentEnd)):
+            lowerBound = absoluteBoundsLimit[args.domain][args.subdomain]["lower"]
+            upperBound = absoluteBoundsLimit[args.domain][args.subdomain]["upper"]
+
+            if args.boundType == "wrtOpt":
+                boundV = boundV / 100
+                lowerBound = float(args.boundPercentStart)
+                upperBound = float(args.boundPercentEnd)
+
+            if(boundV < lowerBound or boundV > upperBound):
                 continue
 
             with open(inPath_alg + "/" + jsonFile) as json_data:
@@ -480,7 +504,7 @@ def readData(args, algorithms):
                 # continue
 
                 algorithm.append(algorithms[alg])
-                boundPercent.append(boundP/100)
+                boundValue.append(boundV)
                 cpu.append(resultData["cpu time"])
                 instance.append(resultData["instance"])
                 nodeExpanded.append(resultData["node expanded"])
@@ -489,7 +513,7 @@ def readData(args, algorithms):
     rawdf = pd.DataFrame({
         "Algorithm": algorithm,
         "instance": instance,
-        "Cost Bound w.r.t. Optimal": boundPercent,
+        "boundValues": boundValue,
 
         "nodeGen": nodeGenerated,
         "nodeExp": nodeExpanded,
@@ -550,7 +574,7 @@ def readFixedBaselineData(args, fixedbaseline):
     rawdf = pd.DataFrame({
         "Algorithm": algorithm,
         "instance": instance,
-        "Cost Bound w.r.t. Optimal": boundPercent,
+        "boundValues": boundPercent,
 
         "nodeGen": nodeGenerated,
         "nodeExp": nodeExpanded,
@@ -567,7 +591,7 @@ def makeCoverageTable(df, args, totalInstance):
 
     boundSolved = {}
 
-    boundStr = df["Cost Bound w.r.t. Optimal"].unique()
+    boundStr = df["boundValues"].unique()
     bounds = [float(i) for i in boundStr]
     bounds.sort()
 
@@ -578,10 +602,10 @@ def makeCoverageTable(df, args, totalInstance):
 
         algs.append(alg)
 
-        for cbound in df["Cost Bound w.r.t. Optimal"].unique():
+        for cbound in df["boundValues"].unique():
             dfins = df[(df["Algorithm"] == alg) & (
-                df["Cost Bound w.r.t. Optimal"] == cbound)]
-            boundSolved[str(cbound)].append(str(len(dfins))+"/"+totalInstance)
+                df["boundValues"] == cbound)]
+            boundSolved[str(float(cbound))].append(str(len(dfins))+"/"+totalInstance)
 
     data = {"Algorihtm": algs}
     data.update(boundSolved)
@@ -610,24 +634,25 @@ def makeCoveragePlot(df, args, totalInstance, showname):
     solved = []
 
     for alg in df["Algorithm"].unique():
-        for cbound in df["Cost Bound w.r.t. Optimal"].unique():
+        for cbound in df["boundValues"].unique():
             algs.append(alg)
             bound.append(cbound)
             dfins = df[(df["Algorithm"] == alg) & (
-                df["Cost Bound w.r.t. Optimal"] == cbound)]
+                df["boundValues"] == cbound)]
             solved.append(len(dfins))
 
     rawdf = pd.DataFrame({
         "Algorithm": algs,
-        "Cost Bound w.r.t. Optimal": bound,
+        "boundValues": bound,
         "solved": solved
     })
 
-    makeLinePlot("Cost Bound w.r.t. Optimal", "solved", rawdf, "Algorithm",
-                 "Cost Bound w.r.t. Optimal",
+    makeLinePlot("boundValues", "solved", rawdf, "Algorithm",
+                 showname["boundValues"][args.boundType],
                  showname["solved"].replace(
                      "totalInstance", totalInstance), totalInstance,
                  createOutFilePrefix(args) + args.plotType+".jpg")
+
 
 def createOutFilePrefix(args):
 
@@ -639,7 +664,8 @@ def createOutFilePrefix(args):
         os.mkdir(outDirectory)
 
     outFilePrefix = outDirectory + '/' + args.domain + "-" + \
-        args.subdomain + "-" + args.size + '-' + nowstr
+        args.subdomain + "-" + args.boundType + "-" +\
+        args.size + '-' + nowstr
 
     return outFilePrefix
 
@@ -654,7 +680,7 @@ def plotting(args, config):
     showname = config.getShowname()
     totalInstance = config.getTotalInstance()
 
-    rawdf = readData(args, algorithms)
+    rawdf = readData(args, algorithms, config.getAbsoluteBoundLimits())
 
     if args.plotType == "coveragetb":
         makeCoverageTable(rawdf, args, totalInstance[args.domain])
@@ -667,8 +693,8 @@ def plotting(args, config):
 
         df = makePairWiseDf(rawdf, baseline, algorithms)
 
-        makeLinePlot("Cost Bound w.r.t. Optimal", args.plotType, df, "Algorithm",
-                     "Cost Bound w.r.t. Optimal",
+        makeLinePlot("boundValues", args.plotType, df, "Algorithm",
+                     showname["boundValues"][args.boundType],
                      # "Cost Bound w.r.t. Suboptimal(w=3)",
                      showname[args.plotType].replace(
                          "baseline", baseline), totalInstance[args.domain],
@@ -681,16 +707,16 @@ def plotting(args, config):
 
         df = makeFixedbaselineDf(rawdf, fixedbaseline, algorithms, args)
 
-        makeLinePlot("Cost Bound w.r.t. Optimal", args.plotType, df, "Algorithm",
-                     "Cost Bound w.r.t. Optimal",
+        makeLinePlot("boundValues", args.plotType, df, "Algorithm",
+                     showname["boundValues"][args.boundType],
                      showname[args.plotType].replace(
                          "baseline", baseline), totalInstance[args.domain],
                      createOutFilePrefix(args) + args.plotType+".jpg")
 
     else:
         df = allSolvedDf(rawdf, algorithms)
-        makeLinePlot("Cost Bound w.r.t. Optimal", args.plotType, rawdf, "Algorithm",
-                     "Cost Bound w.r.t. Optimal", showname[args.plotType],
+        makeLinePlot("boundValues", args.plotType, rawdf, "Algorithm",
+                     showname["boundValues"][args.boundType], showname[args.plotType],
                      totalInstance[args.domain],
                      createOutFilePrefix(args) + args.plotType+".jpg")
 
