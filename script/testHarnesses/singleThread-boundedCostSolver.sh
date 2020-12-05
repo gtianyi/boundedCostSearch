@@ -266,7 +266,12 @@ for solverId in "${!boundedCostSolvers[@]}"; do
 
             else
 
-                command="${executable} -d ${domain} -s ${subdomain} -a ${solverName} \
+                realSubdomain="$subdomain"
+                if [ "$subdomain" == "heavy-easy" ]; then
+                    realSubdomain="heavy"
+                fi
+
+                command="${executable} -d ${domain} -s ${realSubdomain} -a ${solverName} \
                     -b ${bound} -o ${outfile_instance} -i ${instance} "
 
                 if [ "${solverName}" == "wastar" ]; then
