@@ -54,7 +54,7 @@ def solverConfig():
                               "/realtime-nancy/build_release/tile-uniform idastar uniform",
                               "heavy": researchHome +
                               "/realtime-nancy/build_release/distributionPractice"
-                              " -d tile -s heavy -a wastar -p 5"},
+                              " -d tile -s heavy -a wastar -p 1"},
                      # "pancake": {"regular": researchHome +
                                  # "/realtime-nancy/build_release/distributionPractice"
                                  # " -d pancake -s regular -a wastar -p 1",
@@ -136,10 +136,13 @@ def main():
     nodeGenJson = {}
 
     counter = 0
-    cutoffCounter=0
+    solvedCounter=0
     total = len(os.listdir(problemDir))
     print("solving problems, total", total)
     for problemFile in os.listdir(problemDir):
+        if(len(nodeGenJson) == 100):
+            break
+
         counter += 1
         command = solver + " < " + problemDir+problemFile
 
@@ -149,14 +152,14 @@ def main():
                         stdout=PIPE, stderr=PIPE, shell=True)
 
         try:
-            outlines = process.communicate(timeout=600)[0].splitlines()
+            outlines = process.communicate(timeout=300)[0].splitlines()
             nodeGen = solverOutPutParser(args, outlines)
             nodeGenJson[problemFile] = int(nodeGen)
-            print(problemFile, nodeGen, str(counter/total*100)+"%", "cutoff: ", cutoffCounter)
+            solvedCounter += 1
+            print(problemFile, nodeGen, str(counter/total*100)+"%", "solved: ", solvedCounter)
         except TimeoutExpired:
             process.kill()
-            cutoffCounter+=1
-            print(problemFile, "cutoff", str(counter/total*100)+"%", "cutoff: ", cutoffCounter)
+            print(problemFile, "cutoff", str(counter/total*100)+"%", "solved: ", solvedCounter)
 
     outDir = researchHome+"/realtime-nancy/worlds/" +\
         problemFolder[args.domain] + "-easy-for-"+args.subdomain+"/"

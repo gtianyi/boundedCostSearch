@@ -65,7 +65,8 @@ def main():
     args = parser.parse_args()
     print(args)
 
-    algorithms = ['astar', 'pts', 'ptshhat', 'ptsnancy', 'bees', 'wastar']
+    # algorithms = ['astar', 'pts', 'ptshhat', 'ptsnancy', 'bees', 'wastar']
+    algorithms = ['pts', 'ptshhat', 'ptsnancywithdhat', 'bees-EpsGlobal']
 
     if len(args.algorithms) != 0:
         algorithms = args.algorithms

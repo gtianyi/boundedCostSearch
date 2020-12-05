@@ -108,7 +108,8 @@ class Configure:
                               "racetrack": "25", "vaccumworld": "60"}
 
         self.absoluteBoundsLimit = {"tile":{"uniform": {"lower":40, "upper":300},
-                                            "heavy": {"lower":700, "upper":6000}
+                                            "heavy": {"lower":700, "upper":6000},
+                                            "heavy-easy": {"lower":300, "upper":6000}
                                             }
                                    }
 
@@ -130,13 +131,14 @@ class Configure:
                                          # "ptsnancy-if001thenfhat": "expected work - 0 fhat",
                                          # "ptsnancyonlyprob": "1/p(n)",
                                          # "ptsnancyonlyeffort": "t(n)"},
-                                         "heavy": {}
+                                         "heavy": {},
                                          # "heavy": {"ptsnancywithdhat": "expected work - dhat"}
                                          # "heavy": {"wastar-with-bound": "WA*"}
                                          #  "ptsnancy-if0thenverysmall": "expected work - no 0 op",
                                          # "ptsnancy-if001thenfhat": "expected work - 0 fhat",
                                          # "ptsnancyonlyprob": "1/p(n)",
                                          # "ptsnancyonlyeffort": "t(n)"
+                                         "heavy-easy": {}
                                      },
                                      "pancake":
                                      {
@@ -228,8 +230,8 @@ def parseArugments():
         '-b',
         action='store',
         dest='boundPercentStart',
-        help='bound percent start: anything above 0.6,(default: 1.2)',
-        default='1.2')
+        help='bound percent start: anything above 0.6,(default: 1)',
+        default='1')
 
     parser.add_argument(
         '-e',
@@ -248,9 +250,9 @@ def parseArugments():
         '-t',
         action='store',
         dest='plotType',
-        help='plot type, nodeGen, cpu, coveragetb, coverageplt, \
-                         nodeGenDiff(default), fixedbaseline',
-        default='nodeGenDiff')
+        help='plot type, nodeGen(default), cpu, coveragetb, coverageplt, \
+                         nodeGenDiff, fixedbaseline',
+        default='nodeGen')
 
     parser.add_argument(
         '-bt',
