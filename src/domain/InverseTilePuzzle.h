@@ -22,14 +22,15 @@ public:
 
         for (size_t r = 0; r < size; r++) {
             for (size_t c = 0; c < size; c++) {
-                auto value = static_cast<size_t>(state.getBoard()[r][c]);
+                auto value = state.getBoard()[r][c];
                 if (value == 0) {
                     continue;
                 }
 
                 manhattanSum +=
                   (1.0 / static_cast<double>(value)) *
-                  (fabs(value / size - r) + fabs(value % size - c));
+                  (fabs(value / static_cast<int>(size) - static_cast<int>(r)) +
+                   fabs(value % static_cast<int>(size) - static_cast<int>(c)));
                 // cout << "value " << value << " sum " << manhattanSum << endl;
             }
         }

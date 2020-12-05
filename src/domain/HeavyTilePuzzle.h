@@ -26,8 +26,8 @@ public:
 
                 manhattanSum +=
                   static_cast<double>(value) *
-                    fabs(value / static_cast<int>(size) - static_cast<int>(r)) +
-                  fabs(value % static_cast<int>(size) - static_cast<int>(c));
+                  (fabs(value / static_cast<int>(size) - static_cast<int>(r)) +
+                   fabs(value % static_cast<int>(size) - static_cast<int>(c)));
                 // cout << "value " << value << " sum " << manhattanSum << endl;
             }
         }
