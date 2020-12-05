@@ -53,6 +53,8 @@ def solverConfig():
     optimalSolver = {"tile": {"uniform": researchHome +
                               "/realtime-nancy/build_release/tile-uniform idastar uniform",
                               "heavy": researchHome +
+                              "/realtime-nancy/build_release/tile-pdb-heavy-inverse idastar heavy",
+                              "heavy-easy": researchHome +
                               "/realtime-nancy/build_release/tile-pdb-heavy-inverse idastar heavy"},
                      "pancake": {"regular": researchHome +
                                  "/realtime-nancy/build_release/distributionPractice"
@@ -85,6 +87,7 @@ def solverConfig():
 
     problemFolder = {
         "tile": "slidingTile",
+        "tile-heavy-easy": "slidingTile_tianyi1000-easy-for-heavy",
         "pancake": "pancake",
         "racetrack": "racetrack",
         "vaccumworld": "vaccumworld/200x200"
@@ -103,7 +106,7 @@ def solverOutPutParser(args, outStr):
                     sol = re.findall(r'\d+', lineContent[3].decode("utf-8"))[0]
                     return sol
 
-        elif args.subdomain == "heavy":
+        elif args.subdomain in ["heavy", "heavy-easy", "inverse", "inverse-easy"] :
             for line in outStr:
                 lineContent = line.split()
                 if lineContent[0] == b'solution':
@@ -125,15 +128,16 @@ def main():
 
     solver = solvers[args.domain][args.subdomain]
 
-    problemDir = researchHome+"/realtime-nancy/worlds/" + \
-        problemFolder[args.domain]+"/"
-
+    problemDir = researchHome+"/realtime-nancy/worlds/"
+    if args.domain == "tile":
+        if args.subdomain in ["uniform", "heavy", "inverse"]:
+            problemDir += problemFolder[args.domain]+"/"
+        elif args.subdomain == "heavy-easy":
+            problemDir += problemFolder[args.domain+"-"+args.subdomain]+"/"
     if args.domain == "racetrack":
-        problemDir = researchHome+"/realtime-nancy/worlds/" + \
-            problemFolder[args.domain]+"-"+args.subdomain+"/"
+        problemDir += problemFolder[args.domain]+"-"+args.subdomain+"/"
     elif args.domain == "pancake":
-        problemDir = researchHome+"/realtime-nancy/worlds/" + \
-            problemFolder[args.domain]+"/"+args.size+"/"
+        problemDir += problemFolder[args.domain]+"/"+args.size+"/"
 
     solutionJson = {}
 

@@ -183,6 +183,11 @@ limitWrapper="${research_home}/boundedCostSearch/tianyicodebase/script/testHarne
 optimalSolRetriever="${research_home}/boundedCostSearch/tianyicodebase/script/optimalSolutionRetriever.py"
 
 if [ "$domain" == "tile" ]; then
+
+    if [ "$subdomain" == "heavy-easy" ]; then
+        infile_path="${research_home}/realtime-nancy/worlds/slidingTile_tianyi1000-easy-for-heavy"
+    fi
+
     infile_name="instance-${size}x${size}.st"
     outfile="${outfile_path}/${boundType}-BoundNumber-size-${size}-instance.json"
     infile="${infile_path}/${infile_name}"
