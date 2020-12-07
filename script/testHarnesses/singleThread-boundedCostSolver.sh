@@ -254,7 +254,7 @@ for solverId in "${!boundedCostSolvers[@]}"; do
                 retrieverCommand="python ${optimalSolRetriever} -d ${domain} -s ${subdomain} -z ${size} -i ${curFileName}"
                 optimalSolution=$(${retrieverCommand})
 
-                percent=$((${boundTypeValue} * ${optimalSolution}))
+                percent=$(echo "${boundTypeValue} * ${optimalSolution}" | bc)
                 bound=$(echo "$percent / 100" | bc)
             fi
 
