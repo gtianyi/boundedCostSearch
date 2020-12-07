@@ -55,7 +55,10 @@ def solverConfig():
                               "heavy": researchHome +
                               "/realtime-nancy/build_release/tile-pdb-heavy-inverse idastar heavy",
                               "heavy-easy": researchHome +
-                              "/realtime-nancy/build_release/tile-pdb-heavy-inverse idastar heavy"},
+                              "/realtime-nancy/build_release/tile-pdb-heavy-inverse idastar heavy",
+                              "inverse": researchHome +
+                              "/realtime-nancy/build_release/tile-pdb-heavy-inverse"
+                              " idastar inverse"},
                      "pancake": {"regular": researchHome +
                                  "/realtime-nancy/build_release/distributionPractice"
                                  " -d pancake -s regular -a wastar -p 1",
