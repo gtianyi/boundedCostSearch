@@ -1,7 +1,12 @@
 #!/usr/bin/ python
 '''
 python3 script
-python script code for gather optmial solution and dump as json
+python script code for
+1. solve problems give problem folder and solver command, with time bound
+2. sort solved problems by number of node generated
+3. copy selected problems to target folder
+4. rename problem from instance id 1, and record the mapping, dump out the recording JSON
+5. dump out the solution
 
 Author: Tianyi Gu
 Date: 09/22/2020
@@ -11,9 +16,11 @@ __author__ = 'TianyiGu'
 
 import argparse
 import os
+import json
 from subprocess import Popen, PIPE, TimeoutExpired
 # import re
 from shutil import copy2
+from operator import getitem
 
 researchHome = "/home/aifs1/gu/phd/research/workingPaper"
 
@@ -54,34 +61,10 @@ def solverConfig():
                               "/realtime-nancy/build_release/tile-uniform idastar uniform",
                               "heavy": researchHome +
                               "/realtime-nancy/build_release/distributionPractice"
-                              " -d tile -s heavy -a wastar -p 1"},
-                     # "pancake": {"regular": researchHome +
-                                 # "/realtime-nancy/build_release/distributionPractice"
-                                 # " -d pancake -s regular -a wastar -p 1",
-                                 # "heavy": researchHome +
-                                 # "/realtime-nancy/build_release/distributionPractice"
-                                 # " -d pancake -s heavy -a wastar -p 3"},
-                     # "racetrack": {"barto-big": researchHome +
-                                   # "/realtime-nancy/build_release/distributionPractice"
-                                   # " -d racetrack -s barto-big -a wastar -p 1",
-                                   # "barto-bigger": researchHome +
-                                   # "/realtime-nancy/build_release/distributionPractice"
-                                   # " -d racetrack -s barto-bigger -a wastar -p 1",
-                                   # "hansen-bigger": researchHome +
-                                   # "/realtime-nancy/build_release/distributionPractice"
-                                   # " -d racetrack -s hansen-bigger -a wastar -p 1",
-                                   # "uniform": researchHome +
-                                   # "/realtime-nancy/build_release/distributionPractice"
-                                   # " -d racetrack -s uniform -a wastar -p 1",
-                                   # "uniform-small": researchHome +
-                                   # "/realtime-nancy/build_release/distributionPractice"
-                                   # " -d racetrack -s uniform-small -a wastar -p 1"},
-                     # "vaccumworld": {"uniform": researchHome +
-                                     # "/boundedCostSearch/tianyicodebase_build_release/bin/bcs"
-                                     # " -d vaccumworld -a astar",
-                                     # "heavy": researchHome +
-                                     # "/boundedCostSearch/tianyicodebase_build_release/bin/bcs"
-                                     # " -d vaccumworld -a astar -s heavy"}
+                              " -d tile -s heavy -a wastar -p 1",
+                              "inverse": researchHome +
+                              "/realtime-nancy/build_release/tile-pdb-heavy-inverse"
+                              " idastar inverse"},
                      }
 
     problemFolder = {
@@ -106,7 +89,23 @@ def solverOutPutParser(args, outStr):
 
         # elif args.subdomain == "heavy":
         if args.subdomain == "heavy":
-            return outStr[0].split()[0].decode("utf-8")
+            sol = outStr[0].split()[2].decode("utf-8")
+            nodeGen = outStr[0].split()[0].decode("utf-8")
+            return nodeGen, sol
+
+        if args.subdomain == "inverse":
+            sol=""
+            nodeGen=""
+
+            for line in outStr:
+                lineContent = line.split()
+                if lineContent[2] == b'generated':
+                    nodeGen = lineContent[3].decode("utf-8")
+                elif lineContent[0] == b'solution':
+                    sol = lineContent[2].decode("utf-8")
+                    break
+
+            return nodeGen, sol
 
     # elif args.domain in ["pancake", "racetrack", "vaccumworld"]:
         # return outStr[0].split()[2].decode("utf-8")
@@ -140,8 +139,8 @@ def main():
     total = len(os.listdir(problemDir))
     print("solving problems, total", total)
     for problemFile in os.listdir(problemDir):
-        if(len(nodeGenJson) == 100):
-            break
+    #     if(len(nodeGenJson) == 100):
+            # break
 
         counter += 1
         command = solver + " < " + problemDir+problemFile
@@ -153,8 +152,8 @@ def main():
 
         try:
             outlines = process.communicate(timeout=300)[0].splitlines()
-            nodeGen = solverOutPutParser(args, outlines)
-            nodeGenJson[problemFile] = int(nodeGen)
+            nodeGen, sol = solverOutPutParser(args, outlines)
+            nodeGenJson[problemFile] = {"nodeGen":int(nodeGen), "solution": sol }
             solvedCounter += 1
             print(problemFile, nodeGen, str(counter/total*100)+"%", "solved: ", solvedCounter)
         except TimeoutExpired:
@@ -167,18 +166,35 @@ def main():
     if not os.path.exists(outDir):
         os.makedirs(outDir)
 
-    sortedByNodeGen = dict(sorted(nodeGenJson.items(), key=lambda item: item[1]))
+    sortedByNodeGen = dict(sorted(nodeGenJson.items(), key=lambda x: getitem(x[1], 'nodeGen')))
 
     print(sortedByNodeGen)
 
     print("copying files...")
     counter=0
+    newName_oldName = {}
+    solutionJson={}
     for fileName in sortedByNodeGen:
         counter += 1
         if counter > 100:
             break
 
-        copy2(problemDir+fileName, outDir+fileName)
+        copy2(problemDir+fileName, outDir+str(counter)+"-4x4.st")
+        newName_oldName[str(counter)+'-4x4.st'] = fileName
+        solutionJson[str(counter)+"-4x4.st"] = sortedByNodeGen[fileName]["solution"]
+
+    print("dump rename mapping")
+    with open("/home/aifs1/gu/phd/research/workingPaper/boundedCostSearch/optimalSolution/tile."+\
+              args.subdomain+"-easy-new-old-namemap.json", 'w') as f:
+        json.dump(newName_oldName, f)
+
+
+    print("dump solution file")
+    solutionOutFile = researchHome+"/boundedCostSearch/optimalSolution/" +\
+        args.domain+"."+args.subdomain+"-easy.json"
+
+    with open(solutionOutFile, 'w') as json_file:
+        json.dump(solutionJson, json_file)
 
 
 if __name__ == '__main__':
