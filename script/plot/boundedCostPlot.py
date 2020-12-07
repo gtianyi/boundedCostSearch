@@ -114,6 +114,9 @@ class Configure:
                                             },
                                     "vaccumworld":{"uniform": {"lower":40, "upper":300},
                                                    "heavy": {"lower":700, "upper":6000}
+                                                    },
+                                    "pancake":{"regular": {"lower":40, "upper":300},
+                                                   "heavy": {"lower":700, "upper":6000}
                                                     }
                                    }
 
