@@ -109,8 +109,12 @@ class Configure:
 
         self.absoluteBoundsLimit = {"tile":{"uniform": {"lower":40, "upper":300},
                                             "heavy": {"lower":700, "upper":6000},
-                                            "heavy-easy": {"lower":300, "upper":6000}
-                                            }
+                                            "heavy-easy": {"lower":300, "upper":6000},
+                                            "inverse": {"lower":20, "upper":600}
+                                            },
+                                    "vaccumworld":{"uniform": {"lower":40, "upper":300},
+                                                   "heavy": {"lower":700, "upper":6000}
+                                                    }
                                    }
 
         self.additionalAlgorithms = {"tile":
@@ -138,7 +142,8 @@ class Configure:
                                          # "ptsnancy-if001thenfhat": "expected work - 0 fhat",
                                          # "ptsnancyonlyprob": "1/p(n)",
                                          # "ptsnancyonlyeffort": "t(n)"
-                                         "heavy-easy": {}
+                                         "heavy-easy": {},
+                                         "inverse": {},
                                      },
                                      "pancake":
                                      {
@@ -159,12 +164,13 @@ class Configure:
                                      },
                                      "vaccumworld":
                                      {
-                                         # "uniform": {},
-                                         "uniform": {"ptsnancywithdhat": "expected work - dhat"},
+                                         "uniform": {},
+                                         # "uniform": {"ptsnancywithdhat": "expected work - dhat"},
                                          # "uniform": {"wastar": "WA*"},
                                          # "heavy": {"wastar": "WA*"}
-                                         "heavy": {"ptsnancy-if0thenverysmall": \
-                                                   "expected work - no 0 op"}
+                                         "heavy": {}
+                                         # "heavy": {"ptsnancy-if0thenverysmall": \
+                                                   # "expected work - no 0 op"}
                                      },
                                      "racetrack":
                                      {
@@ -263,11 +269,8 @@ def parseArugments():
 
     return parser
 
-# _ = totalInstance
-
-
 def makeLinePlot(xAxis, yAxis, dataframe, hue,
-                 xLabel, yLabel, _, outputName):
+                 xLabel, yLabel, totalInstance, outputName, showSolvedInstance):
     sns.set(rc={
         'figure.figsize': (13, 10),
         'font.size': 27,
@@ -287,8 +290,10 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
                       )
 
     ax.tick_params(colors='black', labelsize=12)
-    # ax.legend().set_title('Solved/Total: ' +
-    # str(len(dataframe['instance'].unique()))+'/'+totalInstance)
+
+    if showSolvedInstance:
+        ax.legend().set_title('Solved/Total: ' +
+                              str(len(dataframe['instance'].unique()))+'/'+totalInstance)
     ax.set_yscale("log")
     plt.ylabel(yLabel, color='black', fontsize=18)
     plt.xlabel(xLabel, color='black', fontsize=18)
@@ -656,7 +661,7 @@ def makeCoveragePlot(df, args, totalInstance, showname):
                  showname["boundValues"][args.boundType],
                  showname["solved"].replace(
                      "totalInstance", totalInstance), totalInstance,
-                 createOutFilePrefix(args) + args.plotType+".jpg")
+                 createOutFilePrefix(args) + args.plotType+".jpg", False)
 
 
 def createOutFilePrefix(args):
@@ -703,7 +708,7 @@ def plotting(args, config):
                      # "Cost Bound w.r.t. Suboptimal(w=3)",
                      showname[args.plotType].replace(
                          "baseline", baseline), totalInstance[args.domain],
-                     createOutFilePrefix(args) + args.plotType+".jpg")
+                     createOutFilePrefix(args) + args.plotType+".jpg", True)
 
     elif args.plotType == "fixedbaseline":
 
@@ -716,14 +721,14 @@ def plotting(args, config):
                      showname["boundValues"][args.boundType],
                      showname[args.plotType].replace(
                          "baseline", baseline), totalInstance[args.domain],
-                     createOutFilePrefix(args) + args.plotType+".jpg")
+                     createOutFilePrefix(args) + args.plotType+".jpg", True)
 
     else:
         df = allSolvedDf(rawdf, algorithms)
-        makeLinePlot("boundValues", args.plotType, rawdf, "Algorithm",
+        makeLinePlot("boundValues", args.plotType, df, "Algorithm",
                      showname["boundValues"][args.boundType], showname[args.plotType],
                      totalInstance[args.domain],
-                     createOutFilePrefix(args) + args.plotType+".jpg")
+                     createOutFilePrefix(args) + args.plotType+".jpg", True)
 
 
 def main():
