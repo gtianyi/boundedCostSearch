@@ -297,3 +297,7 @@ for solverId in "${!boundedCostSolvers[@]}"; do
         done
     done
 done
+
+fixJsonExecutable="${research_home}/boundedCostSearch/tianyicodebase/script/fixJson.py"
+fixJsonOut=$(python ${fixJsonExecutable} -d ${domain} -s ${subdomain})
+echo "$fixJsonOut"
