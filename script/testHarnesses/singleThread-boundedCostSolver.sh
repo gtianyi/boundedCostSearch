@@ -298,6 +298,12 @@ for solverId in "${!boundedCostSolvers[@]}"; do
     done
 done
 
+fixJson_running_flag="${research_home}/boundedCostSearch/tianyi_results/fixJson.run"
 fixJsonExecutable="${research_home}/boundedCostSearch/tianyicodebase/script/fixJson.py"
-fixJsonOut=$(python ${fixJsonExecutable} -d ${domain} -s ${subdomain})
-echo "$fixJsonOut"
+fixJsonOut=$(python ${fixJsonExecutable} -d ${domain} -s ${subdomain}) 
+
+if [ ! -f ${fixJson_running_flag} ]; then
+    echo "run" > ${fixJson_running_flag}
+    echo "$fixJsonOut"  
+    rm ${fixJson_running_flag}
+fi
