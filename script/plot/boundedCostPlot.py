@@ -25,22 +25,8 @@ import seaborn as sns
 from pandas.plotting import table
 import numpy as np
 
-
-class Configure:
+class BaselineConfigure:
     def __init__(self):
-
-        self.algorithms = OrderedDict(
-            {
-                "pts": "PTS",
-                "ptshhat": "PTS-h^",
-                # "ptsnancy": "expected work - 0 f",
-                "bees-EpsGlobal": "BEES",
-                "ptsnancywithdhat": "expected work - dhat",
-                # "bees": "BEES - EpsLocal",
-                # "astar-with-bound": "A*",
-            }
-        )
-
         self.baseline = {"tile":
                          {
                              "uniform": {"astar": "A*"},
@@ -92,6 +78,34 @@ class Configure:
                                   "uniform": {"astar": "A*"}
                               }
                               }
+    def getBaseline(self):
+        return self.baseline
+
+    def getFixedBaseline(self):
+        return self.fixedbaseline
+
+class Configure:
+    def __init__(self):
+
+        self.algorithms = OrderedDict(
+            {
+                "pts": "PTS",
+                "ptshhat": "PTS-h^",
+                # "ptsnancy": "expected work - 0 f",
+                "bees-EpsGlobal": "BEES",
+                "ptsnancywithdhat": "expected work - dhat",
+                # "bees": "BEES - EpsLocal",
+                # "astar-with-bound": "A*",
+            }
+        )
+
+        self.algorithmPalette={
+            "PTS":"royalblue",
+            "PTS-h^":"orangered",
+                # "ptsnancy": "expected work - 0 f",
+            "BEES":"limegreen",
+            "expected work - dhat":"magenta",
+        }
 
         self.showname = {"nodeGen": "Total Nodes Generated",
                          "nodeExp": "Total Nodes expanded",
@@ -110,7 +124,8 @@ class Configure:
         self.absoluteBoundsLimit = {"tile":{"uniform": {"lower":40, "upper":300},
                                             "heavy": {"lower":700, "upper":6000},
                                             "heavy-easy": {"lower":300, "upper":6000},
-                                            "inverse": {"lower":20, "upper":600}
+                                            "inverse": {"lower":20, "upper":600},
+                                            "inverse-easy": {"lower":20, "upper":600},
                                             },
                                     "vaccumworld":{"uniform": {"lower":40, "upper":300},
                                                    "heavy": {"lower":700, "upper":6000}
@@ -147,11 +162,12 @@ class Configure:
                                          # "ptsnancyonlyeffort": "t(n)"
                                          "heavy-easy": {},
                                          "inverse": {},
+                                         "inverse-easy": {},
                                      },
                                      "pancake":
                                      {
-                                         "regular": {"wastar": "WA*"},
-                                         # "regular": {},
+                                         # "regular": {"wastar": "WA*"},
+                                         "regular": {},
                                          # "heavy": {"wastar": "WA*"},
                                          "heavy": {},
                                          # "regular": {"astar-with-bound": "A*-with-bound"},
@@ -195,12 +211,6 @@ class Configure:
     def getAlgorithms(self):
         return self.algorithms
 
-    def getBaseline(self):
-        return self.baseline
-
-    def getFixedBaseline(self):
-        return self.fixedbaseline
-
     def getShowname(self):
         return self.showname
 
@@ -213,6 +223,8 @@ class Configure:
     def getAdditionalAlgorithms(self):
         return self.additionalAlgorithms
 
+    def getAlgorithmColor(self):
+        return self.algorithmPalette
 
 def parseArugments():
 
@@ -273,7 +285,7 @@ def parseArugments():
     return parser
 
 def makeLinePlot(xAxis, yAxis, dataframe, hue,
-                 xLabel, yLabel, totalInstance, outputName, showSolvedInstance):
+                 xLabel, yLabel, totalInstance, outputName, showSolvedInstance, colorDict):
     sns.set(rc={
         'figure.figsize': (13, 10),
         'font.size': 27,
@@ -284,7 +296,7 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
                       y=yAxis,
                       hue=hue,
                       style=hue,
-                      palette="muted",
+                      palette=colorDict,
                       data=dataframe,
                       err_style="bars",
                       # estimator=gmean,
@@ -641,7 +653,7 @@ def makeCoverageTable(df, args, totalInstance):
     plt.savefig(out_file, dpi=200)
 
 
-def makeCoveragePlot(df, args, totalInstance, showname):
+def makeCoveragePlot(df, args, totalInstance, showname, colorDict):
     algs = []
     bound = []
     solved = []
@@ -664,7 +676,7 @@ def makeCoveragePlot(df, args, totalInstance, showname):
                  showname["boundValues"][args.boundType],
                  showname["solved"].replace(
                      "totalInstance", totalInstance), totalInstance,
-                 createOutFilePrefix(args) + args.plotType+".jpg", False)
+                 createOutFilePrefix(args) + args.plotType+".jpg", False, colorDict)
 
 
 def createOutFilePrefix(args):
@@ -683,7 +695,7 @@ def createOutFilePrefix(args):
     return outFilePrefix
 
 
-def plotting(args, config):
+def plotting(args, config, baselineConfig):
     print("building plots...")
 
     algorithms = config.getAlgorithms()
@@ -698,10 +710,11 @@ def plotting(args, config):
     if args.plotType == "coveragetb":
         makeCoverageTable(rawdf, args, totalInstance[args.domain])
     elif args.plotType == "coverageplt":
-        makeCoveragePlot(rawdf, args, totalInstance[args.domain], showname)
+        makeCoveragePlot(rawdf, args, totalInstance[args.domain],
+                         showname, config.getAlgorithmColor())
     elif args.plotType == "nodeGenDiff":
 
-        cureBaseline = config.getBaseline()[args.domain][args.subdomain]
+        cureBaseline = baselineConfig.getBaseline()[args.domain][args.subdomain]
         baseline = next(iter(cureBaseline.values()))
 
         df = makePairWiseDf(rawdf, baseline, algorithms)
@@ -711,11 +724,12 @@ def plotting(args, config):
                      # "Cost Bound w.r.t. Suboptimal(w=3)",
                      showname[args.plotType].replace(
                          "baseline", baseline), totalInstance[args.domain],
-                     createOutFilePrefix(args) + args.plotType+".jpg", True)
+                     createOutFilePrefix(args) + args.plotType+".jpg", True,
+                     config.getAlgorithmColor())
 
     elif args.plotType == "fixedbaseline":
 
-        fixedbaseline = config.getFixedBaseline()[args.domain][args.subdomain]
+        fixedbaseline = baselineConfig.getFixedBaseline()[args.domain][args.subdomain]
         baseline = next(iter(fixedbaseline.values()))
 
         df = makeFixedbaselineDf(rawdf, fixedbaseline, algorithms, args)
@@ -724,14 +738,16 @@ def plotting(args, config):
                      showname["boundValues"][args.boundType],
                      showname[args.plotType].replace(
                          "baseline", baseline), totalInstance[args.domain],
-                     createOutFilePrefix(args) + args.plotType+".jpg", True)
+                     createOutFilePrefix(args) + args.plotType+".jpg", True,
+                     config.getAlgorithmColor())
 
     else:
         df = allSolvedDf(rawdf, algorithms)
         makeLinePlot("boundValues", args.plotType, df, "Algorithm",
                      showname["boundValues"][args.boundType], showname[args.plotType],
                      totalInstance[args.domain],
-                     createOutFilePrefix(args) + args.plotType+".jpg", True)
+                     createOutFilePrefix(args) + args.plotType+".jpg", True,
+                     config.getAlgorithmColor())
 
 
 def main():
@@ -739,7 +755,7 @@ def main():
     args = parser.parse_args()
     print(args)
 
-    plotting(args, Configure())
+    plotting(args, Configure(), BaselineConfigure())
 
 
 if __name__ == '__main__':
