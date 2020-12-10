@@ -188,6 +188,10 @@ if [ "$domain" == "tile" ]; then
         infile_path="${research_home}/realtime-nancy/worlds/slidingTile_tianyi1000-easy-for-heavy"
     fi
 
+    if [ "$subdomain" == "inverse-easy" ]; then
+        infile_path="${research_home}/realtime-nancy/worlds/slidingTile_tianyi1000-easy-for-inverse"
+    fi
+
     infile_name="instance-${size}x${size}.st"
     outfile="${outfile_path}/${boundType}-BoundNumber-size-${size}-instance.json"
     infile="${infile_path}/${infile_name}"
@@ -222,6 +226,11 @@ fi
 if [ "$boundType" == "absolute" ]; then 
     boundList=("${absoluteBounds[@]}")  
 fi
+
+#if [ -f ${fixJson_running_flag} ]; then
+    #echo "fixJsonLock exist, please make sure this is the domain and subdomain you want to run, and delete the lock"
+    #exit 1
+#fi
 
 for solverId in "${!boundedCostSolvers[@]}"; do
 
@@ -271,6 +280,10 @@ for solverId in "${!boundedCostSolvers[@]}"; do
                     realSubdomain="heavy"
                 fi
 
+                if [ "$subdomain" == "inverse-easy" ]; then
+                    realSubdomain="inverse"
+                fi
+
                 command="${executable} -d ${domain} -s ${realSubdomain} -a ${solverName} \
                     -b ${bound} -o ${outfile_instance} -i ${instance} "
 
@@ -298,12 +311,11 @@ for solverId in "${!boundedCostSolvers[@]}"; do
     done
 done
 
-fixJson_running_flag="${research_home}/boundedCostSearch/tianyi_results/fixJson.run"
+fixJson_running_flag="${research_home}/boundedCostSearch/tianyi_results/fixJson.${domain}.${subdomain}.run"
 fixJsonExecutable="${research_home}/boundedCostSearch/tianyicodebase/script/fixJson.py"
-fixJsonOut=$(python ${fixJsonExecutable} -d ${domain} -s ${subdomain}) 
 
 if [ ! -f ${fixJson_running_flag} ]; then
-    echo "run" > ${fixJson_running_flag}
+    echo "run" >> ${fixJson_running_flag}
+    fixJsonOut=$(python ${fixJsonExecutable} -d ${domain} -s ${subdomain}) 
     echo "$fixJsonOut"  
-    rm ${fixJson_running_flag}
 fi
