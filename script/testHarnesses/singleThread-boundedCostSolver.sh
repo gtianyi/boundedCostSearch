@@ -314,6 +314,8 @@ done
 fixJson_running_flag="${research_home}/boundedCostSearch/tianyi_results/fixJson.${domain}.${subdomain}.run"
 fixJsonExecutable="${research_home}/boundedCostSearch/tianyicodebase/script/fixJson.py"
 
+sleep 1
+
 if [ ! -f ${fixJson_running_flag} ]; then
     echo "run" >> ${fixJson_running_flag}
     fixJsonOut=$(python ${fixJsonExecutable} -d ${domain} -s ${subdomain}) 
