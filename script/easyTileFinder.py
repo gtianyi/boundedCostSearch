@@ -9,7 +9,7 @@ python script code for
 5. dump out the solution
 
 Author: Tianyi Gu
-Date: 09/22/2020
+Date: 12/10/2020
 '''
 
 __author__ = 'TianyiGu'
@@ -63,8 +63,11 @@ def solverConfig():
                               "/realtime-nancy/build_release/distributionPractice"
                               " -d tile -s heavy -a wastar -p 1",
                               "inverse": researchHome +
-                              "/realtime-nancy/build_release/tile-pdb-heavy-inverse"
-                              " idastar inverse"},
+                              # "/realtime-nancy/build_release/tile-pdb-heavy-inverse"
+                              # " idastar inverse",
+                              "/realtime-nancy/build_release/distributionPractice"
+                              " -d tile -s inverse -a wastar -p 1",
+                       },
                      }
 
     problemFolder = {
@@ -88,24 +91,24 @@ def solverOutPutParser(args, outStr):
                     # return sol
 
         # elif args.subdomain == "heavy":
-        if args.subdomain == "heavy":
+        if args.subdomain in ["heavy", "inverse"]:
             sol = outStr[0].split()[2].decode("utf-8")
             nodeGen = outStr[0].split()[0].decode("utf-8")
             return nodeGen, sol
 
-        if args.subdomain == "inverse":
-            sol=""
-            nodeGen=""
+        # if args.subdomain == "inverse":
+            # sol=""
+            # nodeGen=""
 
-            for line in outStr:
-                lineContent = line.split()
-                if lineContent[2] == b'generated':
-                    nodeGen = lineContent[3].decode("utf-8")
-                elif lineContent[0] == b'solution':
-                    sol = lineContent[2].decode("utf-8")
-                    break
+            # for line in outStr:
+                # lineContent = line.split()
+                # if lineContent[2] == b'generated':
+                    # nodeGen = lineContent[3].decode("utf-8")
+                # elif lineContent[0] == b'solution':
+                    # sol = lineContent[2].decode("utf-8")
+                    # break
 
-            return nodeGen, sol
+            # return nodeGen, sol
 
     # elif args.domain in ["pancake", "racetrack", "vaccumworld"]:
         # return outStr[0].split()[2].decode("utf-8")
