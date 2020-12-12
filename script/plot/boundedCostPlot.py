@@ -251,8 +251,8 @@ def parseArugments():
         '-b',
         action='store',
         dest='boundPercentStart',
-        help='bound percent start: anything above 0.6,(default: 1)',
-        default='1')
+        help='bound percent start: anything above 0.6,(default: 0.6)',
+        default='0.6')
 
     parser.add_argument(
         '-e',
