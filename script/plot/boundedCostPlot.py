@@ -25,6 +25,7 @@ import seaborn as sns
 from pandas.plotting import table
 import numpy as np
 
+
 class BaselineConfigure:
     def __init__(self):
         self.baseline = {"tile":
@@ -37,7 +38,7 @@ class BaselineConfigure:
                          },
                          "pancake":
                          {
-                             # "regular": {"ptsnancywithdhat": "expected work - dhat"},
+                             # "regular": {"ptsnancywithdhat": "ECE Search"},
                              "regular": {"wastar": "WA*"},
                              "heavy": {"bees-EpsGlobal": "BEES"}
                              # "heavy": {"wastar": "WA*"}
@@ -78,11 +79,13 @@ class BaselineConfigure:
                                   "uniform": {"astar": "A*"}
                               }
                               }
+
     def getBaseline(self):
         return self.baseline
 
     def getFixedBaseline(self):
         return self.fixedbaseline
+
 
 class Configure:
     def __init__(self):
@@ -93,18 +96,18 @@ class Configure:
                 "ptshhat": "PTS-h^",
                 # "ptsnancy": "expected work - 0 f",
                 "bees-EpsGlobal": "BEES",
-                "ptsnancywithdhat": "expected work - dhat",
+                "ptsnancywithdhat": "ECE Search",
                 # "bees": "BEES - EpsLocal",
                 # "astar-with-bound": "A*",
             }
         )
 
-        self.algorithmPalette={
-            "PTS":"royalblue",
-            "PTS-h^":"orangered",
-                # "ptsnancy": "expected work - 0 f",
-            "BEES":"limegreen",
-            "expected work - dhat":"magenta",
+        self.algorithmPalette = {
+            "PTS": "royalblue",
+            "PTS-h^": "orangered",
+            # "ptsnancy": "expected work - 0 f",
+            "BEES": "limegreen",
+            "ECE Search": "magenta",
         }
 
         self.showname = {"nodeGen": "Total Nodes Generated",
@@ -114,36 +117,40 @@ class Configure:
                          "log10 (Algorithm Node Generated /  baseline Node Generated)",
                          "cpu": "Raw CPU Time",
                          "solved": "Number of Solved Instances (Total=totalInstance)",
-                         "boundValues":{"absolute":"Cost Bound",
-                                        "wrtOpt":"Cost Bound w.r.t Optimal"}
+                         "boundValues": {"absolute": "Cost Bound",
+                                         "wrtOpt": "Cost Bound w.r.t Optimal"}
                          }
 
         self.totalInstance = {"tile": "100", "pancake": "100",
                               "racetrack": "25", "vaccumworld": "60"}
 
-        self.absoluteBoundsLimit = {"tile":{"uniform": {"lower":40, "upper":300},
-                                            "heavy": {"lower":700, "upper":6000},
-                                            "heavy-easy": {"lower":300, "upper":6000},
-                                            "inverse": {"lower":20, "upper":600},
-                                            "inverse-easy": {"lower":20, "upper":600},
-                                            },
-                                    "vaccumworld":{"uniform": {"lower":40, "upper":300},
-                                                   "heavy": {"lower":700, "upper":6000}
+        self.absoluteBoundsLimit = {"tile": {"uniform": {"lower": 40, "upper": 300},
+                                             "heavy": {"lower": 700, "upper": 6000},
+                                             "heavy-easy": {"lower": 300, "upper": 6000},
+                                             "inverse": {"lower": 20, "upper": 600},
+                                             "inverse-easy": {"lower": 20, "upper": 600},
+                                             },
+                                    "vaccumworld": {"uniform": {"lower": 40, "upper": 300},
+                                                    "heavy": {"lower": 700, "upper": 6000}
                                                     },
-                                    "pancake":{"regular": {"lower":40, "upper":300},
-                                                   "heavy": {"lower":700, "upper":6000}
-                                                    }
-                                   }
+                                    "pancake": {"regular": {"lower": 40, "upper": 300},
+                                                "heavy": {"lower": 700, "upper": 6000}
+                                                },
+                                    "racetrack": {"barto-bigger": {"lower": 40, "upper": 300},
+                                                "hansen-bigger": {"lower": 700, "upper": 6000}
+                                                },
+
+                                    }
 
         self.additionalAlgorithms = {"tile":
                                      {
                                          # "uniform": { "wastar-with-bound": "WA*"},
                                          # "uniform": {"wastar": "WA*"},
                                          "uniform": {},
-                                         # "uniform": {"ptsnancywithdhat": "expected work - dhat",
+                                         # "uniform": {"ptsnancywithdhat": "ECE Search",
                                          # "bees": "BEES - EpsLocal",
                                          # },
-                                         # "uniform": {"ptsnancywithdhat": "expected work - dhat",
+                                         # "uniform": {"ptsnancywithdhat": "ECE Search",
                                          # "ptsnancyonlyeffort": "t(n)",
                                          # "ptsnancyonlyeffort-dhat": "t(n)-dhat"},
                                          # "uniform": {"wastar-with-bound": "WA*-with-bound",
@@ -154,7 +161,7 @@ class Configure:
                                          # "ptsnancyonlyprob": "1/p(n)",
                                          # "ptsnancyonlyeffort": "t(n)"},
                                          "heavy": {},
-                                         # "heavy": {"ptsnancywithdhat": "expected work - dhat"}
+                                         # "heavy": {"ptsnancywithdhat": "ECE Search"}
                                          # "heavy": {"wastar-with-bound": "WA*"}
                                          #  "ptsnancy-if0thenverysmall": "expected work - no 0 op",
                                          # "ptsnancy-if001thenfhat": "expected work - 0 fhat",
@@ -184,27 +191,34 @@ class Configure:
                                      "vaccumworld":
                                      {
                                          "uniform": {},
-                                         # "uniform": {"ptsnancywithdhat": "expected work - dhat"},
+                                         # "uniform": {"ptsnancywithdhat": "ECE Search"},
                                          # "uniform": {"wastar": "WA*"},
                                          # "heavy": {"wastar": "WA*"}
                                          "heavy": {}
                                          # "heavy": {"ptsnancy-if0thenverysmall": \
-                                                   # "expected work - no 0 op"}
+                                         # "expected work - no 0 op"}
                                      },
                                      "racetrack":
                                      {
                                          "barto-big": {
-                                             "ptsnancy-if0thenverysmall": "expected work - no 0 op",
-                                             "ptsnancyonlyprob": "1/p(n)",
-                                             "ptsnancyonlyeffort": "t(n)"
+                                             # "ptsnancy-if0thenverysmall":
+                                             # "expected work - no 0 op",
+                                             # "ptsnancyonlyprob": "1/p(n)",
+                                             # "ptsnancyonlyeffort": "t(n)"
                                          },
                                          "barto-bigger": {},
-                                         "hansen-bigger": {"ptsnancy-if0thenverysmall": \
-                                                           "expected work - no 0 op"},
-                                         "uniform-small": {"ptsnancy-if0thenverysmall": \
-                                                           "expected work - no 0 op"},
+                                         "hansen-bigger": {
+                                             # "ptsnancy-if0thenverysmall": \
+                                                           # "expected work - no 0 op"
+                                                           },
+                                         "uniform-small": {
+                                             # "ptsnancy-if0thenverysmall": \
+                                                           # "expected work - no 0 op"
+                                         },
                                          # "uniform": {}
-                                         "uniform": {"ptsnancywithdhat": "expected work - dhat"},
+                                         "uniform": {
+                                             # "ptsnancywithdhat": "ECE Search"
+                                         },
                                      }
                                      }
 
@@ -225,6 +239,7 @@ class Configure:
 
     def getAlgorithmColor(self):
         return self.algorithmPalette
+
 
 def parseArugments():
 
@@ -284,8 +299,10 @@ def parseArugments():
 
     return parser
 
+
 def makeLinePlot(xAxis, yAxis, dataframe, hue,
-                 xLabel, yLabel, totalInstance, outputName, showSolvedInstance, colorDict):
+                 xLabel, yLabel, totalInstance, outputName, colorDict,
+                 showSolvedInstance=True, useLogScale=True):
     sns.set(rc={
         'figure.figsize': (13, 10),
         'font.size': 27,
@@ -304,14 +321,18 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
                       dashes=False
                       )
 
-    ax.tick_params(colors='black', labelsize=12)
+    ax.tick_params(colors='black', labelsize=24)
 
     if showSolvedInstance:
         ax.legend().set_title('Solved/Total: ' +
                               str(len(dataframe['instance'].unique()))+'/'+totalInstance)
-    ax.set_yscale("log")
-    plt.ylabel(yLabel, color='black', fontsize=18)
-    plt.xlabel(xLabel, color='black', fontsize=18)
+    if useLogScale:
+        ax.set_yscale("log")
+
+    plt.ylabel(yLabel, color='black', fontsize=24)
+    plt.xlabel(xLabel, color='black', fontsize=24)
+    plt.setp(ax.get_legend().get_texts(), fontsize='24')  # for legend text
+    plt.setp(ax.get_legend().get_title(), fontsize='24')  # for legend title
 
     plt.savefig(outputName, bbox_inches="tight", pad_inches=0)
     plt.savefig(outputName.replace(".jpg", ".eps"),
@@ -397,10 +418,10 @@ def allSolvedDf(rawdf, algorithms):
         # for boundP in rawdf["boundValues"].unique():
             # # print(instance, boundP)
             # dfins = rawdf[(rawdf["instance"] == instance) &
-                          # (rawdf["boundValues"] == boundP)]
+            # (rawdf["boundValues"] == boundP)]
 
             # if len(dfins) == len(algorithms):  # keep instances solved by all algorithms
-                # df = df.append(dfins)
+            # df = df.append(dfins)
 
     boundPercents = rawdf["boundValues"].unique()
     boundPercents.sort()
@@ -486,7 +507,8 @@ def readData(args, algorithms, absoluteBoundsLimit):
 
     domainDir = domainType
 
-    inPath = "../../../" + resultDir + "/" + domainDir + "/" + subdomainType + '/alg'
+    inPath = "../../../" + resultDir + "/" + \
+        domainDir + "/" + subdomainType + '/alg'
 
     for alg in algorithms:
         print("reading ", alg)
@@ -630,7 +652,8 @@ def makeCoverageTable(df, args, totalInstance):
         for cbound in df["boundValues"].unique():
             dfins = df[(df["Algorithm"] == alg) & (
                 df["boundValues"] == cbound)]
-            boundSolved[str(float(cbound))].append(str(len(dfins))+"/"+totalInstance)
+            boundSolved[str(float(cbound))].append(
+                str(len(dfins))+"/"+totalInstance)
 
     data = {"Algorihtm": algs}
     data.update(boundSolved)
@@ -676,12 +699,13 @@ def makeCoveragePlot(df, args, totalInstance, showname, colorDict):
                  showname["boundValues"][args.boundType],
                  showname["solved"].replace(
                      "totalInstance", totalInstance), totalInstance,
-                 createOutFilePrefix(args) + args.plotType+".jpg", False, colorDict)
+                 createOutFilePrefix(args) + args.plotType+".jpg", colorDict,
+                 showSolvedInstance=False, useLogScale=False)
 
 
 def createOutFilePrefix(args):
 
-    nowstr = datetime.now().strftime("%d%m%Y-%H%M")
+    nowstr = datetime.now().strftime("%d%m%Y-%H%M%S")
 
     outDirectory = "../../../tianyi_plots/" + args.domain
 
@@ -714,7 +738,8 @@ def plotting(args, config, baselineConfig):
                          showname, config.getAlgorithmColor())
     elif args.plotType == "nodeGenDiff":
 
-        cureBaseline = baselineConfig.getBaseline()[args.domain][args.subdomain]
+        cureBaseline = baselineConfig.getBaseline()[
+            args.domain][args.subdomain]
         baseline = next(iter(cureBaseline.values()))
 
         df = makePairWiseDf(rawdf, baseline, algorithms)
@@ -724,12 +749,13 @@ def plotting(args, config, baselineConfig):
                      # "Cost Bound w.r.t. Suboptimal(w=3)",
                      showname[args.plotType].replace(
                          "baseline", baseline), totalInstance[args.domain],
-                     createOutFilePrefix(args) + args.plotType+".jpg", True,
+                     createOutFilePrefix(args) + args.plotType+".jpg",
                      config.getAlgorithmColor())
 
     elif args.plotType == "fixedbaseline":
 
-        fixedbaseline = baselineConfig.getFixedBaseline()[args.domain][args.subdomain]
+        fixedbaseline = baselineConfig.getFixedBaseline()[
+            args.domain][args.subdomain]
         baseline = next(iter(fixedbaseline.values()))
 
         df = makeFixedbaselineDf(rawdf, fixedbaseline, algorithms, args)
@@ -738,7 +764,7 @@ def plotting(args, config, baselineConfig):
                      showname["boundValues"][args.boundType],
                      showname[args.plotType].replace(
                          "baseline", baseline), totalInstance[args.domain],
-                     createOutFilePrefix(args) + args.plotType+".jpg", True,
+                     createOutFilePrefix(args) + args.plotType+".jpg",
                      config.getAlgorithmColor())
 
     else:
@@ -746,7 +772,7 @@ def plotting(args, config, baselineConfig):
         makeLinePlot("boundValues", args.plotType, df, "Algorithm",
                      showname["boundValues"][args.boundType], showname[args.plotType],
                      totalInstance[args.domain],
-                     createOutFilePrefix(args) + args.plotType+".jpg", True,
+                     createOutFilePrefix(args) + args.plotType+".jpg",
                      config.getAlgorithmColor())
 
 
