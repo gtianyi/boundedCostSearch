@@ -160,7 +160,8 @@ int main(int argc, char** argv)
 
     } else {
         cout << res.nodesExpanded << " " << res.solutionFound << " "
-             << res.solutionCost << " " << res.initialH << endl;
+             << res.solutionCost << " " << res.initialH << " "
+             << res.totalCpuTime << endl;
     }
 
     // dumpout solution path
