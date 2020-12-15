@@ -11,9 +11,11 @@ __author__ = 'TianyiGu'
 
 import argparse
 import os
+import re
 import in_place
 
 researchHome = "/home/aifs1/gu/phd/research/workingPaper"
+# researchHome = "/home/aifs1/gu/Downloads"
 
 
 def parseArugments():
@@ -94,14 +96,9 @@ def main():
 
             with in_place.InPlace(fileDir+fileName) as file:
                 for line in file:
-                    if line[-2] == '}':
-                        file.write(line[:-1])
-                    elif line[-3] == '}':
-                        file.write(line[:-2])
-                    elif line[-4] == '}':
-                        file.write(line[:-3])
-                    elif line[-5] == '}':
-                        file.write(line[:-4])
+                    match = [m.start() for m in re.finditer(r'}', line)]
+                    if len(match) > 1 or line[-1]!='}':
+                        file.write(line[:(match[0]+1)])
                     else:
                         file.write(line)
 
