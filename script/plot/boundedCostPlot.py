@@ -38,7 +38,7 @@ class BaselineConfigure:
                          },
                          "pancake":
                          {
-                             # "regular": {"ptsnancywithdhat": "ECE Search"},
+                             # "regular": {"ptsnancywithdhat": "ESE Search"},
                              "regular": {"wastar": "WA*"},
                              "heavy": {"bees-EpsGlobal": "BEES"}
                              # "heavy": {"wastar": "WA*"}
@@ -96,7 +96,7 @@ class Configure:
                 "ptshhat": "PTS-h^",
                 # "ptsnancy": "expected work - 0 f",
                 "bees-EpsGlobal": "BEES",
-                "ptsnancywithdhat": "ECE Search",
+                "ptsnancywithdhat": "ESE Search",
                 # "bees": "BEES - EpsLocal",
                 # "astar-with-bound": "A*",
             }
@@ -107,7 +107,7 @@ class Configure:
             "PTS-h^": "orangered",
             # "ptsnancy": "expected work - 0 f",
             "BEES": "limegreen",
-            "ECE Search": "magenta",
+            "ESE Search": "magenta",
         }
 
         self.showname = {"nodeGen": "Total Nodes Generated",
@@ -147,10 +147,10 @@ class Configure:
                                          # "uniform": { "wastar-with-bound": "WA*"},
                                          # "uniform": {"wastar": "WA*"},
                                          "uniform": {},
-                                         # "uniform": {"ptsnancywithdhat": "ECE Search",
+                                         # "uniform": {"ptsnancywithdhat": "ESE Search",
                                          # "bees": "BEES - EpsLocal",
                                          # },
-                                         # "uniform": {"ptsnancywithdhat": "ECE Search",
+                                         # "uniform": {"ptsnancywithdhat": "ESE Search",
                                          # "ptsnancyonlyeffort": "t(n)",
                                          # "ptsnancyonlyeffort-dhat": "t(n)-dhat"},
                                          # "uniform": {"wastar-with-bound": "WA*-with-bound",
@@ -161,7 +161,7 @@ class Configure:
                                          # "ptsnancyonlyprob": "1/p(n)",
                                          # "ptsnancyonlyeffort": "t(n)"},
                                          "heavy": {},
-                                         # "heavy": {"ptsnancywithdhat": "ECE Search"}
+                                         # "heavy": {"ptsnancywithdhat": "ESE Search"}
                                          # "heavy": {"wastar-with-bound": "WA*"}
                                          #  "ptsnancy-if0thenverysmall": "expected work - no 0 op",
                                          # "ptsnancy-if001thenfhat": "expected work - 0 fhat",
@@ -191,7 +191,7 @@ class Configure:
                                      "vaccumworld":
                                      {
                                          "uniform": {},
-                                         # "uniform": {"ptsnancywithdhat": "ECE Search"},
+                                         # "uniform": {"ptsnancywithdhat": "ESE Search"},
                                          # "uniform": {"wastar": "WA*"},
                                          # "heavy": {"wastar": "WA*"}
                                          "heavy": {}
@@ -217,7 +217,7 @@ class Configure:
                                          },
                                          # "uniform": {}
                                          "uniform": {
-                                             # "ptsnancywithdhat": "ECE Search"
+                                             # "ptsnancywithdhat": "ESE Search"
                                          },
                                      }
                                      }

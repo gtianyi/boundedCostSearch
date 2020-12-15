@@ -66,6 +66,7 @@ add_compile_options(
     -Wsign-conversion       # Sign conversions
     -Wdouble-promotion      # float is implicit promoted to double
     -Wformat=2              # Security issues around functions that format output (like printf)
+    -ffast-math             # perform more aggressive floating-point optimizations
     )
 # cmake-format: on
 
@@ -91,6 +92,7 @@ endif()
 
 if(CMAKE_BUILD_TYPE MATCHES Release)
     message("release mode")
+    add_compile_options(-O3)
 else()
     message("debug mode")
     add_compile_options(-D DEBUG)

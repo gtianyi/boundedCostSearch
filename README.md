@@ -56,7 +56,7 @@ For more details see the Conan [Getting Started](https://docs.conan.io/en/latest
 ```
 git clone git@github.com:gtianyi/boundedCostSearch.git
 mkdir build && cd build
-conan install ../boundedCostSearch
+conan install ../boundedCostSearch --build missing
 cmake -GNinja ../boundedCostSearch
 ninja bcs 
 ```

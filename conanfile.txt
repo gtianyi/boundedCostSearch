@@ -1,6 +1,7 @@
 [requires]
 cxxopts/2.2.0
 nlohmann_json/3.9.1
+boost/1.74.0
 
 [generators]
 cmake
