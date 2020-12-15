@@ -2,6 +2,7 @@
 
 #include "SearchBase.hpp"
 
+#include <boost/math/special_functions/erf.hpp>
 #include <cmath>
 #include <ctime>
 #include <functional>
@@ -34,6 +35,8 @@ public:
 
         static Cost   bound;
         static double weight;
+
+        Cost ptsnancywithdhat;
 
     public:
         Cost getGValue() const { return g; }
@@ -94,13 +97,15 @@ public:
             // return d / (1 + getPotentialNancyValue());
         }
 
-        Cost getPTSNancyValueWithDHat() const
+        void computePTSNancyValueWithDHat()
         {
             auto nancypts = getPotentialNancyValue();
 
-            return getDHatValue() / nancypts;
+            ptsnancywithdhat = getDHatValue() / nancypts;
             // return d / (1 + getPotentialNancyValue());
         }
+
+        Cost getPTSNancyValueWithDHat() const { return ptsnancywithdhat; }
 
         void setHValue(Cost val) { h = val; }
         void setGValue(Cost val) { g = val; }
@@ -260,8 +265,9 @@ public:
             /*n2->getPTSNancyValueWithDHat();*/
 
             // Tie break on low f, high g-value, low d
-            if (n1->getPTSNancyValueWithDHat() ==
-                n2->getPTSNancyValueWithDHat()) {
+            auto n1ESEValue = n1->getPTSNancyValueWithDHat();
+            auto n2ESEValue = n2->getPTSNancyValueWithDHat();
+            if (n1ESEValue == n2ESEValue) {
                 if (n1->getFValue() == n2->getFValue()) {
                     if (n1->getGValue() == n1->getGValue()) {
                         return n1->getDValue() < n2->getDValue();
@@ -270,14 +276,21 @@ public:
                 }
                 return n1->getFValue() < n2->getFValue();
             }
-            return n1->getPTSNancyValueWithDHat() <
-                   n2->getPTSNancyValueWithDHat();
+            return n1ESEValue < n2ESEValue;
         }
 
     private:
         double cumulative_distribution(double x) const
         {
-            return (1 + std::erf(x / std::sqrt(2.))) / 2.;
+            /*int t = 0;*/
+            // for (int i = 0; i < 10000; i++) {
+            // t += 1;
+            /*}*/
+            return (1 + boost::math::erf(
+                          x / std::sqrt(2.),
+                          boost::math::policies::make_policy(
+                            boost::math::policies::promote_double<false>()))) /
+                   2.;
         }
     };
 

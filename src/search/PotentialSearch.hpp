@@ -85,6 +85,9 @@ public:
 
                 // Duplicate detection
                 if (!dup) {
+                    if (this->sortingFunction == "ptsnancywithdhat") {
+                        childNode->computePTSNancyValueWithDHat();
+                    }
                     open.push(childNode);
                     closed[child] = childNode;
                 } else
