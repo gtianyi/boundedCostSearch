@@ -287,7 +287,7 @@ def parseArugments():
         action='store',
         dest='plotType',
         help='plot type, nodeGen(default), cpu, coveragetb, coverageplt, \
-                         nodeGenDiff, fixedbaseline',
+                         nodeGenDiff, fixedbaseline, part10',
         default='nodeGen')
 
     parser.add_argument(
@@ -324,8 +324,7 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
     ax.tick_params(colors='black', labelsize=24)
 
     if showSolvedInstance:
-        ax.legend().set_title('Solved/Total: ' +
-                              str(len(dataframe['instance'].unique()))+'/'+totalInstance)
+        ax.legend().texts[0].set_text('Solved:' + str(len(dataframe['instance'].unique())))
     if useLogScale:
         ax.set_yscale("log")
 
@@ -399,7 +398,7 @@ def makePairWiseDf(rawdf, baseline, algorithms):
     return df
 
 
-def allSolvedDf(rawdf, algorithms):
+def allSolvedDf(rawdf):
     df = pd.DataFrame()
     df["Algorithm"] = np.nan
     df["instance"] = np.nan
@@ -407,6 +406,8 @@ def allSolvedDf(rawdf, algorithms):
     df["nodeGen"] = np.nan
     df["nodeExp"] = np.nan
     df["cpu"] = np.nan
+
+    algorithms = rawdf["Algorithm"].unique()
 
     for instance in rawdf["instance"].unique():
         dfins = rawdf[rawdf["instance"] == instance]
@@ -423,14 +424,59 @@ def allSolvedDf(rawdf, algorithms):
             # if len(dfins) == len(algorithms):  # keep instances solved by all algorithms
             # df = df.append(dfins)
 
-    boundPercents = rawdf["boundValues"].unique()
-    boundPercents.sort()
-    for boundP in boundPercents:
-        print("bound percent ", boundP, "valid instances: ", len(
-            df[df["boundValues"] == boundP]["instance"].unique()))
+    boundValues = rawdf["boundValues"].unique()
+    boundValues.sort()
+    for boundV in boundValues:
+        print("bound percent ", boundV, "valid instances: ", len(
+            df[df["boundValues"] == boundV]["instance"].unique()))
 
     return df
 
+def makePar10Df(rawdf, totalInstance):
+    df = pd.DataFrame()
+    df["Algorithm"] = np.nan
+    df["instance"] = np.nan
+    df["boundValues"] = np.nan
+    df["nodeGen"] = np.nan
+    df["nodeExp"] = np.nan
+    df["cpu"] = np.nan
+
+    boundValues = rawdf["boundValues"].unique()
+    boundValues.sort()
+    algorithms = rawdf["Algorithm"].unique()
+
+
+    maxCPU = rawdf["cpu"].max()
+    maxNodeGen = rawdf["nodeGen"].max()
+    maxNodeExp = rawdf["nodeExp"].max()
+    for alg in algorithms:
+        for boundV in boundValues:
+            dfins = rawdf[(rawdf["Algorithm"] == alg) & (rawdf["boundValues"] == boundV)]
+            numberUnsolved = int(totalInstance) - len(dfins)
+            print(alg, boundV, numberUnsolved)
+
+    print("max cpu",maxCPU,"max node",maxNodeGen, "max exp", maxNodeExp)
+
+    # for instance in rawdf["instance"].unique():
+        # dfins = rawdf[rawdf["instance"] == instance]
+        # # keep instances solved by all algorithms across all bounds
+        # if len(dfins) == len(algorithms) * len(rawdf["boundValues"].unique()):
+            # df = df.append(dfins)
+
+    # # for instance in rawdf["instance"].unique():
+        # # for boundP in rawdf["boundValues"].unique():
+            # # # print(instance, boundP)
+            # # dfins = rawdf[(rawdf["instance"] == instance) &
+            # # (rawdf["boundValues"] == boundP)]
+
+            # # if len(dfins) == len(algorithms):  # keep instances solved by all algorithms
+            # # df = df.append(dfins)
+
+    # for boundV in boundValues:
+        # print("bound percent ", boundV, "valid instances: ", len(
+            # df[df["boundValues"] == boundV]["instance"].unique()))
+
+    return df
 
 def makeFixedbaselineDf(rawdf, fixedbaseline, algorithms, args):
     df = pd.DataFrame()
@@ -767,8 +813,19 @@ def plotting(args, config, baselineConfig):
                      createOutFilePrefix(args) + args.plotType+".jpg",
                      config.getAlgorithmColor())
 
+    elif args.plotType == "par10":
+
+        df = makePar10Df(rawdf, totalInstance[args.domain])
+
+        # makeLinePlot("boundValues", args.plotType, df, "Algorithm",
+                     # showname["boundValues"][args.boundType],
+                     # showname[args.plotType].replace(
+                         # "baseline", baseline), totalInstance[args.domain],
+                     # createOutFilePrefix(args) + args.plotType+".jpg",
+                     # config.getAlgorithmColor())
+
     else:
-        df = allSolvedDf(rawdf, algorithms)
+        df = allSolvedDf(rawdf)
         makeLinePlot("boundValues", args.plotType, df, "Algorithm",
                      showname["boundValues"][args.boundType], showname[args.plotType],
                      totalInstance[args.domain],
