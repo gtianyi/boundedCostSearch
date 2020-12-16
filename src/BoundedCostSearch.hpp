@@ -53,10 +53,14 @@ public:
         Node* getParent() const { return parent; }
 
         // for bounded cost search
-        Cost getPTSValue() const { return 1 / (1 - h / (bound + 1 - g)); }
+        // petrick pts
+        // Cost getPTSValue() const { return 1 / (1 - h / (bound + 1 - g)); }
+        // original pts
+        Cost getPTSValue() const { return h / (bound - g); }
         Cost getPTSHHatValue() const
         {
-            return 1 / (1 - getHHatValue() / (bound + 1 - g));
+            // return 1 / (1 - getHHatValue() / (bound + 1 - g));
+            return getHHatValue() / (bound - g);
         }
 
         Cost getPotentialNancyValue() const
