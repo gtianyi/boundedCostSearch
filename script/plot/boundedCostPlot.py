@@ -329,10 +329,10 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
     if useLogScale:
         ax.set_yscale("log")
 
-    plt.ylabel(yLabel, color='black', fontsize=24)
-    plt.xlabel(xLabel, color='black', fontsize=24)
-    plt.setp(ax.get_legend().get_texts(), fontsize='24')  # for legend text
-    plt.setp(ax.get_legend().get_title(), fontsize='24')  # for legend title
+    plt.ylabel(yLabel, color='black', fontsize=26)
+    plt.xlabel(xLabel, color='black', fontsize=26)
+    plt.setp(ax.get_legend().get_texts(), fontsize='26')  # for legend text
+    plt.setp(ax.get_legend().get_title(), fontsize='26')  # for legend title
 
     plt.savefig(outputName, bbox_inches="tight", pad_inches=0)
     plt.savefig(outputName.replace(".jpg", ".eps"),
