@@ -300,8 +300,9 @@ def parseArugments():
     return parser
 
 
+#_ = totalInstance
 def makeLinePlot(xAxis, yAxis, dataframe, hue,
-                 xLabel, yLabel, totalInstance, outputName, colorDict,
+                 xLabel, yLabel, _, outputName, colorDict,
                  showSolvedInstance=True, useLogScale=True):
     sns.set(rc={
         'figure.figsize': (13, 10),
@@ -433,17 +434,18 @@ def allSolvedDf(rawdf):
     return df
 
 def makePar10Df(rawdf, totalInstance):
-    df = pd.DataFrame()
-    df["Algorithm"] = np.nan
-    df["instance"] = np.nan
-    df["boundValues"] = np.nan
-    df["nodeGen"] = np.nan
-    df["nodeExp"] = np.nan
-    df["cpu"] = np.nan
+
+    par10Algorithm = []
+    par10BoundValue = []
+    par10Cpu = []
+    par10Instance = []
+    par10NodeExpanded = []
+    par10NodeGenerated = []
 
     boundValues = rawdf["boundValues"].unique()
     boundValues.sort()
     algorithms = rawdf["Algorithm"].unique()
+
 
 
     maxCPU = rawdf["cpu"].max()
@@ -453,28 +455,34 @@ def makePar10Df(rawdf, totalInstance):
         for boundV in boundValues:
             dfins = rawdf[(rawdf["Algorithm"] == alg) & (rawdf["boundValues"] == boundV)]
             numberUnsolved = int(totalInstance) - len(dfins)
-            print(alg, boundV, numberUnsolved)
+            if numberUnsolved > 0:
+                for i in range(numberUnsolved):
+                    par10Instance.append("par10-"+str(i))
+                    par10Algorithm.append(alg)
+                    par10BoundValue.append(boundV)
+                    par10Cpu.append(maxCPU*10)
+                    par10NodeGenerated.append(maxNodeGen*10)
+                    par10NodeExpanded.append(maxNodeExp*10)
 
-    print("max cpu",maxCPU,"max node",maxNodeGen, "max exp", maxNodeExp)
+    par10df = pd.DataFrame({
+        "Algorithm": par10Algorithm,
+        "instance": par10Instance,
+        "boundValues": par10BoundValue,
+        "nodeGen": par10NodeGenerated,
+        "nodeExp": par10NodeExpanded,
+        "cpu": par10Cpu,
+    })
 
-    # for instance in rawdf["instance"].unique():
-        # dfins = rawdf[rawdf["instance"] == instance]
-        # # keep instances solved by all algorithms across all bounds
-        # if len(dfins) == len(algorithms) * len(rawdf["boundValues"].unique()):
-            # df = df.append(dfins)
+    df = pd.DataFrame()
+    df["Algorithm"] = np.nan
+    df["instance"] = np.nan
+    df["boundValues"] = np.nan
+    df["nodeGen"] = np.nan
+    df["nodeExp"] = np.nan
+    df["cpu"] = np.nan
 
-    # # for instance in rawdf["instance"].unique():
-        # # for boundP in rawdf["boundValues"].unique():
-            # # # print(instance, boundP)
-            # # dfins = rawdf[(rawdf["instance"] == instance) &
-            # # (rawdf["boundValues"] == boundP)]
-
-            # # if len(dfins) == len(algorithms):  # keep instances solved by all algorithms
-            # # df = df.append(dfins)
-
-    # for boundV in boundValues:
-        # print("bound percent ", boundV, "valid instances: ", len(
-            # df[df["boundValues"] == boundV]["instance"].unique()))
+    df=df.append(rawdf)
+    df=df.append(par10df)
 
     return df
 
@@ -817,12 +825,11 @@ def plotting(args, config, baselineConfig):
 
         df = makePar10Df(rawdf, totalInstance[args.domain])
 
-        # makeLinePlot("boundValues", args.plotType, df, "Algorithm",
-                     # showname["boundValues"][args.boundType],
-                     # showname[args.plotType].replace(
-                         # "baseline", baseline), totalInstance[args.domain],
-                     # createOutFilePrefix(args) + args.plotType+".jpg",
-                     # config.getAlgorithmColor())
+        makeLinePlot("boundValues", "cpu", df, "Algorithm",
+                     showname["boundValues"][args.boundType],
+                     "Par10 CPU Time", totalInstance[args.domain],
+                     createOutFilePrefix(args) + args.plotType+".jpg",
+                     config.getAlgorithmColor(), showSolvedInstance=False)
 
     else:
         df = allSolvedDf(rawdf)
