@@ -25,7 +25,7 @@ int main(int argc, char** argv)
       cxxopts::value<std::string>()->default_value("vaccumworld"));
 
     optionAdder("s,subdomain",
-                "puzzle type: uniform, inverse, heavy, sqrt; "
+                "puzzle type: uniform, inverse, heavy, reverse, sqrt; "
                 "pancake type: regular, heavy, sumheavy; "
                 "racetrack map : barto-big, barto-bigger, hanse-bigger-double, "
                 "vaccumworld: uniform, heavy; ",
@@ -78,6 +78,8 @@ int main(int argc, char** argv)
             world = new HeavyTilePuzzle(cin);
         } else if (sd == "inverse") {
             world = new InverseTilePuzzle(cin);
+        } else if (sd == "reverse") {
+            world = new ReverseTilePuzzle(cin);
         } else {
             cout << "unknown tile type!\n";
             exit(1);

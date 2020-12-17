@@ -56,11 +56,14 @@ public:
         // petrick pts
         // Cost getPTSValue() const { return 1 / (1 - h / (bound + 1 - g)); }
         // original pts
-        Cost getPTSValue() const { return h / (bound - g); }
+        // Cost getPTSValue() const { return h / (bound - g); }
+        // BEES pts
+        Cost getPTSValue() const { return h / (1 - (g / bound)); }
         Cost getPTSHHatValue() const
         {
             // return 1 / (1 - getHHatValue() / (bound + 1 - g));
-            return getHHatValue() / (bound - g);
+            // return getHHatValue() / (bound - g);
+            return getHHatValue() / (1 - (g / bound));
         }
 
         Cost getPotentialNancyValue() const
