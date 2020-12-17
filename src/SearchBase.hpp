@@ -5,6 +5,7 @@
 #include "domain/RaceTrack.h"
 #include "domain/ReverseTilePuzzle.h"
 #include "domain/SlidingTilePuzzle.h"
+#include "domain/SqrtTilePuzzle.h"
 #include "domain/vaccumWorld/VaccumWorld.h"
 #include "search/BEES.hpp"
 #include "search/PotentialSearch.hpp"
