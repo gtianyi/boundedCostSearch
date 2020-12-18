@@ -42,6 +42,9 @@ boundType="percentWrtOpt"
 absoluteBounds=()
 absoluteBoundsTileUniform=(40 60 80 100 120 140 160 180 200 220 240 260 280 300 600 900)
 absoluteBoundsTileHeavy=(300 400 500 600 700 800 900 1000 2000 3000 4000 5000 6000)
+absoluteBoundsTileReverse=(300 400 500 600 700 800 900 1000 2000 3000 4000 5000 6000)
+#absoluteBoundsTileSqrt=(80 100 120 140 160 180 200 220 240 260)
+absoluteBoundsTileSqrt=(280 300 350 400 450 500 600 700 800 900 1000)
 
 solverCleared=false
 boundCleared=false
@@ -161,6 +164,14 @@ if [ "$boundType" == "absolute" ]; then
         absoluteBounds=("${absoluteBoundsTileHeavy[@]}")  
     fi
 
+    if [ "$domain" == "tile"  ] && [ "$subdomain" == "reverse"  ]; then
+        absoluteBounds=("${absoluteBoundsTileReverse[@]}")  
+    fi
+
+    if [ "$domain" == "tile"  ] && [ "$subdomain" == "sqrt"  ]; then
+        absoluteBounds=("${absoluteBoundsTileSqrt[@]}")  
+    fi
+
     echo "absolute bounds ${absoluteBounds[*]}"
 fi
 
@@ -211,9 +222,16 @@ if [ "$domain" == "racetrack" ]; then
 fi
 
 if [ "$domain" == "vaccumworld" ]; then
+
+    infile_path="${research_home}/realtime-nancy/worlds/vaccumworld/200x200"
+
+    if [ "$subdomain" == "heavy-easy" ]; then
+        infile_path="${research_home}/realtime-nancy/worlds/vaccumworld/200x200-6"
+    fi
+
     infile_name="instance.vw"
     outfile="${outfile_path}/BoundPercent-BoundNumber-instance.json"
-    infile="${infile_path}/200x200/${infile_name}"
+    infile="${infile_path}/${infile_name}"
 fi
 
 last=$(($first + $n_of_i))
@@ -319,6 +337,6 @@ sleep 1
 
 if [ ! -f ${fixJson_running_flag} ]; then
     echo "run" >> ${fixJson_running_flag}
-    fixJsonOut=$(python ${fixJsonExecutable} -d ${domain} -s ${subdomain}) 
+    fixJsonOut=$(python ${fixJsonExecutable} -d ${domain} -s ${subdomain} -bt ${boundType} ) 
     echo "$fixJsonOut"  
 fi
