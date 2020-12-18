@@ -49,8 +49,8 @@ def parseArugments():
         '-bt',
         action='store',
         dest='boundType',
-        help='boundType: absolute, wrtOpt(default);',
-        default='wrtOpt')
+        help='boundType: absolute, percentWrtOpt(default);',
+        default='percentWrtOpt')
 
 #     parser.add_argument('-z',
     # action='store',
