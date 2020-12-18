@@ -129,9 +129,12 @@ class Configure:
                                              "heavy-easy": {"lower": 300, "upper": 6000},
                                              "inverse": {"lower": 20, "upper": 600},
                                              "inverse-easy": {"lower": 20, "upper": 600},
+                                             "reverse": {"lower": 300, "upper": 6000},
+                                             "sqrt": {"lower": 140 , "upper": 1000},
                                              },
                                     "vaccumworld": {"uniform": {"lower": 40, "upper": 300},
-                                                    "heavy": {"lower": 700, "upper": 6000}
+                                                    "heavy": {"lower": 700, "upper": 6000},
+                                                    "heavy-easy": {"lower": 700, "upper": 6000},
                                                     },
                                     "pancake": {"regular": {"lower": 40, "upper": 300},
                                                 "heavy": {"lower": 700, "upper": 6000}
@@ -170,6 +173,8 @@ class Configure:
                                          "heavy-easy": {},
                                          "inverse": {},
                                          "inverse-easy": {},
+                                         "reverse": {},
+                                         "sqrt": {},
                                      },
                                      "pancake":
                                      {
@@ -194,9 +199,10 @@ class Configure:
                                          # "uniform": {"ptsnancywithdhat": "XES"},
                                          # "uniform": {"wastar": "WA*"},
                                          # "heavy": {"wastar": "WA*"}
-                                         "heavy": {}
+                                         "heavy": {},
                                          # "heavy": {"ptsnancy-if0thenverysmall": \
                                          # "expected work - no 0 op"}
+                                         "heavy-easy": {},
                                      },
                                      "racetrack":
                                      {
