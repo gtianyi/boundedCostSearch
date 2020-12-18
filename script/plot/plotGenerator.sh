@@ -108,20 +108,20 @@
 #pythonOut=$(python boundedCostPlot.py -d pancake -s regular -z 50 -t par10 -b 1)
 #echo "$pythonOut"
 
-pythonOut=$(python boundedCostPlot.py -d pancake -s heavy -z 16 -e 2.4) #need to comment out ptshat
-echo "$pythonOut"
-pythonOut=$(python boundedCostPlot.py -d pancake -s heavy -z 16 -b 1 -e 2.4) #need to comment out ptshat
-echo "$pythonOut"
-pythonOut=$(python boundedCostPlot.py -d pancake -s heavy -z 16 -b 2)
-echo "$pythonOut"
-pythonOut=$(python boundedCostPlot.py -d pancake -s heavy -z 16 -t cpu -b 1 -e 2.4) #need to comment out ptshat
-echo "$pythonOut"
-pythonOut=$(python boundedCostPlot.py -d pancake -s heavy -z 16 -t cpu -b 2)
-echo "$pythonOut"
-pythonOut=$(python boundedCostPlot.py -d pancake -s heavy -z 16 -t coverageplt -b 1)
-echo "$pythonOut"
-pythonOut=$(python boundedCostPlot.py -d pancake -s heavy -z 16 -t par10 -b 1)
-echo "$pythonOut"
+#pythonOut=$(python boundedCostPlot.py -d pancake -s heavy -z 16 -e 2.4) #need to comment out ptshat
+#echo "$pythonOut"
+#pythonOut=$(python boundedCostPlot.py -d pancake -s heavy -z 16 -b 1 -e 2.4) #need to comment out ptshat
+#echo "$pythonOut"
+#pythonOut=$(python boundedCostPlot.py -d pancake -s heavy -z 16 -b 2)
+#echo "$pythonOut"
+#pythonOut=$(python boundedCostPlot.py -d pancake -s heavy -z 16 -t cpu -b 1 -e 2.4) #need to comment out ptshat
+#echo "$pythonOut"
+#pythonOut=$(python boundedCostPlot.py -d pancake -s heavy -z 16 -t cpu -b 2)
+#echo "$pythonOut"
+#pythonOut=$(python boundedCostPlot.py -d pancake -s heavy -z 16 -t coverageplt -b 1)
+#echo "$pythonOut"
+#pythonOut=$(python boundedCostPlot.py -d pancake -s heavy -z 16 -t par10 -b 1)
+#echo "$pythonOut"
 
 #pythonOut=$(python boundedCostPlot.py -d vaccumworld -s uniform -e 2)
 #echo "$pythonOut"
@@ -134,6 +134,8 @@ echo "$pythonOut"
 #pythonOut=$(python boundedCostPlot.py -d vaccumworld -s uniform -t cpu -b 1.8)
 #echo "$pythonOut"
 #pythonOut=$(python boundedCostPlot.py -d vaccumworld -s uniform -t coverageplt -b 1)
+#echo "$pythonOut"
+#pythonOut=$(python boundedCostPlot.py -d vaccumworld -s uniform -t par10 -b 1)
 #echo "$pythonOut"
 
 #pythonOut=$(python boundedCostPlot.py -d vaccumworld -s heavy -e 2.4)
@@ -148,6 +150,9 @@ echo "$pythonOut"
 #echo "$pythonOut"
 #pythonOut=$(python boundedCostPlot.py -d vaccumworld -s heavy -t coverageplt -b 1)
 #echo "$pythonOut"
+#pythonOut=$(python boundedCostPlot.py -d vaccumworld -s heavy -t par10 -b 1)
+#echo "$pythonOut"
+
 
 #pythonOut=$(python boundedCostPlot.py -d vaccumworld -s heavy-easy -e 3.5)
 #echo "$pythonOut"
@@ -176,17 +181,22 @@ echo "$pythonOut"
 #echo "$pythonOut"
 #pythonOut=$(python boundedCostPlot.py -d racetrack -s barto-bigger -t coverageplt -b 1)
 #echo "$pythonOut"
+#pythonOut=$(python boundedCostPlot.py -d racetrack -s barto-bigger -t par10 -b 1)
+#echo "$pythonOut"
 
-#pythonOut=$(python boundedCostPlot.py -d racetrack -s hansen-bigger -e 2.4)
-#echo "$pythonOut"
-#pythonOut=$(python boundedCostPlot.py -d racetrack -s hansen-bigger -b 1 -e 2.4)
-#echo "$pythonOut"
-#pythonOut=$(python boundedCostPlot.py -d racetrack -s hansen-bigger -b 2)
-#echo "$pythonOut"
-#pythonOut=$(python boundedCostPlot.py -d racetrack -s hansen-bigger -t cpu -b 1 -e 2.4)
-#echo "$pythonOut"
-#pythonOut=$(python boundedCostPlot.py -d racetrack -s hansen-bigger -t cpu -b 2)
-#echo "$pythonOut"
-#pythonOut=$(python boundedCostPlot.py -d racetrack -s hansen-bigger -t coverageplt -b 1)
-#echo "$pythonOut"
+pythonOut=$(python boundedCostPlot.py -d racetrack -s hansen-bigger -e 2.4)
+echo "$pythonOut"
+pythonOut=$(python boundedCostPlot.py -d racetrack -s hansen-bigger -b 1 -e 2.4)
+echo "$pythonOut"
+pythonOut=$(python boundedCostPlot.py -d racetrack -s hansen-bigger -b 2)
+echo "$pythonOut"
+pythonOut=$(python boundedCostPlot.py -d racetrack -s hansen-bigger -t cpu -b 1 -e 2.4)
+echo "$pythonOut"
+pythonOut=$(python boundedCostPlot.py -d racetrack -s hansen-bigger -t cpu -b 2)
+echo "$pythonOut"
+pythonOut=$(python boundedCostPlot.py -d racetrack -s hansen-bigger -t coverageplt -b 1)
+echo "$pythonOut"
+pythonOut=$(python boundedCostPlot.py -d racetrack -s hansen-bigger -t par10 -b 1)
+echo "$pythonOut"
+
 
