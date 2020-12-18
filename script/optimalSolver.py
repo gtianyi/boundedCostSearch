@@ -33,7 +33,7 @@ def parseArugments():
         '-s',
         action='store',
         dest='subdomain',
-        help='subdomain: tile: uniform(default), heavy, inverse; \
+        help='subdomain: tile: uniform(default), heavy, inverse, reverse, sqrt; \
         pancake: regular, heavy; \
         racetrack : barto-big,uniform-small, barto-bigger, hanse-bigger-double\
         vaccumworld: uniform, heavy;',
@@ -85,6 +85,9 @@ def solverConfig():
                                      " -d vaccumworld -a astar",
                                      "heavy": researchHome +
                                      "/boundedCostSearch/tianyicodebase_build_release/bin/bcs"
+                                     " -d vaccumworld -a astar -s heavy",
+                                     "heavy-easy": researchHome +
+                                     "/boundedCostSearch/tianyicodebase_build_release/bin/bcs"
                                      " -d vaccumworld -a astar -s heavy"}
                      }
 
@@ -93,7 +96,8 @@ def solverConfig():
         "tile-heavy-easy": "slidingTile_tianyi1000-easy-for-heavy",
         "pancake": "pancake",
         "racetrack": "racetrack",
-        "vaccumworld": "vaccumworld/200x200"
+        "vaccumworld": "vaccumworld/200x200",
+        "vaccumworld-heavy-easy": "vaccumworld/200x200-6"
     }
 
     return optimalSolver, problemFolder
@@ -142,6 +146,12 @@ def main():
     elif args.domain == "pancake":
         problemDir += problemFolder[args.domain]+"/"+args.size+"/"
 
+    if args.domain == "vaccumworld":
+        if args.subdomain in ["uniform", "heavy"]:
+            problemDir += problemFolder[args.domain]+"/"
+        elif args.subdomain == "heavy-easy":
+            problemDir += problemFolder[args.domain+"-"+args.subdomain]+"/"
+
     solutionJson = {}
 
     counter = 0
@@ -171,7 +181,6 @@ def main():
 
     with open(outFile, 'w') as json_file:
         json.dump(solutionJson, json_file)
-
 
 if __name__ == '__main__':
     main()
