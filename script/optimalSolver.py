@@ -53,12 +53,14 @@ def solverConfig():
     optimalSolver = {"tile": {"uniform": researchHome +
                               "/realtime-nancy/build_release/tile-uniform idastar uniform",
                               "heavy": researchHome +
-                              "/realtime-nancy/build_release/tile-pdb-heavy-inverse idastar heavy",
+                              "/realtime-nancy/build_release/tile-pdb idastar heavy",
                               "heavy-easy": researchHome +
-                              "/realtime-nancy/build_release/tile-pdb-heavy-inverse idastar heavy",
+                              "/realtime-nancy/build_release/tile-pdb idastar heavy",
                               "inverse": researchHome +
-                              "/realtime-nancy/build_release/tile-pdb-heavy-inverse"
-                              " idastar inverse"},
+                              "/realtime-nancy/build_release/tile-pdb idastar inverse",
+                              "reverse": researchHome +
+                              "/realtime-nancy/build_release/tile-pdb idastar reverse",
+                              },
                      "pancake": {"regular": researchHome +
                                  "/realtime-nancy/build_release/distributionPractice"
                                  " -d pancake -s regular -a wastar -p 1",
@@ -113,7 +115,7 @@ def solverOutPutParser(args, outStr):
                     sol = re.findall(r'\d+', lineContent[3].decode("utf-8"))[0]
                     return sol
 
-        elif args.subdomain in ["heavy", "heavy-easy", "inverse", "inverse-easy"] :
+        elif args.subdomain in ["heavy", "heavy-easy", "inverse", "inverse-easy", "reverse"] :
             for line in outStr:
                 lineContent = line.split()
                 if lineContent[0] == b'solution':
@@ -137,7 +139,7 @@ def main():
 
     problemDir = researchHome+"/realtime-nancy/worlds/"
     if args.domain == "tile":
-        if args.subdomain in ["uniform", "heavy", "inverse"]:
+        if args.subdomain in ["uniform", "heavy", "inverse", "reverse"]:
             problemDir += problemFolder[args.domain]+"/"
         elif args.subdomain == "heavy-easy":
             problemDir += problemFolder[args.domain+"-"+args.subdomain]+"/"
