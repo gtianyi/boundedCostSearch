@@ -130,7 +130,7 @@ class Configure:
                                              "inverse": {"lower": 20, "upper": 600},
                                              "inverse-easy": {"lower": 20, "upper": 600},
                                              "reverse": {"lower": 300, "upper": 6000},
-                                             "sqrt": {"lower": 140 , "upper": 1000},
+                                             "sqrt": {"lower": 140, "upper": 1000},
                                              },
                                     "vaccumworld": {"uniform": {"lower": 40, "upper": 300},
                                                     "heavy": {"lower": 700, "upper": 6000},
@@ -140,8 +140,8 @@ class Configure:
                                                 "heavy": {"lower": 700, "upper": 6000}
                                                 },
                                     "racetrack": {"barto-bigger": {"lower": 40, "upper": 300},
-                                                "hansen-bigger": {"lower": 700, "upper": 6000}
-                                                },
+                                                  "hansen-bigger": {"lower": 700, "upper": 6000}
+                                                  },
 
                                     }
 
@@ -215,11 +215,11 @@ class Configure:
                                          "barto-bigger": {},
                                          "hansen-bigger": {
                                              # "ptsnancy-if0thenverysmall": \
-                                                           # "expected work - no 0 op"
-                                                           },
+                                             # "expected work - no 0 op"
+                                         },
                                          "uniform-small": {
                                              # "ptsnancy-if0thenverysmall": \
-                                                           # "expected work - no 0 op"
+                                             # "expected work - no 0 op"
                                          },
                                          # "uniform": {}
                                          "uniform": {
@@ -303,6 +303,21 @@ def parseArugments():
         help='bound type: absolute, wrtOpt(default)',
         default='wrtOpt')
 
+    parser.add_argument(
+        '-ot',
+        action='store',
+        dest='outTime',
+        help='time in outfile name (default NA, use now())',
+        default='NA')
+
+    parser.add_argument(
+        '-os',
+        action='store',
+        dest='outSuffix',
+        help='suffix in outfile name (default NA)',
+        default='NA')
+
+
     return parser
 
 
@@ -331,7 +346,8 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
     ax.tick_params(colors='black', labelsize=24)
 
     if showSolvedInstance:
-        ax.legend().texts[0].set_text('Solved:' + str(len(dataframe['instance'].unique())))
+        ax.legend().texts[0].set_text(
+            'Solved:' + str(len(dataframe['instance'].unique())))
     if useLogScale:
         ax.set_yscale("log")
 
@@ -439,6 +455,7 @@ def allSolvedDf(rawdf):
 
     return df
 
+
 def makePar10Df(rawdf, totalInstance):
 
     par10Algorithm = []
@@ -452,14 +469,13 @@ def makePar10Df(rawdf, totalInstance):
     boundValues.sort()
     algorithms = rawdf["Algorithm"].unique()
 
-
-
     maxCPU = rawdf["cpu"].max()
     maxNodeGen = rawdf["nodeGen"].max()
     maxNodeExp = rawdf["nodeExp"].max()
     for alg in algorithms:
         for boundV in boundValues:
-            dfins = rawdf[(rawdf["Algorithm"] == alg) & (rawdf["boundValues"] == boundV)]
+            dfins = rawdf[(rawdf["Algorithm"] == alg) &
+                          (rawdf["boundValues"] == boundV)]
             numberUnsolved = int(totalInstance) - len(dfins)
             if numberUnsolved > 0:
                 for i in range(numberUnsolved):
@@ -487,10 +503,11 @@ def makePar10Df(rawdf, totalInstance):
     df["nodeExp"] = np.nan
     df["cpu"] = np.nan
 
-    df=df.append(rawdf)
-    df=df.append(par10df)
+    df = df.append(rawdf)
+    df = df.append(par10df)
 
     return df
+
 
 def makeFixedbaselineDf(rawdf, fixedbaseline, algorithms, args):
     df = pd.DataFrame()
@@ -769,12 +786,20 @@ def createOutFilePrefix(args):
 
     outDirectory = "../../../tianyi_plots/" + args.domain
 
+    if args.outTime != 'NA':
+        outDirectory = "../../../tianyi_plots/" + args.outTime + "/" + args.domain
+
     if not os.path.exists(outDirectory):
-        os.mkdir(outDirectory)
+        os.makedirs(outDirectory, exist_ok=True)
 
     outFilePrefix = outDirectory + '/' + args.domain + "-" + \
-        args.subdomain + "-" + args.boundType + "-" +\
-        args.size + '-' + nowstr
+        args.subdomain + "-" + args.boundType + "-" + args.size + "-"
+
+    if args.outTime == 'NA':
+        outFilePrefix += nowstr + "-"
+
+    if args.outSuffix != 'NA':
+        outFilePrefix += args.outSuffix + "-"
 
     return outFilePrefix
 
