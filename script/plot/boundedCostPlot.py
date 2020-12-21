@@ -228,7 +228,9 @@ class Configure:
                                      }
                                      }
 
-    def getAlgorithms(self):
+    def getAlgorithms(self, removeAlgorithm):
+        if removeAlgorithm != "NA":
+            self.algorithms.pop(removeAlgorithm)
         return self.algorithms
 
     def getShowname(self):
@@ -317,9 +319,14 @@ def parseArugments():
         help='suffix in outfile name (default NA)',
         default='NA')
 
+    parser.add_argument(
+        '-r',
+        action='store',
+        dest='removeAlgorithm',
+        help='remove (omit) algorithm (default NA)',
+        default='NA')
 
     return parser
-
 
 #_ = totalInstance
 def makeLinePlot(xAxis, yAxis, dataframe, hue,
@@ -793,7 +800,10 @@ def createOutFilePrefix(args):
         os.makedirs(outDirectory, exist_ok=True)
 
     outFilePrefix = outDirectory + '/' + args.domain + "-" + \
-        args.subdomain + "-" + args.boundType + "-" + args.size + "-"
+        args.subdomain + "-" + args.boundType + "-"
+
+    if args.domain == 'pancake':
+        outFilePrefix += args.size + "-"
 
     if args.outTime == 'NA':
         outFilePrefix += nowstr + "-"
@@ -801,13 +811,16 @@ def createOutFilePrefix(args):
     if args.outSuffix != 'NA':
         outFilePrefix += args.outSuffix + "-"
 
+    if args.removeAlgorithm != 'NA':
+        outFilePrefix += "no-"+args.removeAlgorithm + "-"
+
     return outFilePrefix
 
 
 def plotting(args, config, baselineConfig):
     print("building plots...")
 
-    algorithms = config.getAlgorithms()
+    algorithms = config.getAlgorithms(args.removeAlgorithm)
     algorithms.update(config.getAdditionalAlgorithms()
                       [args.domain][args.subdomain])
 
