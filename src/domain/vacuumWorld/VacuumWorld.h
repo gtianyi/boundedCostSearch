@@ -23,7 +23,7 @@
 
 using namespace std;
 
-class VaccumWorld
+class Vacuumworld
 {
     using Location = pair<size_t, size_t>;
 
@@ -55,7 +55,7 @@ public:
         }
 
         friend std::ostream& operator<<(std::ostream&             stream,
-                                        const VaccumWorld::State& state)
+                                        const Vacuumworld::State& state)
         {
             stream << "x: " << state.x << " ";
             stream << "y: " << state.y << " ";
@@ -160,7 +160,7 @@ public:
         std::size_t operator()(const State& s) const { return s.key(); }
     };
 
-    VaccumWorld(std::istream& input)
+    Vacuumworld(std::istream& input)
     {
         parseInput(input);
         initilaizeActions();
@@ -370,7 +370,7 @@ public:
         return info;
     }
 
-    string getDomainName() { return "VaccumWorld"; }
+    string getDomainName() { return "Vacuumworld"; }
 
     void initialize(string policy, int la)
     {
