@@ -6,7 +6,7 @@
 #include "domain/ReverseTilePuzzle.h"
 #include "domain/SlidingTilePuzzle.h"
 #include "domain/SqrtTilePuzzle.h"
-#include "domain/vaccumWorld/VaccumWorld.h"
+#include "domain/vacuumWorld/VacuumWorld.h"
 #include "search/BEES.hpp"
 #include "search/PotentialSearch.hpp"
 #include "utility/PriorityQueue.h"
