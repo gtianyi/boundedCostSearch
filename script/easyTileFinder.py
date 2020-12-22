@@ -33,7 +33,7 @@ def parseArugments():
         '-d',
         action='store',
         dest='domain',
-        help='domain: tile(default),future support: pancake, racetrack, vaccumworld',
+        help='domain: tile(default),future support: pancake, racetrack, vacuumworld',
         default='tile')
 
     parser.add_argument(
@@ -43,7 +43,7 @@ def parseArugments():
         help='subdomain: tile: uniform, heavy(default), inverse, reverse future support: sqrt; \
         pancake: regular, heavy; \
         racetrack : barto-big,uniform-small, barto-bigger, hanse-bigger-double\
-        vaccumworld: uniform, heavy;',
+        vacuumworld: uniform, heavy;',
         default='heavy')
 
     parser.add_argument('-z',
@@ -77,7 +77,7 @@ def solverConfig():
         "tile": "slidingTile_tianyi1000",
         "pancake": "pancake",
         "racetrack": "racetrack",
-        "vaccumworld": "vaccumworld/200x200"
+        "vacuumworld": "vacuumworld/200x200"
     }
 
     return solver, problemFolder
@@ -113,7 +113,7 @@ def solverOutPutParser(args, outStr):
 
             # return nodeGen, sol
 
-    # elif args.domain in ["pancake", "racetrack", "vaccumworld"]:
+    # elif args.domain in ["pancake", "racetrack", "vacuumworld"]:
         # return outStr[0].split()[2].decode("utf-8")
 
     return "error: parsing solver output"

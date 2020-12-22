@@ -123,50 +123,50 @@
 #pythonOut=$(python boundedCostPlot.py -d pancake -s heavy -z 16 -t par10 -b 1)
 #echo "$pythonOut"
 
-#pythonOut=$(python boundedCostPlot.py -d vaccumworld -s uniform -e 2)
+#pythonOut=$(python boundedCostPlot.py -d vacuumworld -s uniform -e 2)
 #echo "$pythonOut"
-#pythonOut=$(python boundedCostPlot.py -d vaccumworld -s uniform -b 1 -e 2)
+#pythonOut=$(python boundedCostPlot.py -d vacuumworld -s uniform -b 1 -e 2)
 #echo "$pythonOut"
-#pythonOut=$(python boundedCostPlot.py -d vaccumworld -s uniform -b 1.8)
+#pythonOut=$(python boundedCostPlot.py -d vacuumworld -s uniform -b 1.8)
 #echo "$pythonOut"
-#pythonOut=$(python boundedCostPlot.py -d vaccumworld -s uniform -t cpu -b 1 -e 2)
+#pythonOut=$(python boundedCostPlot.py -d vacuumworld -s uniform -t cpu -b 1 -e 2)
 #echo "$pythonOut"
-#pythonOut=$(python boundedCostPlot.py -d vaccumworld -s uniform -t cpu -b 1.8)
+#pythonOut=$(python boundedCostPlot.py -d vacuumworld -s uniform -t cpu -b 1.8)
 #echo "$pythonOut"
-#pythonOut=$(python boundedCostPlot.py -d vaccumworld -s uniform -t coverageplt -b 1)
+#pythonOut=$(python boundedCostPlot.py -d vacuumworld -s uniform -t coverageplt -b 1)
 #echo "$pythonOut"
-#pythonOut=$(python boundedCostPlot.py -d vaccumworld -s uniform -t par10 -b 1)
-#echo "$pythonOut"
-
-#pythonOut=$(python boundedCostPlot.py -d vaccumworld -s heavy -e 2.4)
-#echo "$pythonOut"
-#pythonOut=$(python boundedCostPlot.py -d vaccumworld -s heavy -b 1 -e 2.4)
-#echo "$pythonOut"
-#pythonOut=$(python boundedCostPlot.py -d vaccumworld -s heavy -b 2)
-#echo "$pythonOut"
-#pythonOut=$(python boundedCostPlot.py -d vaccumworld -s heavy -t cpu -b 1 -e 2.4)
-#echo "$pythonOut"
-#pythonOut=$(python boundedCostPlot.py -d vaccumworld -s heavy -t cpu -b 2)
-#echo "$pythonOut"
-#pythonOut=$(python boundedCostPlot.py -d vaccumworld -s heavy -t coverageplt -b 1)
-#echo "$pythonOut"
-#pythonOut=$(python boundedCostPlot.py -d vaccumworld -s heavy -t par10 -b 1)
+#pythonOut=$(python boundedCostPlot.py -d vacuumworld -s uniform -t par10 -b 1)
 #echo "$pythonOut"
 
+#pythonOut=$(python boundedCostPlot.py -d vacuumworld -s heavy -e 2.4)
+#echo "$pythonOut"
+#pythonOut=$(python boundedCostPlot.py -d vacuumworld -s heavy -b 1 -e 2.4)
+#echo "$pythonOut"
+#pythonOut=$(python boundedCostPlot.py -d vacuumworld -s heavy -b 2)
+#echo "$pythonOut"
+#pythonOut=$(python boundedCostPlot.py -d vacuumworld -s heavy -t cpu -b 1 -e 2.4)
+#echo "$pythonOut"
+#pythonOut=$(python boundedCostPlot.py -d vacuumworld -s heavy -t cpu -b 2)
+#echo "$pythonOut"
+#pythonOut=$(python boundedCostPlot.py -d vacuumworld -s heavy -t coverageplt -b 1)
+#echo "$pythonOut"
+#pythonOut=$(python boundedCostPlot.py -d vacuumworld -s heavy -t par10 -b 1)
+#echo "$pythonOut"
 
-#pythonOut=$(python boundedCostPlot.py -d vaccumworld -s heavy-easy -e 3.5)
+
+#pythonOut=$(python boundedCostPlot.py -d vacuumworld -s heavy-easy -e 3.5)
 #echo "$pythonOut"
-#pythonOut=$(python boundedCostPlot.py -d vaccumworld -s heavy-easy -b 1 -e 3.5)
+#pythonOut=$(python boundedCostPlot.py -d vacuumworld -s heavy-easy -b 1 -e 3.5)
 #echo "$pythonOut"
-#pythonOut=$(python boundedCostPlot.py -d vaccumworld -s heavy-easy -b 1.8)
+#pythonOut=$(python boundedCostPlot.py -d vacuumworld -s heavy-easy -b 1.8)
 #echo "$pythonOut"
-#pythonOut=$(python boundedCostPlot.py -d vaccumworld -s heavy-easy -t cpu -b 1 -e 3.5)
+#pythonOut=$(python boundedCostPlot.py -d vacuumworld -s heavy-easy -t cpu -b 1 -e 3.5)
 #echo "$pythonOut"
-#pythonOut=$(python boundedCostPlot.py -d vaccumworld -s heavy-easy -t cpu -b 1.8)
+#pythonOut=$(python boundedCostPlot.py -d vacuumworld -s heavy-easy -t cpu -b 1.8)
 #echo "$pythonOut"
-#pythonOut=$(python boundedCostPlot.py -d vaccumworld -s heavy-easy -t coverageplt -b 1)
+#pythonOut=$(python boundedCostPlot.py -d vacuumworld -s heavy-easy -t coverageplt -b 1)
 #echo "$pythonOut"
-#pythonOut=$(python boundedCostPlot.py -d vaccumworld -s heavy-easy -t par10 -b 1)
+#pythonOut=$(python boundedCostPlot.py -d vacuumworld -s heavy-easy -t par10 -b 1)
 #echo "$pythonOut"
 
 #pythonOut=$(python boundedCostPlot.py -d racetrack -s barto-bigger -e 2.4)

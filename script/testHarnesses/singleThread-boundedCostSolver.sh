@@ -27,7 +27,7 @@ fi
 first=1
 # The number of instances to test on
 n_of_i=1
-domain="tile"
+domain=("tile" "pancake" "racetrack" "vacuumworld")
 subdomain="uniform"
 size="4"
 #boundedCostSolvers=("pts" "ptshhat" "ptsnancy" "bees" "astar" "wastar")
@@ -221,12 +221,12 @@ if [ "$domain" == "racetrack" ]; then
     infile="${infile_path}/${infile_name}"
 fi
 
-if [ "$domain" == "vaccumworld" ]; then
+if [ "$domain" == "vacuumworld" ]; then
 
-    infile_path="${research_home}/realtime-nancy/worlds/vaccumworld/200x200"
+    infile_path="${research_home}/realtime-nancy/worlds/vacuumworld/200x200"
 
     if [ "$subdomain" == "heavy-easy" ]; then
-        infile_path="${research_home}/realtime-nancy/worlds/vaccumworld/200x200-6"
+        infile_path="${research_home}/realtime-nancy/worlds/vacuumworld/200x200-6"
     fi
 
     infile_name="instance.vw"

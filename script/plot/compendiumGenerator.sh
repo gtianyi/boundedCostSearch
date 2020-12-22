@@ -179,55 +179,55 @@ echo "$pythonOut"
 pythonOut=$(python ${plotter} -d pancake -s heavy -z 16 -t par10 -b 1 -os tight)
 echo "$pythonOut"
 
-pythonOut=$(python ${plotter} -d vaccumworld -s uniform -e 2 -os below1)
+pythonOut=$(python ${plotter} -d vacuumworld -s uniform -e 2 -os below1)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d vaccumworld -s uniform -b 1 -e 2 -os tight)
+pythonOut=$(python ${plotter} -d vacuumworld -s uniform -b 1 -e 2 -os tight)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d vaccumworld -s uniform -b 1.8 -os loose)
+pythonOut=$(python ${plotter} -d vacuumworld -s uniform -b 1.8 -os loose)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d vaccumworld -s uniform -t cpu -b 1 -e 2 -os tight)
+pythonOut=$(python ${plotter} -d vacuumworld -s uniform -t cpu -b 1 -e 2 -os tight)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d vaccumworld -s uniform -t cpu -b 1.8 -os loose)
+pythonOut=$(python ${plotter} -d vacuumworld -s uniform -t cpu -b 1.8 -os loose)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d vaccumworld -s uniform -t coverageplt -b 1)
+pythonOut=$(python ${plotter} -d vacuumworld -s uniform -t coverageplt -b 1)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d vaccumworld -s uniform -t par10 -b 1 -e 3 -os tight)
+pythonOut=$(python ${plotter} -d vacuumworld -s uniform -t par10 -b 1 -e 3 -os tight)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d vaccumworld -s uniform -t par10 -b 1 -os loose)
-echo "$pythonOut"
-
-pythonOut=$(python ${plotter} -d vaccumworld -s heavy -e 2.4 -os below1)
-echo "$pythonOut"
-pythonOut=$(python ${plotter} -d vaccumworld -s heavy -b 1 -e 2.4 -os tight)
-echo "$pythonOut"
-pythonOut=$(python ${plotter} -d vaccumworld -s heavy -b 2 -os loose)
-echo "$pythonOut"
-pythonOut=$(python ${plotter} -d vaccumworld -s heavy -t cpu -b 1 -e 2.4 -os tight)
-echo "$pythonOut"
-pythonOut=$(python ${plotter} -d vaccumworld -s heavy -t cpu -b 2 -os loose)
-echo "$pythonOut"
-pythonOut=$(python ${plotter} -d vaccumworld -s heavy -t coverageplt -b 1)
-echo "$pythonOut"
-pythonOut=$(python ${plotter} -d vaccumworld -s heavy -t par10 -b 1 -e 3 -os tight)
-echo "$pythonOut"
-pythonOut=$(python ${plotter} -d vaccumworld -s heavy -t par10 -b 1 -os loose)
+pythonOut=$(python ${plotter} -d vacuumworld -s uniform -t par10 -b 1 -os loose)
 echo "$pythonOut"
 
-pythonOut=$(python ${plotter} -d vaccumworld -s heavy-easy -e 3.5 -os below1)
+pythonOut=$(python ${plotter} -d vacuumworld -s heavy -e 2.4 -os below1)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d vaccumworld -s heavy-easy -b 1 -e 3.5 -os tight)
+pythonOut=$(python ${plotter} -d vacuumworld -s heavy -b 1 -e 2.4 -os tight)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d vaccumworld -s heavy-easy -b 1.8 -os loose)
+pythonOut=$(python ${plotter} -d vacuumworld -s heavy -b 2 -os loose)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d vaccumworld -s heavy-easy -t cpu -b 1 -e 3.5 -os tight)
+pythonOut=$(python ${plotter} -d vacuumworld -s heavy -t cpu -b 1 -e 2.4 -os tight)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d vaccumworld -s heavy-easy -t cpu -b 1.8 -os loose)
+pythonOut=$(python ${plotter} -d vacuumworld -s heavy -t cpu -b 2 -os loose)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d vaccumworld -s heavy-easy -t coverageplt -b 1)
+pythonOut=$(python ${plotter} -d vacuumworld -s heavy -t coverageplt -b 1)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d vaccumworld -s heavy-easy -t par10 -b 1 -e 3 -os tight)
+pythonOut=$(python ${plotter} -d vacuumworld -s heavy -t par10 -b 1 -e 3 -os tight)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d vaccumworld -s heavy-easy -t par10 -b 1 -os loose)
+pythonOut=$(python ${plotter} -d vacuumworld -s heavy -t par10 -b 1 -os loose)
+echo "$pythonOut"
+
+pythonOut=$(python ${plotter} -d vacuumworld -s heavy-easy -e 3.5 -os below1)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d vacuumworld -s heavy-easy -b 1 -e 3.5 -os tight)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d vacuumworld -s heavy-easy -b 1.8 -os loose)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d vacuumworld -s heavy-easy -t cpu -b 1 -e 3.5 -os tight)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d vacuumworld -s heavy-easy -t cpu -b 1.8 -os loose)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d vacuumworld -s heavy-easy -t coverageplt -b 1)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d vacuumworld -s heavy-easy -t par10 -b 1 -e 3 -os tight)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d vacuumworld -s heavy-easy -t par10 -b 1 -os loose)
 echo "$pythonOut"
 
 pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -e 2.4 -os below1)

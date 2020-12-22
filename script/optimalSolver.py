@@ -26,7 +26,7 @@ def parseArugments():
         '-d',
         action='store',
         dest='domain',
-        help='domain: tile(default), pancake, racetrack, vaccumworld',
+        help='domain: tile(default), pancake, racetrack, vacuumworld',
         default='tile')
 
     parser.add_argument(
@@ -36,7 +36,7 @@ def parseArugments():
         help='subdomain: tile: uniform(default), heavy, inverse, reverse, sqrt; \
         pancake: regular, heavy; \
         racetrack : barto-big,uniform-small, barto-bigger, hanse-bigger-double\
-        vaccumworld: uniform, heavy;',
+        vacuumworld: uniform, heavy;',
         default='uniform')
 
     parser.add_argument('-z',
@@ -82,15 +82,15 @@ def solverConfig():
                                    "uniform-small": researchHome +
                                    "/realtime-nancy/build_release/distributionPractice"
                                    " -d racetrack -s uniform-small -a wastar -p 1"},
-                     "vaccumworld": {"uniform": researchHome +
+                     "vacuumworld": {"uniform": researchHome +
                                      "/boundedCostSearch/tianyicodebase_build_release/bin/bcs"
-                                     " -d vaccumworld -a astar",
+                                     " -d vacuumworld -a astar",
                                      "heavy": researchHome +
                                      "/boundedCostSearch/tianyicodebase_build_release/bin/bcs"
-                                     " -d vaccumworld -a astar -s heavy",
+                                     " -d vacuumworld -a astar -s heavy",
                                      "heavy-easy": researchHome +
                                      "/boundedCostSearch/tianyicodebase_build_release/bin/bcs"
-                                     " -d vaccumworld -a astar -s heavy"}
+                                     " -d vacuumworld -a astar -s heavy"}
                      }
 
     problemFolder = {
@@ -98,8 +98,8 @@ def solverConfig():
         "tile-heavy-easy": "slidingTile_tianyi1000-easy-for-heavy",
         "pancake": "pancake",
         "racetrack": "racetrack",
-        "vaccumworld": "vaccumworld/200x200",
-        "vaccumworld-heavy-easy": "vaccumworld/200x200-6"
+        "vacuumworld": "vacuumworld/200x200",
+        "vacuumworld-heavy-easy": "vacuumworld/200x200-6"
     }
 
     return optimalSolver, problemFolder
@@ -122,7 +122,7 @@ def solverOutPutParser(args, outStr):
                     sol = lineContent[2].decode("utf-8")
                     return sol
 
-    elif args.domain in ["pancake", "racetrack", "vaccumworld"]:
+    elif args.domain in ["pancake", "racetrack", "vacuumworld"]:
         return outStr[0].split()[2].decode("utf-8")
 
     return "error: parsing solver output"
@@ -148,7 +148,7 @@ def main():
     elif args.domain == "pancake":
         problemDir += problemFolder[args.domain]+"/"+args.size+"/"
 
-    if args.domain == "vaccumworld":
+    if args.domain == "vacuumworld":
         if args.subdomain in ["uniform", "heavy"]:
             problemDir += problemFolder[args.domain]+"/"
         elif args.subdomain == "heavy-easy":

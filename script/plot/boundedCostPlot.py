@@ -51,7 +51,7 @@ class BaselineConfigure:
                              "uniform-small": {"bees": "BEES"},
                              "uniform": {"bees": "BEES"}
                          },
-                         "vaccumworld":
+                         "vacuumworld":
                          {
                              # "uniform": {"wastar": "WA*"},
                              "uniform": {"bees": "BEES"},
@@ -122,7 +122,7 @@ class Configure:
                          }
 
         self.totalInstance = {"tile": "100", "pancake": "100",
-                              "racetrack": "25", "vaccumworld": "60"}
+                              "racetrack": "25", "vacuumworld": "60"}
 
         self.absoluteBoundsLimit = {"tile": {"uniform": {"lower": 40, "upper": 300},
                                              "heavy": {"lower": 700, "upper": 6000},
@@ -132,7 +132,7 @@ class Configure:
                                              "reverse": {"lower": 300, "upper": 6000},
                                              "sqrt": {"lower": 140, "upper": 1000},
                                              },
-                                    "vaccumworld": {"uniform": {"lower": 40, "upper": 300},
+                                    "vacuumworld": {"uniform": {"lower": 40, "upper": 300},
                                                     "heavy": {"lower": 700, "upper": 6000},
                                                     "heavy-easy": {"lower": 700, "upper": 6000},
                                                     },
@@ -193,7 +193,7 @@ class Configure:
 
 
                                      },
-                                     "vaccumworld":
+                                     "vacuumworld":
                                      {
                                          "uniform": {},
                                          # "uniform": {"ptsnancywithdhat": "XES"},
@@ -257,7 +257,7 @@ def parseArugments():
         '-d',
         action='store',
         dest='domain',
-        help='domain: tile(default), pancake, racetrack, vaccumworld',
+        help='domain: tile(default), pancake, racetrack, vacuumworld',
         default='tile')
 
     parser.add_argument(
@@ -267,7 +267,7 @@ def parseArugments():
         help='subdomain: tile: uniform(default), heavy, inverse; \
         pancake: regular, heavy; \
         racetrack : barto-big,uniform-small, barto-bigger, hanse-bigger-double;\
-        vaccumworld: uniform, heavy',
+        vacuumworld: uniform, heavy',
         default='uniform')
 
     parser.add_argument(
