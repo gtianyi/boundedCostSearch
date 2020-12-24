@@ -87,7 +87,12 @@ public:
                 if (!dup) {
                     open.push(childNode);
 
-                    if (childNode->getFHatValue() <= Node::bound) {
+                    if (this->sortingFunction == "bees95") {
+                        childNode->computePotentialNancyValue();
+                        if (childNode->getPotentialNancyValue() >= 0.95) {
+                            openhat.push(childNode);
+                        }
+                    } else if (childNode->getFHatValue() <= Node::bound) {
                         openhat.push(childNode);
                     }
 
@@ -120,6 +125,7 @@ private:
     void sortOpen(PriorityQueue<Node*>& open)
     {
         if (this->sortingFunction == "bees" ||
+            this->sortingFunction == "bees95" ||
             this->sortingFunction == "bees-EpsGlobal") {
             open.swapComparator(Node::compareNodesF);
         } else if (this->sortingFunction == "beeps") {
@@ -135,7 +141,8 @@ private:
     void sortOpenHat(PriorityQueue<Node*>& openhat)
     {
 
-        if (this->sortingFunction == "bees") {
+        if (this->sortingFunction == "bees" ||
+            this->sortingFunction == "bees95") {
             openhat.swapComparator(Node::compareNodesDHat);
         } else if (this->sortingFunction == "bees-EpsGlobal") {
             openhat.swapComparator(Node::compareNodesD);

@@ -36,7 +36,8 @@ public:
         static Cost   bound;
         static double weight;
 
-        Cost ptsnancywithdhat;
+        Cost   ptsnancywithdhat;
+        double nancyPotential;
 
     public:
         Cost getGValue() const { return g; }
@@ -66,10 +67,13 @@ public:
             return getHHatValue() / (1 - (g / bound));
         }
 
-        Cost getPotentialNancyValue() const
+        Cost getPotentialNancyValue() const { return nancyPotential; }
+
+        void computePotentialNancyValue()
         {
             if (getHValue() == getHHatValue() || getHValue() == 0) {
-                return getFValue() <= bound ? 1. : 0.;
+                nancyPotential = getFValue() <= bound ? 1. : 0.;
+                return;
             }
 
             auto mean               = getFHatValue();
@@ -93,7 +97,7 @@ public:
             /*cout << "p " << (cdf_xi - cdf_alpha) / (1 - cdf_alpha) <<
              * "\n";*/
 
-            return (cdf_xi - cdf_alpha) / (1 - cdf_alpha);
+            nancyPotential = (cdf_xi - cdf_alpha) / (1 - cdf_alpha);
         }
 
         Cost getPTSNancyValue() const
@@ -106,6 +110,7 @@ public:
 
         void computePTSNancyValueWithDHat()
         {
+            computePotentialNancyValue();
             auto nancypts = getPotentialNancyValue();
 
             ptsnancywithdhat = getDHatValue() / nancypts;
@@ -315,8 +320,12 @@ public:
             algStr == "ptsnancywithdhat") {
             algorithm = new PotentialSearch<Domain, Node>(domain, algStr);
         } else if (algStr == "bees" || algStr == "beeps" ||
-                   algStr == "beepsnancy" || algStr == "bees-EpsGlobal") {
+                   algStr == "beepsnancy" || algStr == "bees-EpsGlobal" ||
+                   algStr == "bees95") {
             algorithm = new BEES<Domain, Node>(domain, algStr);
+        } else {
+            cout << "unknown algorithm name!";
+            exit(1);
         }
     }
 
