@@ -39,6 +39,11 @@ subdomainPancake=("regular" "heavy")
 subdomainVacuumworld=("uniform" "heavy")
 subdomainRacetrack=("barto-bigger" "hansen-bigger")
 
+n_of_i_Tile=100
+n_of_i_Pancake=100
+n_of_i_Racetrack=25
+n_of_i_Vacuumworld=60
+
 size="4"
 
 #boundedCostSolvers=("pts" "ptshhat" "ptsnancy" "bees" "astar" "wastar")
@@ -200,7 +205,6 @@ for ((i = 1; i <= "$#"; i++)); do
 done
 
 echo "first ${first}"
-echo "n_of_i ${n_of_i}"
 echo "domain ${domain[*]}"
 echo "size ${size}"
 echo "solvers ${boundedCostSolvers[*]}"
@@ -215,24 +219,29 @@ for curDomainId in "${!domain[@]}"; do
     if [ "$curDomain" == "tile" ]; then
         subdomain=("${subdomainTile[@]}")
         boundPercents=("${boundPercentsA[@]}")
+        n_of_i=$n_of_i_Tile
     fi
 
     if [ "$curDomain" == "pancake" ]; then
         subdomain=("${subdomainPancake[@]}")
         boundPercents=("${boundPercentsB[@]}")
+        n_of_i=$n_of_i_Pancake
     fi
 
     if [ "${curDomain}" == "vacuumworld" ]; then
         subdomain=("${subdomainVacuumworld[@]}")
         boundPercents=("${boundPercentsB[@]}")
+        n_of_i=$n_of_i_Vacuumworld
     fi
 
     if [ "${curDomain}" == "racetrack" ]; then
         subdomain=("${subdomainRacetrack[@]}")
         boundPercents=("${boundPercentsB[@]}")
+        n_of_i=$n_of_i_Racetrack
     fi
 
     echo "subdomain ${subdomain[*]}"
+    echo "n_of_i ${n_of_i}"
 
     if [ "$boundType" == "percentWrtOpt" ]; then 
         echo "boundPercents ${boundPercents[*]}"
