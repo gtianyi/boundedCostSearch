@@ -99,6 +99,7 @@ class Configure:
                 "ptsnancywithdhat": "XES",
                 # "bees": "BEES - EpsLocal",
                 # "astar-with-bound": "A*",
+                "bees95": "BEES95",
             }
         )
 
@@ -108,6 +109,7 @@ class Configure:
             # "ptsnancy": "expected work - 0 f",
             "BEES": "limegreen",
             "XES": "magenta",
+            "BEES95": "magenta",
         }
 
         self.showname = {"nodeGen": "Total Nodes Generated",
@@ -329,6 +331,8 @@ def parseArugments():
     return parser
 
 #_ = totalInstance
+
+
 def makeLinePlot(xAxis, yAxis, dataframe, hue,
                  xLabel, yLabel, _, outputName, colorDict,
                  showSolvedInstance=True, useLogScale=True):
