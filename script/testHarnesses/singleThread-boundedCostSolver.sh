@@ -9,7 +9,7 @@ print_usage() {
     echo "[-sp subdomain of pancake]       default: regular, heavy"
     echo "[-sv subdomain of vacuumworld]   default: uniform, heavy"
     echo "[-sr subdomain of racetrack]     default: barto-bigger, hansen-bigger"
-    echo "[-z domain size]                 default: 4"
+    #echo "[-z domain size]                 default: 4"
     echo "[-u boundedCost solver]"
     echo " support list,eg: -u a1 -u a2    available: pts ptshhat ptsnancy bees astar wastar ptsnancywithdhat"
     echo "                                 default: pts ptshhat bees-EpsGlobal ptsnancywithdhat"
@@ -45,6 +45,8 @@ n_of_i_Racetrack=25
 n_of_i_Vacuumworld=60
 
 size="4"
+sizeOfRegularPancake="50"
+sizeOfHeavyPancake="16"
 
 #boundedCostSolvers=("pts" "ptshhat" "ptsnancy" "bees" "astar" "wastar")
 boundedCostSolvers=("pts" "ptshhat" "bees-EpsGlobal" "ptsnancywithdhat")
@@ -52,7 +54,7 @@ boundPercents=()
 boundPercentsA=(60 80 100 120 140 160 180 200 220 240 260 280 300 320 340 360 380 400 420 440 460 480 500 520 540 560 580 600 700 800 900 1000 1100 1200 1300 1400 1500  2000 3000)
 boundPercentsB=(60 80 100 110 120 130 140 150 160 170 180 190 200 220 240 260 280 300 320 340 360 380 400 420 440 460 480 500 520 540 560 580 600)
 timeLimit=1800
-memoryLimit=7.5
+memoryLimit=7
 weight="2"
 boundType="percentWrtOpt"
 
@@ -141,12 +143,12 @@ for ((i = 1; i <= "$#"; i++)); do
         fi
     fi
 
-    if [ ${!i} == "-z" ]; then
-        if [ $((i + 1)) -le "$#" ]; then
-            var=$((i + 1))
-            size=${!var}
-        fi
-    fi
+    #if [ ${!i} == "-z" ]; then
+        #if [ $((i + 1)) -le "$#" ]; then
+            #var=$((i + 1))
+            #size=${!var}
+        #fi
+    #fi
 
     if [ ${!i} == "-u" ]; then
         if [ $((i + 1)) -le "$#" ]; then
@@ -206,7 +208,6 @@ done
 
 echo "first ${first}"
 echo "domain ${domain[*]}"
-echo "size ${size}"
 echo "solvers ${boundedCostSolvers[*]}"
 echo "time limit ${timeLimit}"
 echo "memory limit ${memoryLimit}"
@@ -269,6 +270,18 @@ for curDomainId in "${!domain[@]}"; do
             fi
 
             echo "absolute bounds ${absoluteBounds[*]}"
+        fi
+
+        if [ "$curDomain" == "pancake" ];then
+            if [ "$curSubdomain" == "regular" ]; then
+                size=$sizeOfRegularPancake
+            fi
+
+            if [ "$curSubdomain" == "heavy" ]; then
+                size=$sizeOfHeavyPancake
+            fi
+
+            echo "size ${size}"
         fi
 
         infile=""
@@ -365,7 +378,6 @@ for curDomainId in "${!domain[@]}"; do
                     tempfile="${outfile_instance}.temp"
 
                     curFileName=${infile_name/instance/$instance}
-
 
                     bound=$boundTypeValue
 
