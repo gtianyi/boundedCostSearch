@@ -42,7 +42,7 @@ def parseArugments():
         '-a',
         action='append',
         dest='algorithms',
-        help='algorithms: wastar, astar, pts, ptshhat, ptsnancy, bees default(all)',
+        help='algorithms: wastar, astar, pts, ptshhat, ptsnancy, bees, bees95 default(all)',
         default=[])
 
     parser.add_argument(
@@ -68,7 +68,7 @@ def main():
     print(args)
 
     # algorithms = ['astar', 'pts', 'ptshhat', 'ptsnancy', 'bees', 'wastar']
-    algorithms = ['pts', 'ptshhat', 'ptsnancywithdhat', 'bees-EpsGlobal']
+    algorithms = ['pts', 'ptshhat', 'ptsnancywithdhat', 'bees-EpsGlobal', 'bees95']
 
     if len(args.algorithms) != 0:
         algorithms = args.algorithms
