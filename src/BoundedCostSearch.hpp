@@ -105,7 +105,6 @@ public:
             auto nancypts = getPotentialNancyValue();
 
             return d / nancypts;
-            // return d / (1 + getPotentialNancyValue());
         }
 
         void computePTSNancyValueWithDHat()
@@ -114,7 +113,15 @@ public:
             auto nancypts = getPotentialNancyValue();
 
             ptsnancywithdhat = getDHatValue() / nancypts;
-            // return d / (1 + getPotentialNancyValue());
+        }
+
+        void computePTSNancyValueWithDHatAndBranchingFactor(
+          const double branchingFactor)
+        {
+            computePotentialNancyValue();
+            auto nancypts = getPotentialNancyValue();
+
+            ptsnancywithdhat = pow(getDHatValue(), branchingFactor) / nancypts;
         }
 
         Cost getPTSNancyValueWithDHat() const { return ptsnancywithdhat; }
@@ -317,7 +324,7 @@ public:
             algStr == "ptshhat" || algStr == "ptsnancy" ||
             algStr == "ptsnancyonlyprob" || algStr == "ptsnancyonlyeffort" ||
             algStr == "ptsnancyonlyeffort-dhat" ||
-            algStr == "ptsnancywithdhat") {
+            algStr == "ptsnancywithdhat" || algStr == "ptsnancywithdhatandbf") {
             algorithm = new PotentialSearch<Domain, Node>(domain, algStr);
         } else if (algStr == "bees" || algStr == "beeps" ||
                    algStr == "beepsnancy" || algStr == "bees-EpsGlobal" ||

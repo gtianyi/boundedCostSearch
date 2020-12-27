@@ -285,7 +285,7 @@ public:
     // return c;
     /*}*/
 
-    double getBranchingFactor() const { return 9; }
+    double getBranchingFactor() const { return 5; }
 
     bool isLegalLocation(int x, int y) const
     {

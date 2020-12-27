@@ -341,7 +341,6 @@ public:
 
     double getBranchingFactor() const
     {
-        // TODO
         return static_cast<double>(size) - 1; //  I think this is right
     }
 

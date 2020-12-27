@@ -87,6 +87,11 @@ public:
                 if (!dup) {
                     if (this->sortingFunction == "ptsnancywithdhat") {
                         childNode->computePTSNancyValueWithDHat();
+                    } else if (this->sortingFunction ==
+                               "ptsnancywithdhatandbf") {
+                        childNode
+                          ->computePTSNancyValueWithDHatAndBranchingFactor(
+                            this->domain.getBranchingFactor());
                     }
                     open.push(childNode);
                     closed[child] = childNode;
@@ -135,7 +140,8 @@ private:
             open.swapComparator(Node::compareNodesD);
         } else if (this->sortingFunction == "ptsnancyonlyeffort-dhat") {
             open.swapComparator(Node::compareNodesDHat);
-        } else if (this->sortingFunction == "ptsnancywithdhat") {
+        } else if (this->sortingFunction == "ptsnancywithdhat" ||
+                   this->sortingFunction == "ptsnancywithdhatandbf") {
             open.swapComparator(Node::compareNodesPTSNancyWithDhat);
         } else {
             cout << "Unknown algorithm!\n";
