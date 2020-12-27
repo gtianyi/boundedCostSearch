@@ -68,7 +68,8 @@ def main():
     print(args)
 
     # algorithms = ['astar', 'pts', 'ptshhat', 'ptsnancy', 'bees', 'wastar']
-    algorithms = ['pts', 'ptshhat', 'ptsnancywithdhat', 'bees-EpsGlobal', 'bees95']
+    algorithms = ['pts', 'ptshhat', 'ptsnancywithdhat', \
+                  'bees-EpsGlobal', 'bees95','ptsnancywithdhatandbf' ]
 
     if len(args.algorithms) != 0:
         algorithms = args.algorithms

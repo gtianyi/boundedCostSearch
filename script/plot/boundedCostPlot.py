@@ -100,6 +100,7 @@ class Configure:
                 # "bees": "BEES - EpsLocal",
                 # "astar-with-bound": "A*",
                 "bees95": "BEES95",
+                "ptsnancywithdhatandbf": "XES-bf",
             }
         )
 
@@ -110,6 +111,7 @@ class Configure:
             "BEES": "limegreen",
             "XES": "magenta",
             "BEES95": "tan",
+            "XES-bf": "darkgreen",
         }
 
         self.showname = {"nodeGen": "Total Nodes Generated",
