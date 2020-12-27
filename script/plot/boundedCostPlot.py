@@ -109,7 +109,7 @@ class Configure:
             # "ptsnancy": "expected work - 0 f",
             "BEES": "limegreen",
             "XES": "magenta",
-            "BEES95": "magenta",
+            "BEES95": "tan",
         }
 
         self.showname = {"nodeGen": "Total Nodes Generated",

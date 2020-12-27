@@ -33,10 +33,12 @@ first=1
 n_of_i=1
 
 domain=("tile" "pancake" "racetrack" "vacuumworld")
+#domain=("vacuumworld")
 subdomain=()
 subdomainTile=("uniform" "heavy" "inverse" "heavy-easy" "inverse-easy")
 subdomainPancake=("regular" "heavy")
-subdomainVacuumworld=("uniform" "heavy")
+subdomainVacuumworld=("uniform" "heavy" "heavy-easy")
+#subdomainVacuumworld=("heavy-easy")
 subdomainRacetrack=("barto-bigger" "hansen-bigger")
 
 n_of_i_Tile=100
