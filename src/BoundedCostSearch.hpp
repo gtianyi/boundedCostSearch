@@ -28,6 +28,7 @@ public:
         Cost  d;
         Cost  epsH;
         Cost  epsD;
+        Cost  epsHVar;
         int   delayCntr;
         State stateRep;
         Node* parent;
@@ -45,6 +46,7 @@ public:
         Cost getFValue() const { return g + h; }
         Cost getDValue() const { return d; }
         Cost getEpsilonH() const { return epsH; }
+        Cost getEpsilonHVar() const { return epsHVar; }
         Cost getEpsilonD() const { return epsD; }
         Cost getDHatValue() const { return (d / (1.0 - epsD)); }
         Cost getHHatValue() const { return h + getDHatValue() * epsH; }
@@ -100,6 +102,27 @@ public:
             nancyPotential = (cdf_xi - cdf_alpha) / (1 - cdf_alpha);
         }
 
+        void computePotentialNancyValueWithOnlineVar()
+        {
+            if (getEpsilonHVar() == 0 || getHValue() == 0) {
+                nancyPotential = getFValue() <= bound ? 1. : 0.;
+                return;
+            }
+
+            auto mean = getFHatValue();
+            auto standard_deviation =
+              std::sqrt(getDHatValue() * getEpsilonHVar());
+            auto cdf_xi =
+              cumulative_distribution((bound - mean) / standard_deviation);
+            auto cdf_alpha = cumulative_distribution((getFValue() - mean) /
+                                                     standard_deviation);
+
+            assert(cdf_xi >= 0 && cdf_xi <= 1);
+            assert(cdf_alpha >= 0 && cdf_alpha <= 1);
+
+            nancyPotential = (cdf_xi - cdf_alpha) / (1 - cdf_alpha);
+        }
+
         Cost getPTSNancyValue() const
         {
             auto nancypts = getPotentialNancyValue();
@@ -107,9 +130,18 @@ public:
             return d / nancypts;
         }
 
-        void computePTSNancyValueWithDHat()
+        void computePTSNancyValueWithDHat(const string& algName)
         {
-            computePotentialNancyValue();
+            if (algName == "ptsnancywithdhat") {
+                computePotentialNancyValue();
+            } else if (algName == "ptsnancywithdhat-olv" ||
+                       algName == "ptsnancyonlyprob-olv") {
+                computePotentialNancyValueWithOnlineVar();
+            } else {
+                cout << "unknow ptsnancy variation";
+                exit(1);
+            }
+
             auto nancypts = getPotentialNancyValue();
 
             ptsnancywithdhat = getDHatValue() / nancypts;
@@ -130,6 +162,7 @@ public:
         void setGValue(Cost val) { g = val; }
         void setDValue(Cost val) { d = val; }
         void setEpsilonH(Cost val) { epsH = val; }
+        void setEpsilonHVar(Cost val) { epsHVar = val; }
         void setEpsilonD(Cost val) { epsD = val; }
         void setState(State s) { stateRep = s; }
         void setParent(Node* p) { parent = p; }
@@ -137,13 +170,14 @@ public:
         void incDelayCntr() { delayCntr++; }
         int  getDelayCntr() { return delayCntr; }
 
-        Node(Cost g_, Cost h_, Cost d_, Cost epsH_, Cost epsD_, State state_,
-             Node* parent_)
+        Node(Cost g_, Cost h_, Cost d_, Cost epsH_, Cost epsD_, Cost epsHVar_,
+             State state_, Node* parent_)
             : g(g_)
             , h(h_)
             , d(d_)
             , epsH(epsH_)
             , epsD(epsD_)
+            , epsHVar(epsHVar_)
             , delayCntr(0)
             , stateRep(state_)
             , parent(parent_)
@@ -320,15 +354,18 @@ public:
         Node::bound  = bound_;
         Node::weight = weight_;
 
+        // olv = online varance
         if (algStr == "wastar" || algStr == "astar" || algStr == "pts" ||
             algStr == "ptshhat" || algStr == "ptsnancy" ||
             algStr == "ptsnancyonlyprob" || algStr == "ptsnancyonlyeffort" ||
             algStr == "ptsnancyonlyeffort-dhat" ||
-            algStr == "ptsnancywithdhat" || algStr == "ptsnancywithdhatandbf") {
+            algStr == "ptsnancywithdhat" || algStr == "ptsnancywithdhatandbf" ||
+            algStr == "ptsnancywithdhat-olv" ||
+            algStr == "ptsnancyonlyprob-olv") {
             algorithm = new PotentialSearch<Domain, Node>(domain, algStr);
         } else if (algStr == "bees" || algStr == "beeps" ||
                    algStr == "beepsnancy" || algStr == "bees-EpsGlobal" ||
-                   algStr == "bees95") {
+                   algStr == "bees95" || algStr == "bees95-olv") {
             algorithm = new BEES<Domain, Node>(domain, algStr);
         } else {
             cout << "unknown algorithm name!";
@@ -346,9 +383,9 @@ public:
         auto initD = domain.distance(domain.getStartState());
 
         // Get the start node
-        Node* cur =
-          new Node(0, inith, initD, domain.epsilonHGlobal(),
-                   domain.epsilonDGlobal(), domain.getStartState(), NULL);
+        Node* cur = new Node(
+          0, inith, initD, domain.epsilonHGlobal(), domain.epsilonDGlobal(),
+          domain.epsilonHVarGlobal(), domain.getStartState(), NULL);
 
         open.push(cur);
         res.initialH = inith;
@@ -389,6 +426,7 @@ private:
                 it->second->setHValue(node->getHValue());
                 it->second->setDValue(node->getDValue());
                 it->second->setEpsilonH(node->getEpsilonH());
+                it->second->setEpsilonHVar(node->getEpsilonHVar());
                 it->second->setEpsilonD(node->getEpsilonD());
                 it->second->setState(node->getState());
 

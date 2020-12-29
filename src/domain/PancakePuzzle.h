@@ -2,6 +2,7 @@
 #include "../utility/SlidingWindow.h"
 #include <algorithm>
 #include <bitset>
+#include <cassert>
 #include <fstream>
 #include <iomanip>
 #include <limits>
@@ -279,13 +280,16 @@ public:
 
     Cost epsilonDGlobal() { return curEpsilonD; }
 
+    Cost epsilonHVarGlobal() { return curEpsilonHVar; }
+
     void updateEpsilons()
     {
         // TODO
 
         if (expansionCounter == 0) {
-            curEpsilonD = 0;
-            curEpsilonH = 0;
+            curEpsilonD    = 0;
+            curEpsilonH    = 0;
+            curEpsilonHVar = 0;
 
             return;
         }
@@ -293,6 +297,12 @@ public:
         curEpsilonD = epsilonDSum / expansionCounter;
 
         curEpsilonH = epsilonHSum / expansionCounter;
+
+        curEpsilonHVar =
+          (epsilonHSumSq - (epsilonHSum * epsilonHSum) / expansionCounter) /
+          (expansionCounter - 1);
+
+        assert(curEpsilonHVar > 0);
     }
 
     void pushEpsilonHGlobal(double eps)
@@ -307,6 +317,7 @@ public:
         }
         */
         epsilonHSum += eps;
+        epsilonHSumSq += eps * eps;
         expansionCounter++;
     }
 
@@ -512,9 +523,11 @@ public:
     size_t                                size;
 
     double epsilonHSum;
+    double epsilonHSumSq;
     double epsilonDSum;
     double curEpsilonH;
     double curEpsilonD;
+    double curEpsilonHVar;
     double expansionCounter;
 
     string expansionPolicy;

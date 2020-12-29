@@ -74,7 +74,8 @@ public:
 
                 Node* childNode =
                   new Node(newG, newH, newD, this->domain.epsilonHGlobal(),
-                           this->domain.epsilonDGlobal(), child, cur);
+                           this->domain.epsilonDGlobal(),
+                           this->domain.epsilonHVarGlobal(), child, cur);
 
                 bool dup = duplicateDetection(childNode, closed, open);
 
@@ -87,8 +88,14 @@ public:
                 if (!dup) {
                     open.push(childNode);
 
-                    if (this->sortingFunction == "bees95") {
-                        childNode->computePotentialNancyValue();
+                    if (this->sortingFunction == "bees95" ||
+                        this->sortingFunction == "bees95-olv") {
+                        if (this->sortingFunction == "bees95") {
+                            childNode->computePotentialNancyValue();
+                        } else if (this->sortingFunction == "bees95-olv") {
+                            childNode
+                              ->computePotentialNancyValueWithOnlineVar();
+                        }
                         if (childNode->getPotentialNancyValue() >= 0.95) {
                             openhat.push(childNode);
                         }
@@ -126,6 +133,7 @@ private:
     {
         if (this->sortingFunction == "bees" ||
             this->sortingFunction == "bees95" ||
+            this->sortingFunction == "bees95-olv" ||
             this->sortingFunction == "bees-EpsGlobal") {
             open.swapComparator(Node::compareNodesF);
         } else if (this->sortingFunction == "beeps") {
@@ -142,7 +150,8 @@ private:
     {
 
         if (this->sortingFunction == "bees" ||
-            this->sortingFunction == "bees95") {
+            this->sortingFunction == "bees95" ||
+            this->sortingFunction == "bees95-olv") {
             openhat.swapComparator(Node::compareNodesDHat);
         } else if (this->sortingFunction == "bees-EpsGlobal") {
             openhat.swapComparator(Node::compareNodesD);

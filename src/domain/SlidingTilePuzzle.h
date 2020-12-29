@@ -255,11 +255,14 @@ public:
 
     Cost epsilonDGlobal() { return curEpsilonD; }
 
+    Cost epsilonHVarGlobal() { return curEpsilonHVar; }
+
     void updateEpsilons()
     {
         if (expansionCounter == 0) {
-            curEpsilonD = 0;
-            curEpsilonH = 0;
+            curEpsilonD    = 0;
+            curEpsilonH    = 0;
+            curEpsilonHVar = 0;
 
             return;
         }
@@ -267,6 +270,12 @@ public:
         curEpsilonD = epsilonDSum / expansionCounter;
 
         curEpsilonH = epsilonHSum / expansionCounter;
+
+        curEpsilonHVar =
+          (epsilonHSumSq - (epsilonHSum * epsilonHSum) / expansionCounter) /
+          (expansionCounter - 1);
+
+        assert(curEpsilonHVar > 0);
     }
 
     void pushEpsilonHGlobal(double eps)
@@ -277,6 +286,7 @@ public:
             eps = 1;
 
         epsilonHSum += eps;
+        epsilonHSumSq += eps * eps;
         expansionCounter++;
     }
 
@@ -501,9 +511,11 @@ public:
     SlidingWindow<int>            expansionDelayWindow;
 
     double epsilonHSum;
+    double epsilonHSumSq;
     double epsilonDSum;
     double curEpsilonH;
     double curEpsilonD;
+    double curEpsilonHVar;
     double expansionCounter;
 
     string expansionPolicy;

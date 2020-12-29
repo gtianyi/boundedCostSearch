@@ -74,7 +74,8 @@ public:
 
                 Node* childNode =
                   new Node(newG, newH, newD, this->domain.epsilonHGlobal(),
-                           this->domain.epsilonDGlobal(), child, cur);
+                           this->domain.epsilonDGlobal(),
+                           this->domain.epsilonHVarGlobal(), child, cur);
 
                 bool dup = duplicateDetection(childNode, closed, open);
 
@@ -85,8 +86,11 @@ public:
 
                 // Duplicate detection
                 if (!dup) {
-                    if (this->sortingFunction == "ptsnancywithdhat") {
-                        childNode->computePTSNancyValueWithDHat();
+                    if (this->sortingFunction == "ptsnancywithdhat" ||
+                        this->sortingFunction == "ptsnancywithdhat-olv" ||
+                        this->sortingFunction == "ptsnancyonlyprob-olv") {
+                        childNode->computePTSNancyValueWithDHat(
+                          this->sortingFunction);
                     } else if (this->sortingFunction ==
                                "ptsnancywithdhatandbf") {
                         childNode
@@ -134,14 +138,16 @@ private:
             open.swapComparator(Node::compareNodesPTSHHat);
         } else if (this->sortingFunction == "ptsnancy") {
             open.swapComparator(Node::compareNodesPTSNancy);
-        } else if (this->sortingFunction == "ptsnancyonlyprob") {
+        } else if (this->sortingFunction == "ptsnancyonlyprob" ||
+                   this->sortingFunction == "ptsnancyonlyprob-olv") {
             open.swapComparator(Node::compareNodesPTSNancyOnlyProb);
         } else if (this->sortingFunction == "ptsnancyonlyeffort") {
             open.swapComparator(Node::compareNodesD);
         } else if (this->sortingFunction == "ptsnancyonlyeffort-dhat") {
             open.swapComparator(Node::compareNodesDHat);
         } else if (this->sortingFunction == "ptsnancywithdhat" ||
-                   this->sortingFunction == "ptsnancywithdhatandbf") {
+                   this->sortingFunction == "ptsnancywithdhatandbf" ||
+                   this->sortingFunction == "ptsnancywithdhat-olv") {
             open.swapComparator(Node::compareNodesPTSNancyWithDhat);
         } else {
             cout << "Unknown algorithm!\n";
