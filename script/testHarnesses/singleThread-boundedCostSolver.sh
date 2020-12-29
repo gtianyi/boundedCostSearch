@@ -27,6 +27,8 @@ if [ "$1" = "-h" ] || [ "$1" = "-help" ] || [ "$1" = "?" ]; then
     print_usage
 fi
 
+
+
 # Which instance to start testing on
 first=1
 # The number of instances to test on
@@ -215,6 +217,16 @@ echo "time limit ${timeLimit}"
 echo "memory limit ${memoryLimit}"
 echo "bound type ${boundType}"
 
+research_home="/home/aifs1/gu/phd/research/workingPaper"
+exp_running_flag="${research_home}/boundedCostSearch/tianyi_results/exp.run"
+sleep 1
+
+if [ ! -f ${exp_running_flag} ]; then
+    echo "run" >> ${exp_running_flag}
+    sendSlackNotification.bash "#experiments" "experiment_bot" "Tianyi just started running experiments on ai2-4,6,8,10-15; estimated time: 10 hours."
+    echo "sendSlackNotification.bash \"#experiments\" \"experiment_bot\" \"Tianyi just started running experiments on ai2-4,6,8,10-15; estimated time: 10 hours.\""
+fi
+
 for curDomainId in "${!domain[@]}"; do
     curDomain=${domain[$curDomainId]}
     echo "running $curDomain"
@@ -289,7 +301,6 @@ for curDomainId in "${!domain[@]}"; do
         infile=""
         outfile=""
 
-        research_home="/home/aifs1/gu/phd/research/workingPaper"
         infile_path="${research_home}/realtime-nancy/worlds/${curDomain}"
 
         outfile_path=""
@@ -448,3 +459,9 @@ for curDomainId in "${!domain[@]}"; do
 
     done
 done
+
+hostname=$(cat /proc/sys/kernel/hostname)
+sendSlackNotification.bash "#experiments" "experiment_bot" "Tianyi's experiments on ${hostname} finished."
+echo "sendSlackNotification.bash \"#experiments\" \"experiment_bot\" \"Tianyi's experiments on ${hostname} finished.\"" 
+
+rm ${exp_running_flag}
