@@ -93,25 +93,31 @@ class Configure:
         self.algorithms = OrderedDict(
             {
                 "pts": "PTS",
-                "ptshhat": "PTS-h^",
+                # "ptshhat": "PTS-h^",
                 # "ptsnancy": "expected work - 0 f",
-                "bees-EpsGlobal": "BEES",
+                # "bees-EpsGlobal": "BEES",
                 "ptsnancywithdhat": "XES",
                 # "bees": "BEES - EpsLocal",
                 # "astar-with-bound": "A*",
                 "bees95": "BEES95",
-                "ptsnancywithdhatandbf": "XES-bf",
+                # "ptsnancywithdhatandbf": "XES-bf",
+                "ptsnancywithdhat-olv": "XES-OV",
+                "ptsnancyonlyprob-olv": "PTS-OV",
+                "bees95-olv": "BEES95-OV",
             }
         )
 
         self.algorithmPalette = {
             "PTS": "royalblue",
-            "PTS-h^": "orangered",
+            # "PTS-h^": "orangered",
             # "ptsnancy": "expected work - 0 f",
-            "BEES": "limegreen",
+            # "BEES": "limegreen",
             "XES": "magenta",
             "BEES95": "tan",
-            "XES-bf": "darkgreen",
+            # "XES-bf": "darkgreen",
+            "XES-OV": "bisque",
+            "PTS-OV": "deepskyblue",
+            "BEES95-OV": "gold",
         }
 
         self.showname = {"nodeGen": "Total Nodes Generated",
