@@ -99,11 +99,11 @@ class Configure:
                 "ptsnancywithdhat": "XES",
                 # "bees": "BEES - EpsLocal",
                 # "astar-with-bound": "A*",
-                "bees95": "BEES95",
+                # "bees95": "BEES95",
                 # "ptsnancywithdhatandbf": "XES-bf",
                 "ptsnancywithdhat-olv": "XES-OV",
                 "ptsnancyonlyprob-olv": "PTS-OV",
-                "bees95-olv": "BEES95-OV",
+                # "bees95-olv": "BEES95-OV",
             }
         )
 
@@ -239,7 +239,7 @@ class Configure:
                                      }
 
     def getAlgorithms(self, removeAlgorithm):
-        if removeAlgorithm != "NA":
+        if removeAlgorithm != "NA" and (removeAlgorithm in self.algorithms):
             self.algorithms.pop(removeAlgorithm)
         return self.algorithms
 

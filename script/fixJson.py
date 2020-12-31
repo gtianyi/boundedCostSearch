@@ -68,8 +68,12 @@ def main():
     print(args)
 
     # algorithms = ['astar', 'pts', 'ptshhat', 'ptsnancy', 'bees', 'wastar']
-    algorithms = ['pts', 'ptshhat', 'ptsnancywithdhat', \
-                  'bees-EpsGlobal', 'bees95','ptsnancywithdhatandbf' ]
+    algorithms = [
+        # 'pts', 'ptshhat', 'ptsnancywithdhat',
+        # 'bees-EpsGlobal', 'bees95', 'ptsnancywithdhatandbf',
+        'ptsnancywithdhat-olv', 'ptsnancyonlyprob-olv',
+        # 'bees95-olv'
+    ]
 
     if len(args.algorithms) != 0:
         algorithms = args.algorithms
@@ -98,7 +102,7 @@ def main():
             with in_place.InPlace(fileDir+fileName) as file:
                 for line in file:
                     match = [m.start() for m in re.finditer(r'}', line)]
-                    if len(match) > 1 or line[-1]!='}':
+                    if len(match) > 1 or line[-1] != '}':
                         file.write(line[:(match[0]+1)])
                     else:
                         file.write(line)
