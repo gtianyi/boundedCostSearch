@@ -99,11 +99,11 @@ class Configure:
                 "ptsnancywithdhat": "XES",
                 # "bees": "BEES - EpsLocal",
                 # "astar-with-bound": "A*",
-                # "bees95": "BEES95",
+                "bees95": "BEES95",
                 # "ptsnancywithdhatandbf": "XES-bf",
                 "ptsnancywithdhat-olv": "XES-OV",
                 "ptsnancyonlyprob-olv": "PTS-OV",
-                # "bees95-olv": "BEES95-OV",
+                "bees95-olv": "BEES95-OV",
             }
         )
 
@@ -111,11 +111,11 @@ class Configure:
             "PTS": "royalblue",
             # "PTS-h^": "orangered",
             # "ptsnancy": "expected work - 0 f",
-            # "BEES": "limegreen",
+            "BEES": "limegreen",
             "XES": "magenta",
             "BEES95": "tan",
             # "XES-bf": "darkgreen",
-            "XES-OV": "bisque",
+            "XES-OV": "maroon",
             "PTS-OV": "deepskyblue",
             "BEES95-OV": "gold",
         }
@@ -134,7 +134,8 @@ class Configure:
         self.totalInstance = {"tile": "100", "pancake": "100",
                               "racetrack": "25", "vacuumworld": "60"}
 
-        self.absoluteBoundsLimit = {"tile": {"uniform": {"lower": 40, "upper": 300},
+        self.domainBoundsConfig = {"absoluteBoundsLimit":
+                                   {"tile": {"uniform": {"lower": 40, "upper": 300},
                                              "heavy": {"lower": 700, "upper": 6000},
                                              "heavy-easy": {"lower": 300, "upper": 6000},
                                              "inverse": {"lower": 20, "upper": 600},
@@ -152,8 +153,45 @@ class Configure:
                                     "racetrack": {"barto-bigger": {"lower": 40, "upper": 300},
                                                   "hansen-bigger": {"lower": 700, "upper": 6000}
                                                   },
+                                    },
+                                   "avaiableBoundPercent":
+                                   {"tile": [60, 80, 100, 120, 140, 160, 180,
+                                             200, 220, 240, 260, 280,
+                                             300, 400, 500, 600, 800, 1000, 1300, 2000, 3000],
+                                    "vacuumworld": [60, 80, 100, 110, 120, 130, 140, 150,
+                                                    160, 170, 180, 190,
+                                                    200, 240, 280, 300, 340, 380, 400, 500, 600],
+                                    "pancake": [60, 80, 100, 110, 120, 130, 140, 150,
+                                                160, 170, 180, 190,
+                                                200, 240, 280, 300, 340, 380, 400, 500, 600],
+                                    "racetrack": [60, 80, 100, 110, 120, 130, 140, 150,
+                                                  160, 170, 180, 190,
+                                                  200, 240, 280, 300, 340, 380, 400, 500, 600],
+                                    },
+                                   "avaiableAbsoluteBounds":
+                                   {"tile": {"uniform": [40, 60, 80, 100, 120, 140, 160, 180,
+                                                         200, 220, 240, 260, 280, 300, 600, 900],
+                                             "heavy": [300, 400, 500, 600, 700, 800, 900,
+                                                       1000, 2000, 3000, 4000, 5000, 6000],
+                                             "reverse": [300, 400, 500, 600, 700, 800, 900,
+                                                         1000, 2000, 3000, 4000, 5000, 6000],
+                                             "sqrt": [280, 300, 350, 400, 450, 500, 600,
+                                                      700, 800, 900, 1000],
+
+                                             },
+                                    "vacuumworld": {"uniform": [],
+                                                    "heavy": [],
+                                                    "heavy-easy": [],
+                                                    },
+                                    "pancake": {"regular": [],
+                                                "heavy": [],
+                                                },
+                                    "racetrack": {"barto-bigger": [],
+                                                  "hansen-bigger": [],
+                                                  },
 
                                     }
+                                   }
 
         self.additionalAlgorithms = {"tile":
                                      {
@@ -249,8 +287,8 @@ class Configure:
     def getTotalInstance(self):
         return self.totalInstance
 
-    def getAbsoluteBoundLimits(self):
-        return self.absoluteBoundsLimit
+    def getDomainBoundsConfig(self):
+        return self.domainBoundsConfig
 
     def getAdditionalAlgorithms(self):
         return self.additionalAlgorithms
@@ -583,7 +621,7 @@ def makeFixedbaselineDf(rawdf, fixedbaseline, algorithms, args):
     return df
 
 
-def readData(args, algorithms, absoluteBoundsLimit):
+def readData(args, algorithms, domainBoundsConfig):
     domainSize = args.size
     domainType = args.domain
     subdomainType = args.subdomain
@@ -623,15 +661,23 @@ def readData(args, algorithms, absoluteBoundsLimit):
             boundValueStr = numbersInFileName[0]
             boundV = int(boundValueStr)
 
-            lowerBound = absoluteBoundsLimit[args.domain][args.subdomain]["lower"]
-            upperBound = absoluteBoundsLimit[args.domain][args.subdomain]["upper"]
+            lowerBound = \
+                domainBoundsConfig["absoluteBoundsLimit"][args.domain][args.subdomain]["lower"]
+            upperBound = \
+                domainBoundsConfig["absoluteBoundsLimit"][args.domain][args.subdomain]["upper"]
+            allAvailableBoundValue = []
+            # allAvailableBoundValue = \
+                # domainBoundsConfig["avaiableAbsoluteBounds"][args.domain][args.subdomain]
 
             if args.boundType == "wrtOpt":
                 boundV = boundV / 100
                 lowerBound = float(args.boundPercentStart)
                 upperBound = float(args.boundPercentEnd)
+                allAvailableBoundValue = domainBoundsConfig["avaiableBoundPercent"][args.domain]
 
-            if(boundV < lowerBound or boundV > upperBound):
+            if(boundV < lowerBound or
+               boundV > upperBound or
+               (boundV*100 not in allAvailableBoundValue)):
                 continue
 
             with open(inPath_alg + "/" + jsonFile) as json_data:
@@ -839,7 +885,7 @@ def plotting(args, config, baselineConfig):
     showname = config.getShowname()
     totalInstance = config.getTotalInstance()
 
-    rawdf = readData(args, algorithms, config.getAbsoluteBoundLimits())
+    rawdf = readData(args, algorithms, config.getDomainBoundsConfig())
 
     if args.plotType == "coveragetb":
         makeCoverageTable(rawdf, args, totalInstance[args.domain])

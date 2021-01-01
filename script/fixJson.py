@@ -71,8 +71,8 @@ def main():
     algorithms = [
         # 'pts', 'ptshhat', 'ptsnancywithdhat',
         # 'bees-EpsGlobal', 'bees95', 'ptsnancywithdhatandbf',
-        'ptsnancywithdhat-olv', 'ptsnancyonlyprob-olv',
-        # 'bees95-olv'
+        # 'ptsnancywithdhat-olv', 'ptsnancyonlyprob-olv',
+        'bees95-olv'
     ]
 
     if len(args.algorithms) != 0:

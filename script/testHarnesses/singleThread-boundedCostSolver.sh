@@ -55,8 +55,8 @@ sizeOfHeavyPancake="16"
 #boundedCostSolvers=("pts" "ptshhat" "ptsnancy" "bees" "astar" "wastar")
 boundedCostSolvers=("pts" "ptshhat" "bees-EpsGlobal" "ptsnancywithdhat")
 boundPercents=()
-boundPercentsA=(60 80 100 120 140 160 180 200 220 240 260 280 300 320 340 360 380 400 420 440 460 480 500 520 540 560 580 600 700 800 900 1000 1100 1200 1300 1400 1500  2000 3000)
-boundPercentsB=(60 80 100 110 120 130 140 150 160 170 180 190 200 220 240 260 280 300 320 340 360 380 400 420 440 460 480 500 520 540 560 580 600)
+boundPercentsA=(60 80 100 120 140 160 180 200 220 240 260 280 300 400 500 600 800 1000 1300 2000 3000)
+boundPercentsB=(60 80 100 110 120 130 140 150 160 170 180 190 200 240 280 300 340 380 400 500 600)
 timeLimit=1800
 memoryLimit=7
 weight="2"
@@ -218,14 +218,10 @@ echo "memory limit ${memoryLimit}"
 echo "bound type ${boundType}"
 
 research_home="/home/aifs1/gu/phd/research/workingPaper"
-exp_running_flag="${research_home}/boundedCostSearch/tianyi_results/exp.run"
-sleep 1
 
-if [ ! -f ${exp_running_flag} ]; then
-    echo "run" >> ${exp_running_flag}
-    sendSlackNotification.bash "#experiments" "experiment_bot" "Tianyi just started running experiments on ai2-4,6,8,10-15; estimated time: 10 hours."
-    echo "sendSlackNotification.bash \"#experiments\" \"experiment_bot\" \"Tianyi just started running experiments on ai2-4,6,8,10-15; estimated time: 10 hours.\""
-fi
+hostname=$(cat /proc/sys/kernel/hostname)
+sendSlackNotification.bash "#experiments" "experiment_bot" "Tianyi just started running experiments on ${hostname}; estimated time: 24 hours."
+echo "sendSlackNotification.bash \"#experiments\" \"experiment_bot\" \"Tianyi just started running experiments on ${hostname}; estimated time: 24 hours.\"" 
 
 for curDomainId in "${!domain[@]}"; do
     curDomain=${domain[$curDomainId]}
@@ -444,23 +440,22 @@ for curDomainId in "${!domain[@]}"; do
 
                 done
             done
+
+
+            fixJson_running_flag="${research_home}/boundedCostSearch/tianyi_results/fixJson.${curDomain}.${curSubdomain}.${solverName}.run"
+            fixJsonExecutable="${research_home}/boundedCostSearch/tianyicodebase/script/fixJson.py"
+
+            sleep 1
+
+            if [ ! -f ${fixJson_running_flag} ]; then
+                echo "run" >> ${fixJson_running_flag}
+                fixJsonOut=$(python ${fixJsonExecutable} -d ${curDomain} -s ${curSubdomain} -a ${solverName} -bt ${boundType}) 
+                echo "$fixJsonOut"  
+            fi
         done
-
-        fixJson_running_flag="${research_home}/boundedCostSearch/tianyi_results/fixJson.${curDomain}.${curSubdomain}.run"
-        fixJsonExecutable="${research_home}/boundedCostSearch/tianyicodebase/script/fixJson.py"
-
-        sleep 1
-
-        if [ ! -f ${fixJson_running_flag} ]; then
-            echo "run" >> ${fixJson_running_flag}
-            fixJsonOut=$(python ${fixJsonExecutable} -d ${curDomain} -s ${curSubdomain} -bt ${boundType} ) 
-            echo "$fixJsonOut"  
-        fi
-
     done
 done
 
-hostname=$(cat /proc/sys/kernel/hostname)
 sendSlackNotification.bash "#experiments" "experiment_bot" "Tianyi's experiments on ${hostname} finished."
 echo "sendSlackNotification.bash \"#experiments\" \"experiment_bot\" \"Tianyi's experiments on ${hostname} finished.\"" 
 
