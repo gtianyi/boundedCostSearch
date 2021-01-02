@@ -221,7 +221,7 @@ public:
 
     void updateEpsilons()
     {
-        if (expansionCounter == 0) {
+        if (expansionCounter < 20) {
             curEpsilonD    = 0;
             curEpsilonH    = 0;
             curEpsilonHVar = 0;
