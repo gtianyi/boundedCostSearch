@@ -19,6 +19,7 @@ print_usage() {
     echo "[-m memory limit]                default: 7.5(GB)"
     echo "[-w weight of wA*]               default: 2"
     echo "[-bt bound type]                 available: percentWrtOpt(default), absolute"
+    echo "[-ex algorithm name extension]   default: NA"
     echo "[-h help]"
     exit 1
 }
@@ -37,7 +38,8 @@ n_of_i=1
 domain=("tile" "pancake" "racetrack" "vacuumworld")
 #domain=("vacuumworld")
 subdomain=()
-subdomainTile=("uniform" "heavy" "inverse" "heavy-easy" "inverse-easy")
+subdomainTile=("uniform" "heavy" "inverse" "heavy-easy" "inverse-easy" "reverse-easy")
+#subdomainTile=("reverse-easy")
 subdomainPancake=("regular" "heavy")
 subdomainVacuumworld=("uniform" "heavy" "heavy-easy")
 #subdomainVacuumworld=("heavy-easy")
@@ -56,6 +58,7 @@ sizeOfHeavyPancake="16"
 boundedCostSolvers=("pts" "ptshhat" "bees-EpsGlobal" "ptsnancywithdhat")
 boundPercents=()
 boundPercentsA=(60 80 100 120 140 160 180 200 220 240 260 280 300 400 500 600 800 1000 1300 2000 3000)
+#boundPercentsA=(60)
 boundPercentsB=(60 80 100 110 120 130 140 150 160 170 180 190 200 240 280 300 340 380 400 500 600)
 timeLimit=1800
 memoryLimit=7
@@ -68,6 +71,8 @@ absoluteBoundsTileHeavy=(300 400 500 600 700 800 900 1000 2000 3000 4000 5000 60
 absoluteBoundsTileReverse=(300 400 500 600 700 800 900 1000 2000 3000 4000 5000 6000)
 #absoluteBoundsTileSqrt=(80 100 120 140 160 180 200 220 240 260)
 absoluteBoundsTileSqrt=(280 300 350 400 450 500 600 700 800 900 1000)
+
+algorithmNameExtension="NA"
 
 solverCleared=false
 boundCleared=false
@@ -153,6 +158,13 @@ for ((i = 1; i <= "$#"; i++)); do
             #size=${!var}
         #fi
     #fi
+
+    if [ ${!i} == "-ex" ]; then
+        if [ $((i + 1)) -le "$#" ]; then
+            var=$((i + 1))
+            algorithmNameExtension=${!var}
+        fi
+    fi
 
     if [ ${!i} == "-u" ]; then
         if [ $((i + 1)) -le "$#" ]; then
@@ -322,6 +334,10 @@ for curDomainId in "${!domain[@]}"; do
                 infile_path="${research_home}/realtime-nancy/worlds/slidingTile_tianyi1000-easy-for-inverse"
             fi
 
+            if [ "${curSubdomain}" == "reverse-easy" ]; then
+                infile_path="${research_home}/realtime-nancy/worlds/slidingTile_tianyi1000-easy-for-reverse"
+            fi
+
             infile_name="instance-${size}x${size}.st"
             outfile="${outfile_path}/${boundType}-BoundNumber-size-${size}-instance.json"
             infile="${infile_path}/${infile_name}"
@@ -369,9 +385,14 @@ for curDomainId in "${!domain[@]}"; do
             solverName=${boundedCostSolvers[$solverId]}
             echo $solverName
 
-            outfile_path_alg="${outfile_path/solverDir/$solverName}"
+            solverNameInDir=$solverName
+            if [ "$algorithmNameExtension" != "NA" ]; then 
+                solverNameInDir="${solverName}-${algorithmNameExtension}"
+            fi
+
+            outfile_path_alg="${outfile_path/solverDir/$solverNameInDir}"
             mkdir -p ${outfile_path_alg}
-            outfile_alg="${outfile/solverDir/$solverName}"
+            outfile_alg="${outfile/solverDir/$solverNameInDir}"
 
             executable="${research_home}/boundedCostSearch/tianyicodebase_build_release/bin/bcs"
 
@@ -415,6 +436,10 @@ for curDomainId in "${!domain[@]}"; do
                             realSubdomain="inverse"
                         fi
 
+                        if [ "${curSubdomain}" == "reverse-easy" ]; then
+                            realSubdomain="reverse"
+                        fi
+
                         command="${executable} -d ${curDomain} -s ${realSubdomain} -a ${solverName} \
                             -b ${bound} -o ${outfile_instance} -i ${instance} "
 
@@ -442,14 +467,14 @@ for curDomainId in "${!domain[@]}"; do
             done
 
 
-            fixJson_running_flag="${research_home}/boundedCostSearch/tianyi_results/fixJson.${curDomain}.${curSubdomain}.${solverName}.run"
+            fixJson_running_flag="${research_home}/boundedCostSearch/tianyi_results/fixJson.${curDomain}.${curSubdomain}.${solverNameInDir}.run"
             fixJsonExecutable="${research_home}/boundedCostSearch/tianyicodebase/script/fixJson.py"
 
             sleep 1
 
             if [ ! -f ${fixJson_running_flag} ]; then
                 echo "run" >> ${fixJson_running_flag}
-                fixJsonOut=$(python ${fixJsonExecutable} -d ${curDomain} -s ${curSubdomain} -a ${solverName} -bt ${boundType}) 
+                fixJsonOut=$(python ${fixJsonExecutable} -d ${curDomain} -s ${curSubdomain} -a ${solverNameInDir} -bt ${boundType}) 
                 echo "$fixJsonOut"  
             fi
         done
@@ -458,5 +483,3 @@ done
 
 sendSlackNotification.bash "#experiments" "experiment_bot" "Tianyi's experiments on ${hostname} finished."
 echo "sendSlackNotification.bash \"#experiments\" \"experiment_bot\" \"Tianyi's experiments on ${hostname} finished.\"" 
-
-rm ${exp_running_flag}

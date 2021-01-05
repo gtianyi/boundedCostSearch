@@ -307,8 +307,8 @@ public:
     {
         // TODO
 
-        if (eps < 0)
-            eps = 0;
+        // if (eps < 0)
+        // eps = 0;
         /* No idea why set the limit to 1
         else if (eps > 1){
             eps = 1;
@@ -323,8 +323,8 @@ public:
     {
         // TODO
 
-        if (eps < 0)
-            eps = 0;
+        // if (eps < 0)
+        // eps = 0;
         /*
         else if (eps > 1)
             eps = 1;

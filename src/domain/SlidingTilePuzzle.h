@@ -280,10 +280,10 @@ public:
 
     void pushEpsilonHGlobal(double eps)
     {
-        if (eps < 0)
-            eps = 0;
-        else if (eps > 1)
-            eps = 1;
+        /*if (eps < 0)*/
+        // eps = 0;
+        // else if (eps > 1)
+        /*eps = 1;*/
 
         epsilonHSum += eps;
         epsilonHSumSq += eps * eps;
@@ -292,10 +292,10 @@ public:
 
     void pushEpsilonDGlobal(double eps)
     {
-        if (eps < 0)
-            eps = 0;
-        else if (eps > 1)
-            eps = 1;
+        /*if (eps < 0)*/
+        // eps = 0;
+        // else if (eps > 1)
+        /*eps = 1;*/
 
         epsilonDSum += eps;
         expansionCounter++;
