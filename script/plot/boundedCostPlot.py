@@ -97,7 +97,7 @@ class Configure:
                 # "ptsnancy": "expected work - 0 f",
                 # "bees-EpsGlobal": "BEES",
                 "ptsnancywithdhat": "XES",
-                # "ptsnancywithdhat-withEPSLimitBug": "XES-LBUG",
+                "ptsnancywithdhat-withEPSLimitBug": "XES-LBUG",
                 # "bees": "BEES - EpsLocal",
                 # "astar-with-bound": "A*",
                 # "bees95": "BEES95",
@@ -107,7 +107,7 @@ class Configure:
                 # "ptsnancywithdhat-olv-withEPSLimitBug": "XES-OV-SI-LBUG",
                 # "ptsnancyonlyprob-olv": "PTS-OV-SI",
                 # "bees95-olv": "BEES95-OV-SI",
-                # "bees95-olv-withEPSLimitBug": "BEES95-OV-SI-LBUG",
+                "bees95-olv-withEPSLimitBug": "BEES95-OV-SI-LBUG",
                 # "ptsnancywithdhat-olv-no-soft-error": "XES-OV",
                 # "ptsnancyonlyprob-olv-no-soft-error": "PTS-OV",
                 # "bees-95-olv-no-soft-error": "BEES95-OV",
@@ -120,7 +120,7 @@ class Configure:
             # "ptsnancy": "expected work - 0 f",
             # "BEES": "limegreen",
             "XES": "magenta",
-            # "XES-LBUG": "maroon",
+            "XES-LBUG": "maroon",
             # "BEES95": "tan",
             # "BEES95-LBUG": "darkgreen",
             # "XES-bf": "darkgreen",
@@ -128,10 +128,10 @@ class Configure:
             # "PTS-OV": "deepskyblue",
             # "BEES95-OV": "gold",
             "XES-OV-SI": "grey",
-            "XES-OV-SI-LBUG": "yellowgreen",
+            # "XES-OV-SI-LBUG": "yellowgreen",
             # "PTS-OV-SI": "yellowgreen",
             # "BEES95-OV-SI": "mediumblue",
-            # "BEES95-OV-SI-LBUG": "yellowgreen",
+            "BEES95-OV-SI-LBUG": "yellowgreen",
         }
 
         self.showname = {"nodeGen": "Total Nodes Generated",
@@ -404,9 +404,14 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
         'text.color': 'black'
     })
 
+    mean_df = dataframe.groupby(hue).mean().reset_index()
+    mean_df=mean_df.sort_values(by=[yAxis], ascending=False)
+    hue_order_list=mean_df[hue]
+
     ax = sns.lineplot(x=xAxis,
                       y=yAxis,
                       hue=hue,
+                      hue_order=hue_order_list,
                       style=hue,
                       palette=colorDict,
                       data=dataframe,
