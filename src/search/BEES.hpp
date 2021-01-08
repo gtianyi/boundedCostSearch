@@ -31,6 +31,10 @@ public:
 
             Node* cur;
 
+            // debug bees95
+            // cout << "focal q: " << openhat.size() << "\n";
+            // cout << "normal q: " << open.size() << "\n";
+
             if (!openhat.empty()) {
                 cur = openhat.top();
                 openhat.pop();
