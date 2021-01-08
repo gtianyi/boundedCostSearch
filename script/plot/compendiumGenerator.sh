@@ -125,6 +125,23 @@ echo "$pythonOut"
 pythonOut=$(python ${plotter} -d tile -s inverse-easy -t par10 -b 1 -e 20 -os loose -r pts)
 echo "$pythonOut"
 
+pythonOut=$(python ${plotter} -d tile -s reverse-easy -os below1)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d tile -s reverse-easy -b 1 -os tight)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d tile -s reverse-easy -b 3 -e 40 -os loose)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d tile -s reverse-easy -t cpu -b 1 -os tight)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d tile -s reverse-easy -t cpu -b 3 -e 40 -os loose)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d tile -s reverse-easy -t coverageplt -b 1)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d tile -s reverse-easy -t par10 -b 1 -e 3 -os tight)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d tile -s reverse-easy -t par10 -b 1 -e 20 -os loose)
+echo "$pythonOut"
+
 ##pythonOut=$(python ${plotter} -d tile -s reverse -bt absolute)
 ##echo "$pythonOut"
 ##pythonOut=$(python ${plotter} -d tile -s reverse -bt absolute -t cpu)
