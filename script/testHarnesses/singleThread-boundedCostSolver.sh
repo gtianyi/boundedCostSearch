@@ -16,7 +16,7 @@ print_usage() {
     #echo "[-bp bound percent wrt optimal]"
     #echo " support list,eg: -bp 10 -bp 300 default: 100 120 140 160 180 200 220 240 260 280 300 320 340 360 380 400 420 440 460 480 500 520 540 560 580 600"
     echo "[-t time limit]                  default: 1800 (seconds)"
-    echo "[-m memory limit]                default: 7.5(GB)"
+    echo "[-m memory limit]                default: 7(GB)"
     echo "[-w weight of wA*]               default: 2"
     echo "[-bt bound type]                 available: percentWrtOpt(default), absolute"
     echo "[-ex algorithm name extension]   default: NA"
@@ -38,11 +38,11 @@ n_of_i=1
 domain=("tile" "pancake" "racetrack" "vacuumworld")
 #domain=("vacuumworld")
 subdomain=()
-subdomainTile=("uniform" "heavy" "inverse" "heavy-easy" "inverse-easy" "reverse-easy")
-#subdomainTile=("reverse-easy")
+subdomainTile=("uniform" "heavy" "inverse" "heavy-easy" "reverse-easy")
+#subdomainTile=("inverse-easy" )
 subdomainPancake=("regular" "heavy")
-subdomainVacuumworld=("uniform" "heavy" "heavy-easy")
-#subdomainVacuumworld=("heavy-easy")
+subdomainVacuumworld=("uniform" "heavy-easy")
+#subdomainVacuumworld=("heavy")
 subdomainRacetrack=("barto-bigger" "hansen-bigger")
 
 n_of_i_Tile=100
