@@ -284,7 +284,7 @@ public:
 
     void updateEpsilons()
     {
-        if (expansionCounter < 20) {
+        if (expansionCounter < 100) {
             curEpsilonD    = 0;
             curEpsilonH    = 0;
             curEpsilonHVar = 0;

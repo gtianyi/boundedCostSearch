@@ -80,8 +80,8 @@ public:
 
             auto mean               = getFHatValue();
             auto standard_deviation = std::abs(mean - getFValue()) / 2;
-            auto cdf_xi    = cumulative_distribution((bound + 0.5 - mean) /
-                                                  standard_deviation);
+            auto cdf_xi =
+              cumulative_distribution((bound - mean) / standard_deviation);
             auto cdf_alpha = cumulative_distribution((getFValue() - mean) /
                                                      standard_deviation);
 
