@@ -40,19 +40,22 @@ domain=("tile" "pancake" "racetrack" "vacuumworld")
 subdomain=()
 subdomainTile=("uniform" "heavy" "inverse" "heavy-easy" "reverse-easy")
 #subdomainTile=("inverse-easy" )
-subdomainPancake=("regular" "heavy")
+subdomainPancake=("regular" "heavy" "sumheavy")
+#subdomainPancake=("sumheavy")
 subdomainVacuumworld=("uniform" "heavy-easy")
 #subdomainVacuumworld=("heavy")
 subdomainRacetrack=("barto-bigger" "hansen-bigger")
 
 n_of_i_Tile=100
 n_of_i_Pancake=100
+#n_of_i_Pancake=1
 n_of_i_Racetrack=25
 n_of_i_Vacuumworld=60
 
 size="4"
 sizeOfRegularPancake="50"
 sizeOfHeavyPancake="16"
+sizeOfSumHeavyPancake="10"
 
 #boundedCostSolvers=("pts" "ptshhat" "ptsnancy" "bees" "astar" "wastar")
 boundedCostSolvers=("pts" "ptshhat" "bees-EpsGlobal" "ptsnancywithdhat")
@@ -60,6 +63,7 @@ boundPercents=()
 boundPercentsA=(60 80 100 120 140 160 180 200 220 240 260 280 300 400 500 600 800 1000 1300 2000 3000)
 #boundPercentsA=(60)
 boundPercentsB=(60 80 100 110 120 130 140 150 160 170 180 190 200 240 280 300 340 380 400 500 600)
+#boundPercentsB=(60)
 timeLimit=1800
 memoryLimit=7
 weight="2"
@@ -152,12 +156,12 @@ for ((i = 1; i <= "$#"; i++)); do
         fi
     fi
 
-    #if [ ${!i} == "-z" ]; then
-        #if [ $((i + 1)) -le "$#" ]; then
-            #var=$((i + 1))
-            #size=${!var}
-        #fi
-    #fi
+    if [ ${!i} == "-z" ]; then
+        if [ $((i + 1)) -le "$#" ]; then
+            var=$((i + 1))
+            size=${!var}
+        fi
+    fi
 
     if [ ${!i} == "-ex" ]; then
         if [ $((i + 1)) -le "$#" ]; then
@@ -301,6 +305,10 @@ for curDomainId in "${!domain[@]}"; do
 
             if [ "$curSubdomain" == "heavy" ]; then
                 size=$sizeOfHeavyPancake
+            fi
+
+            if [ "$curSubdomain" == "sumheavy" ]; then
+                size=$sizeOfSumHeavyPancake
             fi
 
             echo "size ${size}"

@@ -95,13 +95,20 @@ class Configure:
                 "pts": "PTS",
                 # "ptshhat": "PTS-h^",
                 # "ptsnancy": "expected work - 0 f",
-                "bees-EpsGlobal-withEPSLimitBug": "BEES",
-                # "bees-EpsGlobal": "BEES",
+                # "bees-EpsGlobal-withEPSLimitBug": "BEES-LBUG",
+                "bees-EpsGlobal": "BEES",
                 "ptsnancywithdhat": "XES",
                 # "ptsnancywithdhat-withEPSLimitBug": "XES-LBUG",
+                # "ptsnancywithdhat-cplus05": "XES-cp05",
+                # "ptsnancywithdhat-sp100": "XES-sp100",
+                # "ptsnancywithdhat-cp05withsp100": "XES-c05s100",
+                # "ptsnancywithdhat-cp05withsp100": "XES-c05s100",
                 # "bees": "BEES - EpsLocal",
                 # "astar-with-bound": "A*",
                 "bees95": "BEES95",
+                # "bees95-cplus05": "BEES95-cp05",
+                # "bees95-sp100": "BEES95-sp100",
+                # "bees95-cp05withsp100": "BEES95-c05s100",
                 # "bees95-withEPSLimitBug": "BEES95-LBUG",
                 # "ptsnancywithdhatandbf": "XES-bf",
                 # "ptsnancywithdhat-olv": "XES-OV-SI",
@@ -120,10 +127,18 @@ class Configure:
             # "PTS-h^": "orangered",
             # "ptsnancy": "expected work - 0 f",
             "BEES": "limegreen",
+            # "BEES-LBUG": "maroon",
+            # "BEES - EpsLocal": "deepskyblue",
             "XES": "magenta",
             # "XES-LBUG": "maroon",
+            # "XES-cp05": "maroon",
+            # "XES-sp100": "maroon",
+            # "XES-c05s100": "maroon",
             "BEES95": "tan",
             # "BEES95-LBUG": "darkgreen",
+            # "BEES95-cp05": "darkgreen",
+            # "BEES95-sp100": "darkgreen",
+            # "BEES95-c05s100": "darkgreen",
             # "XES-bf": "darkgreen",
             # "XES-OV": "maroon",
             # "PTS-OV": "deepskyblue",
@@ -164,7 +179,8 @@ class Configure:
                                                     "heavy-easy": {"lower": 700, "upper": 6000},
                                                     },
                                     "pancake": {"regular": {"lower": 40, "upper": 300},
-                                                "heavy": {"lower": 700, "upper": 6000}
+                                                "heavy": {"lower": 700, "upper": 6000},
+                                                "sumheavy": {"lower": 700, "upper": 6000},
                                                 },
                                     "racetrack": {"barto-bigger": {"lower": 40, "upper": 300},
                                                   "hansen-bigger": {"lower": 700, "upper": 6000}
@@ -201,6 +217,7 @@ class Configure:
                                                     },
                                     "pancake": {"regular": [],
                                                 "heavy": [],
+                                                "sumheavy": [],
                                                 },
                                     "racetrack": {"barto-bigger": [],
                                                   "hansen-bigger": [],
@@ -247,6 +264,7 @@ class Configure:
                                          "regular": {},
                                          # "heavy": {"wastar": "WA*"},
                                          "heavy": {},
+                                         "sumheavy": {},
                                          # "regular": {"astar-with-bound": "A*-with-bound"},
                                          # "regular": {"ptsnancy-if0thenverysmall": \
                                          # "expected work - no 0 op"},
@@ -255,8 +273,6 @@ class Configure:
                                          # "expected work - no 0 op"}
                                          # "heavy": {"ptsnancyonlyprob": "1/p(n)",
                                          # "ptsnancyonlyeffort": "t(n)"}
-
-
                                      },
                                      "vacuumworld":
                                      {
