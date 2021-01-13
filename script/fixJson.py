@@ -52,6 +52,13 @@ def parseArugments():
         help='boundType: absolute, percentWrtOpt(default);',
         default='percentWrtOpt')
 
+    parser.add_argument(
+        '-ht',
+        action='store',
+        dest='heuristicType',
+        help='heuristicType: racetrack: euclidean(default), dijkstra;',
+        default='euclidean')
+
 #     parser.add_argument('-z',
     # action='store',
     # dest='size',
@@ -86,7 +93,12 @@ def main():
     for algorithm in algorithms:
 
         fileDir = researchHome + "/boundedCostSearch/" + resultDir + "/" + \
-            args.domain+"/"+args.subdomain+"/"+algorithm+"/"
+            args.domain+"/"+args.subdomain+"/"
+
+        if args.domain == "racetrack":
+            fileDir +=args.heuristicType+"/"
+
+        fileDir += algorithm+"/"
 
         if not os.path.exists(fileDir):
             print("not found, skip ", algorithm)

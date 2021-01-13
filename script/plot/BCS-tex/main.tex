@@ -530,32 +530,32 @@
     \begin{tabular}{c c c c c c c c}
 	    tight bounds ($<1$) & tight bounds & loose bounds & tight bounds & loose bounds & coverage & par10 tight & par10 loose\\
 	   \begin{minipage}{\cpufigureplotwidth}
-      \includegraphics[width=\linewidth]{racetrack/racetrack-hansen-bigger-wrtOpt-below1-nodeGen.eps}
+      \includegraphics[width=\linewidth]{racetrack/racetrack-hansen-bigger-wrtOpt-dijkstra-below1-nodeGen.eps}
         \end{minipage}&
         \begin{minipage}{\cpufigureplotwidth}
-        \includegraphics[width=\linewidth]{racetrack/racetrack-hansen-bigger-wrtOpt-tight-nodeGen.eps}
+        \includegraphics[width=\linewidth]{racetrack/racetrack-hansen-bigger-wrtOpt-dijkstra-tight-nodeGen.eps}
         \end{minipage}&
         \begin{minipage}{\cpufigureplotwidth}
-      \includegraphics[width=\linewidth]{racetrack/racetrack-hansen-bigger-wrtOpt-loose-nodeGen.eps}
+      \includegraphics[width=\linewidth]{racetrack/racetrack-hansen-bigger-wrtOpt-dijkstra-loose-nodeGen.eps}
       \end{minipage}&
         \begin{minipage}{\cpufigureplotwidth}
-        \includegraphics[width=\linewidth]{racetrack/racetrack-hansen-bigger-wrtOpt-tight-cpu.eps}
+        \includegraphics[width=\linewidth]{racetrack/racetrack-hansen-bigger-wrtOpt-dijkstra-tight-cpu.eps}
         \end{minipage}&
         \begin{minipage}{\cpufigureplotwidth}
-        \includegraphics[width=\linewidth]{racetrack/racetrack-hansen-bigger-wrtOpt-loose-cpu.eps}
+        \includegraphics[width=\linewidth]{racetrack/racetrack-hansen-bigger-wrtOpt-dijkstra-loose-cpu.eps}
         \end{minipage}&
         \begin{minipage}{\cpufigureplotwidth}
-        \includegraphics[width=\linewidth]{racetrack/racetrack-hansen-bigger-wrtOpt-coverageplt.eps}
+        \includegraphics[width=\linewidth]{racetrack/racetrack-hansen-bigger-wrtOpt-dijkstra-coverageplt.eps}
         \end{minipage}&
         \begin{minipage}{\cpufigureplotwidth}
-        \includegraphics[width=\linewidth]{racetrack/racetrack-hansen-bigger-wrtOpt-tight-par10.eps}
+        \includegraphics[width=\linewidth]{racetrack/racetrack-hansen-bigger-wrtOpt-dijkstra-tight-par10.eps}
         \end{minipage}&
         \begin{minipage}{\cpufigureplotwidth}
-        \includegraphics[width=\linewidth]{racetrack/racetrack-hansen-bigger-wrtOpt-loose-par10.eps}
+        \includegraphics[width=\linewidth]{racetrack/racetrack-hansen-bigger-wrtOpt-dijkstra-loose-par10.eps}
         \end{minipage}
 	\end{tabular}
-\caption{racetrack hansen map.}
-\label{fig:racetrack-hansen-bigger}
+\caption{racetrack hansen map with Dijkstra heuristic.}
+\label{fig:racetrack-hansen-bigger-dijkstra}
 \end{figure}
 
 \begin{figure}[t]
@@ -563,32 +563,98 @@
     \begin{tabular}{c c c c c c c c}
 	    tight bounds ($<1$) & tight bounds & loose bounds & tight bounds & loose bounds & coverage & par10 tight & par10 loose\\
 	   \begin{minipage}{\cpufigureplotwidth}
-      \includegraphics[width=\linewidth]{racetrack/racetrack-barto-bigger-wrtOpt-below1-nodeGen.eps}
+      \includegraphics[width=\linewidth]{racetrack/racetrack-barto-bigger-wrtOpt-dijkstra-below1-nodeGen.eps}
         \end{minipage}&
         \begin{minipage}{\cpufigureplotwidth}
-        \includegraphics[width=\linewidth]{racetrack/racetrack-barto-bigger-wrtOpt-tight-nodeGen.eps}
+        \includegraphics[width=\linewidth]{racetrack/racetrack-barto-bigger-wrtOpt-dijkstra-tight-nodeGen.eps}
         \end{minipage}&
         \begin{minipage}{\cpufigureplotwidth}
-      \includegraphics[width=\linewidth]{racetrack/racetrack-barto-bigger-wrtOpt-loose-nodeGen.eps}
+      \includegraphics[width=\linewidth]{racetrack/racetrack-barto-bigger-wrtOpt-dijkstra-loose-nodeGen.eps}
       \end{minipage}&
         \begin{minipage}{\cpufigureplotwidth}
-        \includegraphics[width=\linewidth]{racetrack/racetrack-barto-bigger-wrtOpt-tight-cpu.eps}
+        \includegraphics[width=\linewidth]{racetrack/racetrack-barto-bigger-wrtOpt-dijkstra-tight-cpu.eps}
         \end{minipage}&
         \begin{minipage}{\cpufigureplotwidth}
-        \includegraphics[width=\linewidth]{racetrack/racetrack-barto-bigger-wrtOpt-loose-cpu.eps}
+        \includegraphics[width=\linewidth]{racetrack/racetrack-barto-bigger-wrtOpt-dijkstra-loose-cpu.eps}
         \end{minipage}&
         \begin{minipage}{\cpufigureplotwidth}
-        \includegraphics[width=\linewidth]{racetrack/racetrack-barto-bigger-wrtOpt-coverageplt.eps}
+        \includegraphics[width=\linewidth]{racetrack/racetrack-barto-bigger-wrtOpt-dijkstra-coverageplt.eps}
         \end{minipage}&
         \begin{minipage}{\cpufigureplotwidth}
-        \includegraphics[width=\linewidth]{racetrack/racetrack-barto-bigger-wrtOpt-tight-par10.eps}
+        \includegraphics[width=\linewidth]{racetrack/racetrack-barto-bigger-wrtOpt-dijkstra-tight-par10.eps}
         \end{minipage}&
         \begin{minipage}{\cpufigureplotwidth}
-        \includegraphics[width=\linewidth]{racetrack/racetrack-barto-bigger-wrtOpt-loose-par10.eps}
+        \includegraphics[width=\linewidth]{racetrack/racetrack-barto-bigger-wrtOpt-dijkstra-loose-par10.eps}
         \end{minipage}
 	\end{tabular}
-\caption{racetrack barto map.}
-\label{fig:racetrack-barto-bigger}
+\caption{racetrack barto map with Dijkstra heuristic.}
+\label{fig:racetrack-barto-bigger-dijkstra}
+\end{figure}
+
+\begin{figure}[t]
+	\centering
+    \begin{tabular}{c c c c c c c c}
+	    tight bounds ($<1$) & tight bounds & loose bounds & tight bounds & loose bounds & coverage & par10 tight & par10 loose\\
+	   \begin{minipage}{\cpufigureplotwidth}
+      \includegraphics[width=\linewidth]{racetrack/racetrack-hansen-bigger-wrtOpt-euclidean-below1-nodeGen.eps}
+        \end{minipage}&
+        \begin{minipage}{\cpufigureplotwidth}
+        \includegraphics[width=\linewidth]{racetrack/racetrack-hansen-bigger-wrtOpt-euclidean-tight-nodeGen.eps}
+        \end{minipage}&
+        \begin{minipage}{\cpufigureplotwidth}
+      \includegraphics[width=\linewidth]{racetrack/racetrack-hansen-bigger-wrtOpt-euclidean-loose-nodeGen.eps}
+      \end{minipage}&
+        \begin{minipage}{\cpufigureplotwidth}
+        \includegraphics[width=\linewidth]{racetrack/racetrack-hansen-bigger-wrtOpt-euclidean-tight-cpu.eps}
+        \end{minipage}&
+        \begin{minipage}{\cpufigureplotwidth}
+        \includegraphics[width=\linewidth]{racetrack/racetrack-hansen-bigger-wrtOpt-euclidean-loose-cpu.eps}
+        \end{minipage}&
+        \begin{minipage}{\cpufigureplotwidth}
+        \includegraphics[width=\linewidth]{racetrack/racetrack-hansen-bigger-wrtOpt-euclidean-coverageplt.eps}
+        \end{minipage}&
+        \begin{minipage}{\cpufigureplotwidth}
+        \includegraphics[width=\linewidth]{racetrack/racetrack-hansen-bigger-wrtOpt-euclidean-tight-par10.eps}
+        \end{minipage}&
+        \begin{minipage}{\cpufigureplotwidth}
+        \includegraphics[width=\linewidth]{racetrack/racetrack-hansen-bigger-wrtOpt-euclidean-loose-par10.eps}
+        \end{minipage}
+	\end{tabular}
+\caption{racetrack hansen map with Euclidean heuristic.}
+\label{fig:racetrack-hansen-bigger-euclidean}
+\end{figure}
+
+\begin{figure}[t]
+	\centering
+    \begin{tabular}{c c c c c c c c}
+	    tight bounds ($<1$) & tight bounds & loose bounds & tight bounds & loose bounds & coverage & par10 tight & par10 loose\\
+	   \begin{minipage}{\cpufigureplotwidth}
+      \includegraphics[width=\linewidth]{racetrack/racetrack-barto-bigger-wrtOpt-euclidean-below1-nodeGen.eps}
+        \end{minipage}&
+        \begin{minipage}{\cpufigureplotwidth}
+        \includegraphics[width=\linewidth]{racetrack/racetrack-barto-bigger-wrtOpt-euclidean-tight-nodeGen.eps}
+        \end{minipage}&
+        \begin{minipage}{\cpufigureplotwidth}
+      \includegraphics[width=\linewidth]{racetrack/racetrack-barto-bigger-wrtOpt-euclidean-loose-nodeGen.eps}
+      \end{minipage}&
+        \begin{minipage}{\cpufigureplotwidth}
+        \includegraphics[width=\linewidth]{racetrack/racetrack-barto-bigger-wrtOpt-euclidean-tight-cpu.eps}
+        \end{minipage}&
+        \begin{minipage}{\cpufigureplotwidth}
+        \includegraphics[width=\linewidth]{racetrack/racetrack-barto-bigger-wrtOpt-euclidean-loose-cpu.eps}
+        \end{minipage}&
+        \begin{minipage}{\cpufigureplotwidth}
+        \includegraphics[width=\linewidth]{racetrack/racetrack-barto-bigger-wrtOpt-euclidean-coverageplt.eps}
+        \end{minipage}&
+        \begin{minipage}{\cpufigureplotwidth}
+        \includegraphics[width=\linewidth]{racetrack/racetrack-barto-bigger-wrtOpt-euclidean-tight-par10.eps}
+        \end{minipage}&
+        \begin{minipage}{\cpufigureplotwidth}
+        \includegraphics[width=\linewidth]{racetrack/racetrack-barto-bigger-wrtOpt-euclidean-loose-par10.eps}
+        \end{minipage}
+	\end{tabular}
+\caption{racetrack barto map with Euclidean heuristic.}
+\label{fig:racetrack-barto-bigger-euclidean}
 \end{figure}
 
 \end{document}

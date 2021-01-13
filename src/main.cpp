@@ -37,6 +37,9 @@ int main(int argc, char** argv)
                 "other algorithm: astar, wastar; ",
                 cxxopts::value<std::string>()->default_value("ptsnancy"));
 
+    optionAdder("f,heuristicType", "racetrack type : euclidean, dijkstra",
+                cxxopts::value<std::string>()->default_value("dijkstra"));
+
     optionAdder("b,bound", "cost bound",
                 cxxopts::value<double>()->default_value("10"));
 
@@ -65,6 +68,7 @@ int main(int argc, char** argv)
     auto alg    = args["alg"].as<std::string>();
     auto bound  = args["bound"].as<double>();
     auto weight = args["weight"].as<double>();
+    auto hType  = args["heuristicType"].as<string>();
 
     Search* searchPtr;
 
@@ -118,6 +122,15 @@ int main(int argc, char** argv)
         }
 
         world = new RaceTrack(map, cin);
+
+        if (hType == "euclidean") {
+            world->setVariant(1);
+        } else if (hType == "dijkstra") {
+            world->setVariant(0);
+        } else {
+            cout << "unknown heuristic type";
+            exit(1);
+        }
 
         searchPtr =
           new BoundedCostSearch<RaceTrack>(*world, bound, alg, weight);

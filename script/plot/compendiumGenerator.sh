@@ -264,38 +264,72 @@ echo "$pythonOut"
 pythonOut=$(python ${plotter} -d vacuumworld -s heavy-easy -t par10 -b 1 -os loose)
 echo "$pythonOut"
 
-pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -e 2.4 -os below1)
+pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -ht dijkstra -e 2.4 -os below1)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -b 1 -e 2.4 -os tight)
+pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -ht dijkstra -b 1 -e 2.4 -os tight)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -b 2 -os loose)
+pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -ht dijkstra -b 2 -os loose)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -t cpu -b 1 -e 2.4 -os tight)
+pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -ht dijkstra -t cpu -b 1 -e 2.4 -os tight)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -t cpu -b 2 -os loose)
+pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -ht dijkstra -t cpu -b 2 -os loose)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -t coverageplt -b 1)
+pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -ht dijkstra -t coverageplt -b 1)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -t par10 -b 1 -e 3 -os tight)
+pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -t par10 -ht dijkstra -b 1 -e 3 -os tight)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -t par10 -b 1 -os loose)
+pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -t par10 -ht dijkstra -b 1 -os loose)
 echo "$pythonOut"
 
-pythonOut=$(python ${plotter} -d racetrack -s hansen-bigger -e 2.4 -os below1)
+pythonOut=$(python ${plotter} -d racetrack -s hansen-bigger -ht dijkstra -e 2.4 -os below1)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d racetrack -s hansen-bigger -b 1 -e 2.4 -os tight)
+pythonOut=$(python ${plotter} -d racetrack -s hansen-bigger -ht dijkstra -b 1 -e 2.4 -os tight)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d racetrack -s hansen-bigger -b 2 -os loose)
+pythonOut=$(python ${plotter} -d racetrack -s hansen-bigger -ht dijkstra -b 2 -os loose)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d racetrack -s hansen-bigger -t cpu -b 1 -e 2.4 -os tight)
+pythonOut=$(python ${plotter} -d racetrack -s hansen-bigger -ht dijkstra -t cpu -b 1 -e 2.4 -os tight)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d racetrack -s hansen-bigger -t cpu -b 2 -os loose)
+pythonOut=$(python ${plotter} -d racetrack -s hansen-bigger -ht dijkstra -t cpu -b 2 -os loose)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d racetrack -s hansen-bigger -t coverageplt -b 1)
+pythonOut=$(python ${plotter} -d racetrack -s hansen-bigger -ht dijkstra -t coverageplt -b 1)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d racetrack -s hansen-bigger -t par10 -b 1 -e 3 -os tight)
+pythonOut=$(python ${plotter} -d racetrack -s hansen-bigger -ht dijkstra -t par10 -b 1 -e 3 -os tight)
 echo "$pythonOut"
-pythonOut=$(python ${plotter} -d racetrack -s hansen-bigger -t par10 -b 1 -os loose)
+pythonOut=$(python ${plotter} -d racetrack -s hansen-bigger -ht dijkstra -t par10 -b 1 -os loose)
+echo "$pythonOut"
+
+pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -ht euclidean -e 2.4 -os below1)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -ht euclidean -b 1 -e 2.4 -os tight)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -ht euclidean -b 2 -os loose)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -ht euclidean -t cpu -b 1 -e 2.4 -os tight)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -ht euclidean -t cpu -b 2 -os loose)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -ht euclidean -t coverageplt -b 1)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -t par10 -ht euclidean -b 1 -e 3 -os tight)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d racetrack -s barto-bigger -t par10 -ht euclidean -b 1 -os loose)
+echo "$pythonOut"
+
+pythonOut=$(python ${plotter} -d racetrack -s hansen-bigger -ht euclidean -e 2.4 -os below1)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d racetrack -s hansen-bigger -ht euclidean -b 1 -e 2.4 -os tight)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d racetrack -s hansen-bigger -ht euclidean -b 2 -os loose)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d racetrack -s hansen-bigger -ht euclidean -t cpu -b 1 -e 2.4 -os tight)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d racetrack -s hansen-bigger -ht euclidean -t cpu -b 2 -os loose)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d racetrack -s hansen-bigger -ht euclidean -t coverageplt -b 1)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d racetrack -s hansen-bigger -ht euclidean -t par10 -b 1 -e 3 -os tight)
+echo "$pythonOut"
+pythonOut=$(python ${plotter} -d racetrack -s hansen-bigger -ht euclidean -t par10 -b 1 -os loose)
 echo "$pythonOut"
 
 cp /home/aifs1/gu/phd/research/workingPaper/boundedCostSearch/tianyicodebase/script/plot/BCS-tex/* /home/aifs1/gu/phd/research/workingPaper/boundedCostSearch/tianyi_plots/${TIMESTAMP}/

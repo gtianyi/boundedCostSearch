@@ -123,7 +123,11 @@ public:
         resetInitialState(initialState);
         initilaizeActions();
         computeDijkstraMap();
+        computeEuclideanMap();
+        heuristicVariant = 0; // Default
     }
+
+    void setVariant(int variant) { heuristicVariant = variant; }
 
     bool isGoal(const State& s) const
     {
@@ -138,7 +142,7 @@ public:
             return correctedD[state];
         }
 
-        Cost d = dijkstraMaxH(state);
+        Cost d = getPreComputedCost(state);
 
         updateDistance(state, d);
 
@@ -152,14 +156,14 @@ public:
             return correctedDerr[state];
         }
 
-        Cost derr = dijkstraMaxH(state);
+        Cost derr = getPreComputedCost(state);
 
         updateDistanceErr(state, derr);
 
         return correctedDerr[state];
     }
 
-    Cost heuristic(const State& state) { return dijkstraMaxH(state); }
+    Cost heuristic(const State& state) { return getPreComputedCost(state); }
 
     Cost epsilonHGlobal() { return curEpsilonH; }
 
@@ -243,9 +247,14 @@ public:
     // return c;
     /*}*/
 
-    Cost dijkstraMaxH(const State& state) const
+    Cost getPreComputedCost(const State& state) const
     {
         // cout << state;
+        if (heuristicVariant == 1) {
+            return static_cast<double>(euclideanMap[static_cast<size_t>(
+                     state.getX())][static_cast<size_t>(state.getY())]) /
+                   maxSpeed;
+        }
         return static_cast<double>(dijkstraMap[static_cast<size_t>(
                  state.getX())][static_cast<size_t>(state.getY())]) /
                maxSpeed;
@@ -586,10 +595,58 @@ private:
         return ret;
     }
 
+    void computeEuclideanMap()
+    {
+        vector<double> col(mapHeight, std::numeric_limits<double>::max());
+        euclideanMap = vector<vector<double>>(mapWidth, col);
+
+        for (const auto& g : finishline) {
+            for (int i = 0; i < static_cast<int>(mapWidth); i++) {
+                for (int j = 0; j < static_cast<int>(mapHeight); j++) {
+                    if (!isLegalLocation(i, j)) {
+                        continue;
+                    }
+
+                    double distance = round(sqrt(
+                      pow(static_cast<double>(i - static_cast<int>(g.first)),
+                          2.0) +
+                      pow(static_cast<double>(j - static_cast<int>(g.second)),
+                          2.0)));
+                    // cout << distance << " " << i << " " << j << "\n";
+                    if (distance < euclideanMap[static_cast<size_t>(i)]
+                                               [static_cast<size_t>(j)]) {
+                        euclideanMap[static_cast<size_t>(i)]
+                                    [static_cast<size_t>(j)] = distance;
+                    }
+                }
+            }
+        }
+
+        // visualize the euclidean map (for debug usage)
+        /*vector<double> rotateCol(mapWidth, numeric_limits<double>::max());*/
+        // vector<vector<double>> rotatedMap(mapHeight, rotateCol);
+        // for (size_t i = 0; i < rotatedMap.size(); i++) {
+        // for (size_t j = 0; j < rotateCol.size(); j++) {
+        // rotatedMap[i][j] = euclideanMap[j][i];
+        //}
+        //}
+
+        // for (auto r : rotatedMap) {
+        // for (auto c : r) {
+        // if (c > 100000)
+        // cout << std::setw(5) << "x";
+        // else
+        // cout << std::setw(5) << c;
+        //}
+        // cout << "\n";
+        /*}*/
+    }
+
     std::unordered_set<Location, pair_hash> blockedCells;
     std::unordered_set<Location, pair_hash> finishline;
     vector<pair<int, int>>                  actions;
     vector<vector<size_t>>                  dijkstraMap;
+    vector<vector<double>>                  euclideanMap;
     size_t                                  mapWidth;
     size_t                                  mapHeight;
     double                                  maxXSpeed;
@@ -603,6 +660,7 @@ private:
     unordered_map<State, Cost, HashState>          correctedD;
     unordered_map<State, Cost, HashState>          correctedDerr;
     unordered_map<State, vector<State>, HashState> predecessorsTable;
+    int                                            heuristicVariant;
 
     double epsilonHSum;
     double epsilonHSumSq;
