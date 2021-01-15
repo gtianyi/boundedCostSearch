@@ -108,22 +108,22 @@ echo "$pythonOut"
 #pythonOut=$(python ${plotter} -d tile -s inverse-easy -t par10 -b 1 -e 20 -os loose)
 #echo "$pythonOut"
 
-pythonOut=$(python ${plotter} -d tile -s inverse-easy -os below1 -r pts)
-echo "$pythonOut"
-pythonOut=$(python ${plotter} -d tile -s inverse-easy -b 1 -os tight -r pts)
-echo "$pythonOut"
-pythonOut=$(python ${plotter} -d tile -s inverse-easy -b 3 -e 40 -os loose -r pts)
-echo "$pythonOut"
-pythonOut=$(python ${plotter} -d tile -s inverse-easy -t cpu -b 1 -os tight -r pts)
-echo "$pythonOut"
-pythonOut=$(python ${plotter} -d tile -s inverse-easy -t cpu -b 3 -e 40 -os loose -r pts)
-echo "$pythonOut"
-pythonOut=$(python ${plotter} -d tile -s inverse-easy -t coverageplt -b 1 -r pts)
-echo "$pythonOut"
-pythonOut=$(python ${plotter} -d tile -s inverse-easy -t par10 -b 1 -e 3 -os tight -r pts)
-echo "$pythonOut"
-pythonOut=$(python ${plotter} -d tile -s inverse-easy -t par10 -b 1 -e 20 -os loose -r pts)
-echo "$pythonOut"
+#pythonOut=$(python ${plotter} -d tile -s inverse-easy -os below1 -r pts)
+#echo "$pythonOut"
+#pythonOut=$(python ${plotter} -d tile -s inverse-easy -b 1 -os tight -r pts)
+#echo "$pythonOut"
+#pythonOut=$(python ${plotter} -d tile -s inverse-easy -b 3 -e 40 -os loose -r pts)
+#echo "$pythonOut"
+#pythonOut=$(python ${plotter} -d tile -s inverse-easy -t cpu -b 1 -os tight -r pts)
+#echo "$pythonOut"
+#pythonOut=$(python ${plotter} -d tile -s inverse-easy -t cpu -b 3 -e 40 -os loose -r pts)
+#echo "$pythonOut"
+#pythonOut=$(python ${plotter} -d tile -s inverse-easy -t coverageplt -b 1 -r pts)
+#echo "$pythonOut"
+#pythonOut=$(python ${plotter} -d tile -s inverse-easy -t par10 -b 1 -e 3 -os tight -r pts)
+#echo "$pythonOut"
+#pythonOut=$(python ${plotter} -d tile -s inverse-easy -t par10 -b 1 -e 20 -os loose -r pts)
+#echo "$pythonOut"
 
 pythonOut=$(python ${plotter} -d tile -s reverse-easy -os below1)
 echo "$pythonOut"

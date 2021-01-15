@@ -15,8 +15,8 @@ import os
 # import sys
 from datetime import datetime
 import re
-# from scipy.stats import gmean
 import math
+from scipy.stats import gmean
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -118,7 +118,8 @@ def parseArugments():
 
 
 def makeLinePlot(xAxis, yAxis, dataframe, hue,
-                 xLabel, yLabel, _, outputName, colorDict, title,
+                 _xLable, _yLabel, _totalInstance,
+                 outputName, colorDict, title,
                  showSolvedInstance=True, useLogScale=True):
     sns.set(rc={
         'figure.figsize': (13, 10),
@@ -128,7 +129,8 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
     plt.rcParams["font.family"]='serif'
     plt.rcParams["font.serif"]=['Times New Roman']
 
-    mean_df = dataframe.groupby(hue).mean().reset_index()
+    # mean_df = dataframe.groupby(hue).mean().reset_index()
+    mean_df = dataframe.groupby(hue)[yAxis].apply(gmean).reset_index()
     mean_df = mean_df.sort_values(by=[yAxis], ascending=False)
     hue_order_list = mean_df[hue]
 
@@ -156,8 +158,10 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
     fontSize=36
     ax.set_title(title, fontdict={'fontsize':fontSize})
 
-    plt.ylabel(yLabel, color='black', fontsize=fontSize)
-    plt.xlabel(xLabel, color='black', fontsize=fontSize)
+    plt.ylabel('')
+    plt.xlabel('')
+    # plt.ylabel(yLabel, color='black', fontsize=fontSize)
+    # plt.xlabel(xLabel, color='black', fontsize=fontSize)
     plt.setp(ax.get_legend().get_texts(), fontsize='26')  # for legend text
     plt.setp(ax.get_legend().get_title(), fontsize='26')  # for legend title
 
