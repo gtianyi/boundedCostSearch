@@ -40,7 +40,7 @@ def parseArugments():
         '-s',
         action='store',
         dest='subdomain',
-        help='subdomain: tile: uniform, heavy(default), inverse, reverse future support: sqrt; \
+        help='subdomain: tile: uniform, heavy(default), inverse, reverse, sqrt; \
         pancake: regular, heavy; \
         racetrack : barto-big,uniform-small, barto-bigger, hanse-bigger-double\
         vacuumworld: uniform, heavy;',
@@ -70,6 +70,9 @@ def solverConfig():
                               "reverse": researchHome +
                               "/realtime-nancy/build_release/distributionPractice"
                               " -d tile -s reverse -a wastar -p 1",
+                              "sqrt": researchHome +
+                              "/realtime-nancy/build_release/distributionPractice"
+                              " -d tile -s sqrt -a wastar -p 1",
                        },
                      }
 
@@ -94,7 +97,7 @@ def solverOutPutParser(args, outStr):
                     # return sol
 
         # elif args.subdomain == "heavy":
-        if args.subdomain in ["heavy", "inverse", "reverse"]:
+        if args.subdomain in ["heavy", "inverse", "reverse", "sqrt"]:
             sol = outStr[0].split()[2].decode("utf-8")
             nodeGen = outStr[0].split()[0].decode("utf-8")
             return nodeGen, sol
