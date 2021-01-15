@@ -20,6 +20,7 @@ print_usage() {
     echo "[-w weight of wA*]               default: 2"
     echo "[-bt bound type]                 available: percentWrtOpt(default), absolute"
     echo "[-ht heuristic type]             available: racetrack: euclidean(default), dijkstra"
+    echo "                                            pancake: gap, gapm1, gapm2"
     echo "[-ex algorithm name extension]   default: NA"
     echo "[-h help]"
     exit 1
@@ -39,8 +40,8 @@ domain=("tile" "pancake" "racetrack" "vacuumworld")
 subdomain=()
 subdomainTile=("uniform" "heavy" "inverse" "heavy-easy" "reverse-easy")
 #subdomainTile=("inverse-easy" )
-subdomainPancake=("regular" "heavy" "sumheavy")
-#subdomainPancake=("sumheavy")
+#subdomainPancake=("regular" "heavy" "sumheavy")
+subdomainPancake=("regular")
 subdomainVacuumworld=("uniform" "heavy-easy")
 #subdomainVacuumworld=("heavy")
 subdomainRacetrack=("barto-bigger" "hansen-bigger")
@@ -361,6 +362,7 @@ for curDomainId in "${!domain[@]}"; do
 
         if [ "${curDomain}" == "pancake" ]; then
             infile_name="instance-${size}.pan"
+            outfile_path="${outfile_path/solverDir/$heuristicType}/solverDir"
             outfile="${outfile_path}/${boundType}-BoundNumber-size-${size}-instance.json"
             infile="${infile_path}/${size}/${infile_name}"
         fi

@@ -144,8 +144,9 @@ public:
             endOrdering[i] = static_cast<unsigned int>(stoi(line));
         }
 
-        puzzleVariant = 0; // Default
-        startState    = State(startOrdering, 0);
+        puzzleVariant    = 0; // Default
+        heuristicVariant = 0; // Default
+        startState       = State(startOrdering, 0);
     }
 
     /*
@@ -188,6 +189,8 @@ public:
 
     void setVariant(int variant) { puzzleVariant = variant; }
 
+    void setHeuristicVariant(int variant) { heuristicVariant = variant; }
+
     bool isGoal(const State& s) const
     {
         if (s.getOrdering() == endOrdering) {
@@ -229,6 +232,18 @@ public:
                 sum += x;
             }
         }
+
+        // three variant
+        // 0: gap heuristic
+        // 1: gap minus 1 heuristic
+        // 2: gap minus 2 heuristic
+        if (heuristicVariant == 1) {
+            return max(0.0, static_cast<double>(sum) - 1);
+        }
+        if (heuristicVariant == 2) {
+            return max(0.0, static_cast<double>(sum) - 2);
+        }
+
         return static_cast<double>(sum);
     }
 
@@ -518,6 +533,7 @@ public:
     unordered_map<State, Cost, HashState> correctedD;
     unordered_map<State, Cost, HashState> correctedDerr;
     int                                   puzzleVariant;
+    int                                   heuristicVariant;
     size_t                                size;
 
     double epsilonHSum;

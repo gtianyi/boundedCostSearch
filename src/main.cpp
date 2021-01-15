@@ -37,8 +37,10 @@ int main(int argc, char** argv)
                 "other algorithm: astar, wastar; ",
                 cxxopts::value<std::string>()->default_value("ptsnancy"));
 
-    optionAdder("f,heuristicType", "racetrack type : euclidean, dijkstra",
-                cxxopts::value<std::string>()->default_value("dijkstra"));
+    optionAdder("f,heuristicType",
+                "racetrack type : euclidean, dijkstra;"
+                "pancake: gap,gapm1, gapm2",
+                cxxopts::value<std::string>()->default_value("gapm1"));
 
     optionAdder("b,bound", "cost bound",
                 cxxopts::value<double>()->default_value("10"));
@@ -104,6 +106,17 @@ int main(int argc, char** argv)
             world->setVariant(2);
         }
 
+        if (hType == "gap") {
+            world->setHeuristicVariant(0);
+        } else if (hType == "gapm1") {
+            world->setHeuristicVariant(1);
+        } else if (hType == "gapm2") {
+            world->setHeuristicVariant(2);
+        } else {
+            cout << "unknown heuristic type for " << d << ": " << hType;
+            exit(1);
+        }
+
         searchPtr =
           new BoundedCostSearch<PancakePuzzle>(*world, bound, alg, weight);
 
@@ -128,7 +141,7 @@ int main(int argc, char** argv)
         } else if (hType == "dijkstra") {
             world->setVariant(0);
         } else {
-            cout << "unknown heuristic type";
+            cout << "unknown heuristic type for " << d << ": " << hType;
             exit(1);
         }
 

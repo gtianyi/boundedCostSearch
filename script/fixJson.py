@@ -95,7 +95,7 @@ def main():
         fileDir = researchHome + "/boundedCostSearch/" + resultDir + "/" + \
             args.domain+"/"+args.subdomain+"/"
 
-        if args.domain == "racetrack":
+        if args.domain in ["racetrack", "pancake"] :
             fileDir +=args.heuristicType+"/"
 
         fileDir += algorithm+"/"
