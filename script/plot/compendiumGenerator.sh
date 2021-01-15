@@ -343,3 +343,9 @@ latex /home/aifs1/gu/phd/research/workingPaper/boundedCostSearch/tianyi_plots/${
 latex /home/aifs1/gu/phd/research/workingPaper/boundedCostSearch/tianyi_plots/${TIMESTAMP}/bcs-compendium-${TIMESTAMP}
 dvips /home/aifs1/gu/phd/research/workingPaper/boundedCostSearch/tianyi_plots/${TIMESTAMP}/bcs-compendium-${TIMESTAMP}.dvi
 ps2pdf /home/aifs1/gu/phd/research/workingPaper/boundedCostSearch/tianyi_plots/${TIMESTAMP}/bcs-compendium-${TIMESTAMP}.ps
+
+mkdir -p /home/aifs1/gu/phd/research/workingPaper/boundedCostSearch/tianyi_plots/${TIMESTAMP}/cpu
+cp /home/aifs1/gu/phd/research/workingPaper/boundedCostSearch/tianyi_plots/${TIMESTAMP}/tile/*tight*cpu* /home/aifs1/gu/phd/research/workingPaper/boundedCostSearch/tianyi_plots/${TIMESTAMP}/cpu/
+cp /home/aifs1/gu/phd/research/workingPaper/boundedCostSearch/tianyi_plots/${TIMESTAMP}/pancake/*tight*cpu* /home/aifs1/gu/phd/research/workingPaper/boundedCostSearch/tianyi_plots/${TIMESTAMP}/cpu/
+cp /home/aifs1/gu/phd/research/workingPaper/boundedCostSearch/tianyi_plots/${TIMESTAMP}/racetrack/*tight*cpu* /home/aifs1/gu/phd/research/workingPaper/boundedCostSearch/tianyi_plots/${TIMESTAMP}/cpu/
+cp /home/aifs1/gu/phd/research/workingPaper/boundedCostSearch/tianyi_plots/${TIMESTAMP}/vacuumworld/*tight*cpu* /home/aifs1/gu/phd/research/workingPaper/boundedCostSearch/tianyi_plots/${TIMESTAMP}/cpu/

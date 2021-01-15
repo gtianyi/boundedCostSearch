@@ -118,13 +118,15 @@ def parseArugments():
 
 
 def makeLinePlot(xAxis, yAxis, dataframe, hue,
-                 xLabel, yLabel, _, outputName, colorDict,
+                 xLabel, yLabel, _, outputName, colorDict, title,
                  showSolvedInstance=True, useLogScale=True):
     sns.set(rc={
         'figure.figsize': (13, 10),
         'font.size': 27,
-        'text.color': 'black'
+        'text.color': 'black',
     })
+    plt.rcParams["font.family"]='serif'
+    plt.rcParams["font.serif"]=['Times New Roman']
 
     mean_df = dataframe.groupby(hue).mean().reset_index()
     mean_df = mean_df.sort_values(by=[yAxis], ascending=False)
@@ -151,8 +153,11 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
     if useLogScale:
         ax.set_yscale("log")
 
-    plt.ylabel(yLabel, color='black', fontsize=26)
-    plt.xlabel(xLabel, color='black', fontsize=26)
+    fontSize=36
+    ax.set_title(title, fontdict={'fontsize':fontSize})
+
+    plt.ylabel(yLabel, color='black', fontsize=fontSize)
+    plt.xlabel(xLabel, color='black', fontsize=fontSize)
     plt.setp(ax.get_legend().get_texts(), fontsize='26')  # for legend text
     plt.setp(ax.get_legend().get_title(), fontsize='26')  # for legend title
 
@@ -590,7 +595,7 @@ def makeCoveragePlot(df, args, totalInstance, showname, colorDict):
                  showname["solved"].replace(
                      "totalInstance", totalInstance), totalInstance,
                  createOutFilePrefix(args) + args.plotType+".jpg", colorDict,
-                 showSolvedInstance=False, useLogScale=False)
+                 createTitle(args), showSolvedInstance=False, useLogScale=False)
 
 
 def createOutFilePrefix(args):
@@ -624,6 +629,24 @@ def createOutFilePrefix(args):
 
     return outFilePrefix
 
+def createTitle(args):
+    title = {"tile":{"uniform":"Uniform Tile",
+                     "heavy":"Heavy Tile",
+                     "heavy-easy":"Easy Heavy Tile",
+                     "inverse":"Inverse Tile",
+                     "reverse-easy":"Easy Reverse Tile",},
+             "pancake":{"regular":args.size+" Regular Pancake",
+                        "heavy":args.size+" DPS Heavy Pancake",
+                        "sumheavy":args.size+" Sum Heavy Pancake",
+                        },
+             "vacuumworld":{"uniform":"Uniform Vacuum World",
+                            "heavy-easy":"Easy Heavy Vacuum World"},
+             "racetrack":{"barto-bigger":"Barto Map Track - "+args.heuristicType.capitalize(),
+                          "hansen-bigger":"Hansen Map Track - "+args.heuristicType.capitalize(),
+                          }
+             }
+
+    return title[args.domain][args.subdomain]
 
 def plotting(args, config, baselineConfig):
     print("building plots...")
@@ -656,7 +679,7 @@ def plotting(args, config, baselineConfig):
                      showname[args.plotType].replace(
                          "baseline", baseline), totalInstance[args.domain],
                      createOutFilePrefix(args) + args.plotType+".jpg",
-                     config.getAlgorithmColor())
+                     config.getAlgorithmColor(), createTitle(args))
 
     elif args.plotType == "fixedbaseline":
 
@@ -671,7 +694,7 @@ def plotting(args, config, baselineConfig):
                      showname[args.plotType].replace(
                          "baseline", baseline), totalInstance[args.domain],
                      createOutFilePrefix(args) + args.plotType+".jpg",
-                     config.getAlgorithmColor())
+                     config.getAlgorithmColor(), createTitle(args))
 
     elif args.plotType == "par10":
 
@@ -681,7 +704,7 @@ def plotting(args, config, baselineConfig):
                      showname["boundValues"][args.boundType],
                      "Par10 CPU Time", totalInstance[args.domain],
                      createOutFilePrefix(args) + args.plotType+".jpg",
-                     config.getAlgorithmColor(), showSolvedInstance=False)
+                     config.getAlgorithmColor(), createTitle(args), showSolvedInstance=False)
 
     else:
         df = allSolvedDf(rawdf)
@@ -689,7 +712,7 @@ def plotting(args, config, baselineConfig):
                      showname["boundValues"][args.boundType], showname[args.plotType],
                      totalInstance[args.domain],
                      createOutFilePrefix(args) + args.plotType+".jpg",
-                     config.getAlgorithmColor())
+                     config.getAlgorithmColor(), createTitle(args))
 
 
 def main():
