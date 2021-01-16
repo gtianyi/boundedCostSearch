@@ -126,8 +126,8 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
         'font.size': 27,
         'text.color': 'black',
     })
-    plt.rcParams["font.family"]='serif'
-    plt.rcParams["font.serif"]=['Times New Roman']
+    plt.rcParams["font.family"] = 'serif'
+    plt.rcParams["font.serif"] = ['Times New Roman']
 
     # mean_df = dataframe.groupby(hue).mean().reset_index()
     mean_df = dataframe.groupby(hue)[yAxis].apply(gmean).reset_index()
@@ -155,8 +155,8 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
     if useLogScale:
         ax.set_yscale("log")
 
-    fontSize=36
-    ax.set_title(title, fontdict={'fontsize':fontSize})
+    fontSize = 36
+    ax.set_title(title, fontdict={'fontsize': fontSize})
 
     plt.ylabel('')
     plt.xlabel('')
@@ -396,7 +396,7 @@ def readData(args, algorithms, domainBoundsConfig):
     inPath = "../../../" + resultDir + "/" + \
         domainDir + "/" + subdomainType
 
-    if domainType == "racetrack":
+    if domainType in ["racetrack", "pancake"]:
         inPath += "/"+args.heuristicType
 
     inPath += '/alg'
@@ -619,6 +619,8 @@ def createOutFilePrefix(args):
 
     if args.domain == 'pancake':
         outFilePrefix += args.size + "-"
+        if args.subdomain == "regular":
+            outFilePrefix += args.heuristicType + "-"
     elif args.domain == "racetrack":
         outFilePrefix += args.heuristicType + "-"
 
@@ -633,24 +635,27 @@ def createOutFilePrefix(args):
 
     return outFilePrefix
 
+
 def createTitle(args):
-    title = {"tile":{"uniform":"Uniform Tile",
-                     "heavy":"Heavy Tile",
-                     "heavy-easy":"Easy Heavy Tile",
-                     "inverse":"Inverse Tile",
-                     "reverse-easy":"Easy Reverse Tile",},
-             "pancake":{"regular":args.size+" Regular Pancake",
-                        "heavy":args.size+" DPS Heavy Pancake",
-                        "sumheavy":args.size+" Sum Heavy Pancake",
-                        },
-             "vacuumworld":{"uniform":"Uniform Vacuum World",
-                            "heavy-easy":"Easy Heavy Vacuum World"},
-             "racetrack":{"barto-bigger":"Barto Map Track - "+args.heuristicType.capitalize(),
-                          "hansen-bigger":"Hansen Map Track - "+args.heuristicType.capitalize(),
-                          }
+    title = {"tile": {"uniform": "Uniform Tile",
+                      "heavy": "Heavy Tile",
+                      "heavy-easy": "Easy Heavy Tile",
+                      "inverse": "Inverse Tile",
+                      "reverse-easy": "Easy Reverse Tile", },
+             "pancake": {"regular": args.size+" Regular Pancake - " +
+                         args.heuristicType.replace('m', '-').capitalize(),
+                         "heavy": args.size+" DPS Heavy Pancake",
+                         "sumheavy": args.size+" Sum Heavy Pancake",
+                         },
+             "vacuumworld": {"uniform": "Uniform Vacuum World",
+                             "heavy-easy": "Easy Heavy Vacuum World"},
+             "racetrack": {"barto-bigger": "Barto Map Track - "+args.heuristicType.capitalize(),
+                           "hansen-bigger": "Hansen Map Track - "+args.heuristicType.capitalize(),
+                           }
              }
 
     return title[args.domain][args.subdomain]
+
 
 def plotting(args, config, baselineConfig):
     print("building plots...")

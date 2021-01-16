@@ -485,7 +485,10 @@ for curDomainId in "${!domain[@]}"; do
                 done
             done
 
-            fixJson_running_flag="${research_home}/boundedCostSearch/tianyi_results/fixJson.${curDomain}.${curSubdomain}.${solverNameInDir}.run"
+            fixJson_running_flag="${research_home}/boundedCostSearch/tianyi_results/fixJson.${curDomain}.${curSubdomain}.${solverNameInDir}"
+            if [ "${curDomain}" == "pancake" ] || [ "${curDomain}" == "racetrack" ]; then
+                fixJson_running_flag="${fixJson_running_flag}.${heuristicType}"
+            fi
             fixJsonExecutable="${research_home}/boundedCostSearch/tianyicodebase/script/fixJson.py"
 
             sleep 1
