@@ -60,6 +60,8 @@ def solverConfig():
                               "/realtime-nancy/build_release/tile-pdb idastar inverse",
                               "reverse": researchHome +
                               "/realtime-nancy/build_release/tile-pdb idastar reverse",
+                              "sqrt": researchHome +
+                              "/realtime-nancy/build_release/tile-pdb idastar sqrt",
                               },
                      "pancake": {"regular": researchHome +
                                  "/realtime-nancy/build_release/distributionPractice"
@@ -118,7 +120,8 @@ def solverOutPutParser(args, outStr):
                     sol = re.findall(r'\d+', lineContent[3].decode("utf-8"))[0]
                     return sol
 
-        elif args.subdomain in ["heavy", "heavy-easy", "inverse", "inverse-easy", "reverse"] :
+        elif args.subdomain in ["heavy", "heavy-easy", "inverse",
+                                "inverse-easy", "reverse", "sqrt"]:
             for line in outStr:
                 lineContent = line.split()
                 if lineContent[0] == b'solution':
@@ -142,7 +145,7 @@ def main():
 
     problemDir = researchHome+"/realtime-nancy/worlds/"
     if args.domain == "tile":
-        if args.subdomain in ["uniform", "heavy", "inverse", "reverse"]:
+        if args.subdomain in ["uniform", "heavy", "inverse", "reverse", "sqrt"]:
             problemDir += problemFolder[args.domain]+"/"
         elif args.subdomain == "heavy-easy":
             problemDir += problemFolder[args.domain+"-"+args.subdomain]+"/"
@@ -186,6 +189,7 @@ def main():
 
     with open(outFile, 'w') as json_file:
         json.dump(solutionJson, json_file)
+
 
 if __name__ == '__main__':
     main()
