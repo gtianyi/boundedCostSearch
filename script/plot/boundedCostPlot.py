@@ -641,7 +641,8 @@ def createTitle(args):
                       "heavy": "Heavy Tile",
                       "heavy-easy": "Easy Heavy Tile",
                       "inverse": "Inverse Tile",
-                      "reverse-easy": "Easy Reverse Tile", },
+                      "reverse-easy": "Easy Reverse Tile",
+                      "sqrt": "Sqrt Tile", },
              "pancake": {"regular": args.size+" Regular Pancake - " +
                          args.heuristicType.replace('m', '-').capitalize(),
                          "heavy": args.size+" DPS Heavy Pancake",
