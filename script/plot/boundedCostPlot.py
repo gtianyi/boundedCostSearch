@@ -141,9 +141,9 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
                       style=hue,
                       palette=colorDict,
                       data=dataframe,
-                      err_style="bars",
-                      # estimator=gmean,
-                      # ci=None,
+                      # err_style="bars",
+                      estimator=gmean,
+                      ci=None,
                       dashes=False
                       )
 
