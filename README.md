@@ -184,3 +184,6 @@ optional arguments:
   -z SIZE               domain size (default: 4)
   -t PLOTTYPE           plot type, nodeGen, cpu, coverage, nodeGenDiff(default)
 ```
+
+# Problem Instances
+All the instances can be found [here](https://github.com/gtianyi/searchDomainInstanceFiles)
