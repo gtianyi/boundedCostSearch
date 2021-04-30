@@ -3,7 +3,7 @@
 ## Welcome to bounded cost heuristic search project!
 The purpose of the project is to implement several state-of-the-art BCS algorithms and run benchmark with classical search domains such as Sliding Tiles, Pancakes. 
 
-# PAPER
+# Paper
 [1] Maximilian Fickert, Tianyi Gu, and Wheeler Ruml, Bounded-Cost Search Using Estimates of Uncertainty. Proceedings of the Thirtieth International Joint Conference on Artificial Intelligence (IJCAI-21), 2021.
 
 ## Prerequisites
