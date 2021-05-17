@@ -19,6 +19,7 @@ import math
 from scipy.stats import gmean
 
 import matplotlib.pyplot as plt
+# import matplotlib
 import pandas as pd
 import seaborn as sns
 from pandas.plotting import table
@@ -126,8 +127,10 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
         'font.size': 27,
         'text.color': 'black',
     })
-    plt.rcParams["font.family"] = 'serif'
-    plt.rcParams["font.serif"] = ['Times New Roman']
+    # plt.rcParams["font.family"] = 'serif'
+    # plt.rcParams["font.serif"] = ['Times New Roman']
+    # matplotlib.rcParams['pdf.fonttype'] = 42
+    # matplotlib.rcParams['ps.fonttype'] = 42
 
     # mean_df = dataframe.groupby(hue).mean().reset_index()
     mean_df = dataframe.groupby(hue)[yAxis].apply(gmean).reset_index()
