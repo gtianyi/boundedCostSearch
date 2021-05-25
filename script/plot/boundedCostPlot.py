@@ -134,7 +134,7 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
     plt.rcParams["font.serif"] = ['Times New Roman']
 
     plt.rcParams["figure.figsize"] = (13,10)
-    plt.rcParams["font.size"] = 27
+    plt.rcParams["font.size"] = 35
     plt.rcParams["text.usetex"] = True
     # matplotlib.rcParams['pdf.fonttype'] = 42
     # matplotlib.rcParams['ps.fonttype'] = 42
@@ -158,7 +158,7 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
                       dashes=False
                       )
 
-    ax.tick_params(colors='black', labelsize=24)
+    ax.tick_params(colors='black', labelsize=35)
 
     if showSolvedInstance:
         ax.legend().texts[0].set_text(
@@ -166,7 +166,7 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
     if useLogScale:
         ax.set_yscale("log")
 
-    fontSize = 36
+    fontSize = 46
     ax.set_title(title, fontdict={'fontsize': fontSize})
 
     plt.ylabel('')
