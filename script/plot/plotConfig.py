@@ -76,7 +76,7 @@ class Configure:
         self.algorithms = OrderedDict(
             {
                 "pts": "PTS",
-                "ptshhat": r"$\widehat{\mathrm{PTS}}$",
+                # "ptshhat": r"$\widehat{\mathrm{PTS}}$",
                 # "ptsnancy": "expected work - 0 f",
                 # "bees-EpsGlobal-withEPSLimitBug": "BEES-LBUG",
                 "bees-EpsGlobal": "BEES",
@@ -107,7 +107,7 @@ class Configure:
 
         self.algorithmPalette = {
             "PTS": "royalblue",
-            r"$\widehat{\mathrm{PTS}}$": "orangered",
+            # r"$\widehat{\mathrm{PTS}}$": "orangered",
             # "ptsnancy": "expected work - 0 f",
             "BEES": "limegreen",
             # "BEES-LBUG": "maroon",

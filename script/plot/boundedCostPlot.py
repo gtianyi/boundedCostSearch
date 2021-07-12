@@ -130,8 +130,8 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
         # 'text.usetex':'True',
         # # 'figure.facecolor':'none'
     # })
-    plt.rcParams["font.family"] = 'serif'
-    plt.rcParams["font.serif"] = ['Times New Roman']
+    plt.rcParams["font.family"] = 'sans-serif'
+    plt.rcParams["font.sans-serif"] = ['DejaVu Sans']
 
     plt.rcParams["figure.figsize"] = (13,10)
     plt.rcParams["font.size"] = 35
@@ -660,7 +660,7 @@ def createTitle(args):
                          "sumheavy": args.size+" Sum Heavy Pancake",
                          },
              "vacuumworld": {"uniform": "Uniform Vacuum World",
-                             "heavy-easy": "Easy Heavy Vacuum World"},
+                             "heavy-easy": "Heavy Vacuum World"},
              "racetrack": {"barto-bigger": "Barto Map Track - "+args.heuristicType.capitalize(),
                            "hansen-bigger": "Hansen Map Track - "+args.heuristicType.capitalize(),
                            }
