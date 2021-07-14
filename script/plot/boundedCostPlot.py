@@ -160,14 +160,15 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
 
     ax.tick_params(colors='black', labelsize=35)
 
-    if showSolvedInstance:
-        ax.legend().texts[0].set_text(
-            'Solved:' + str(len(dataframe['instance'].unique())))
+    # if showSolvedInstance:
+        # ax.legend().texts[0].set_text(
+            # 'Solved:' + str(len(dataframe['instance'].unique())))
     if useLogScale:
         ax.set_yscale("log")
 
     fontSize = 46
     ax.set_title(title, fontdict={'fontsize': fontSize})
+    # ax.set_title(" ", fontdict={'fontsize': fontSize})
 
     plt.ylabel('')
     plt.xlabel('')
