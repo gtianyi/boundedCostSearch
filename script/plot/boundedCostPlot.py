@@ -170,8 +170,8 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
     ax.set_title(title, fontdict={'fontsize': fontSize})
     # ax.set_title(" ", fontdict={'fontsize': fontSize})
 
-    plt.ylabel('')
-    plt.xlabel('')
+    plt.ylabel('CPU time (sec)')
+    plt.xlabel('Cost bounds (factor of optimal)')
     # plt.ylabel(yLabel, color='black', fontsize=fontSize)
     # plt.xlabel(xLabel, color='black', fontsize=fontSize)
     plt.setp(ax.get_legend().get_texts(), fontsize='26')  # for legend text
