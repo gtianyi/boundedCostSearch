@@ -134,7 +134,7 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
     # plt.rcParams["font.sans-serif"] = ['DejaVu Sans']
 
     plt.rcParams["figure.figsize"] = (13,10)
-    plt.rcParams["font.size"] = 35
+    plt.rcParams["font.size"] = 23
     # plt.rcParams["text.usetex"] = True
     # matplotlib.rcParams['pdf.fonttype'] = 42
     # matplotlib.rcParams['ps.fonttype'] = 42
@@ -158,15 +158,15 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
                       dashes=False
                       )
 
-    ax.tick_params(colors='black', labelsize=35)
+    ax.tick_params(colors='black', labelsize=23)
 
-    # if showSolvedInstance:
-        # ax.legend().texts[0].set_text(
-            # 'Solved:' + str(len(dataframe['instance'].unique())))
+    if showSolvedInstance:
+        ax.legend().texts[0].set_text(
+            'Solved:' + str(len(dataframe['instance'].unique())))
     if useLogScale:
         ax.set_yscale("log")
 
-    fontSize = 46
+    fontSize = 23
     ax.set_title(title, fontdict={'fontsize': fontSize})
     # ax.set_title(" ", fontdict={'fontsize': fontSize})
 
@@ -174,8 +174,8 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
     # plt.xlabel('Cost bounds (factor of optimal)')
     plt.ylabel(yLabel, color='black', fontsize=fontSize)
     plt.xlabel(xLabel, color='black', fontsize=fontSize)
-    plt.setp(ax.get_legend().get_texts(), fontsize='26')  # for legend text
-    plt.setp(ax.get_legend().get_title(), fontsize='26')  # for legend title
+    plt.setp(ax.get_legend().get_texts(), fontsize='23')  # for legend text
+    plt.setp(ax.get_legend().get_title(), fontsize='23')  # for legend title
 
     plt.savefig(outputName, bbox_inches="tight", pad_inches=0)
     plt.savefig(outputName.replace(".jpg", ".eps"),
