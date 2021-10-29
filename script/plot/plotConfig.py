@@ -141,7 +141,7 @@ class Configure:
                          "cpu": "Raw CPU Time",
                          "solved": "Number of Solved Instances (Total=totalInstance)",
                          "boundValues": {"absolute": "Cost Bound",
-                                         "wrtOpt": "Cost Bound w.r.t Optimal"}
+                                         "wrtOpt": "Cost Bounds (factor of optimal)"}
                          }
 
         self.totalInstance = {"tile": "100", "pancake": "100",

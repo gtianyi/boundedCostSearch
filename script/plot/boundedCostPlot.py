@@ -118,7 +118,7 @@ def parseArugments():
 
 
 def makeLinePlot(xAxis, yAxis, dataframe, hue,
-                 _xLable, _yLabel, _totalInstance,
+                 xLabel, yLabel, _totalInstance,
                  outputName, colorDict, title,
                  showSolvedInstance=True, useLogScale=True):
     # sns.set(rc={
@@ -130,12 +130,12 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
         # 'text.usetex':'True',
         # # 'figure.facecolor':'none'
     # })
-    plt.rcParams["font.family"] = 'sans-serif'
-    plt.rcParams["font.sans-serif"] = ['DejaVu Sans']
+    # plt.rcParams["font.family"] = 'sans-serif'
+    # plt.rcParams["font.sans-serif"] = ['DejaVu Sans']
 
     plt.rcParams["figure.figsize"] = (13,10)
     plt.rcParams["font.size"] = 35
-    plt.rcParams["text.usetex"] = True
+    # plt.rcParams["text.usetex"] = True
     # matplotlib.rcParams['pdf.fonttype'] = 42
     # matplotlib.rcParams['ps.fonttype'] = 42
     # matplotlib.rcParams['text.usetex'] = True
@@ -170,10 +170,10 @@ def makeLinePlot(xAxis, yAxis, dataframe, hue,
     ax.set_title(title, fontdict={'fontsize': fontSize})
     # ax.set_title(" ", fontdict={'fontsize': fontSize})
 
-    plt.ylabel('CPU time (sec)')
-    plt.xlabel('Cost bounds (factor of optimal)')
-    # plt.ylabel(yLabel, color='black', fontsize=fontSize)
-    # plt.xlabel(xLabel, color='black', fontsize=fontSize)
+    # plt.ylabel('CPU time (sec)')
+    # plt.xlabel('Cost bounds (factor of optimal)')
+    plt.ylabel(yLabel, color='black', fontsize=fontSize)
+    plt.xlabel(xLabel, color='black', fontsize=fontSize)
     plt.setp(ax.get_legend().get_texts(), fontsize='26')  # for legend text
     plt.setp(ax.get_legend().get_title(), fontsize='26')  # for legend title
 
