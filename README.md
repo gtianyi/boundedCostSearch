@@ -7,7 +7,7 @@ The purpose of the project is to implement several state-of-the-art BCS algorith
 [1] Maximilian Fickert, Tianyi Gu, and Wheeler Ruml, Bounded-Cost Search Using Estimates of Uncertainty. Proceedings of the Thirtieth International Joint Conference on Artificial Intelligence (IJCAI-21), 2021.
 
 [[pdf]](http://gtianyi.github.io/publication/xes-IJCAI-21.pdf)  [[slides]](http://gtianyi.github.io/slides/ijcai_21_xes_slides.pdf) [[poster]](http://gtianyi.github.io/slides/xes-poster-ijcai21.pdf)
-<!--[[talk]](https://youtu.be/4f1ual5R4s0)-->
+[[talk]](https://ijcai-21.org/videos-slides/?video=994)
 ## Prerequisites
 We use `clang` ecosystem to compile and develop the codebase. You can install necessary components by running
 ```
